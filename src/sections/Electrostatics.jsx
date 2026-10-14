@@ -131,6 +131,12 @@ function RubDemo() {
             <b>brakuje</b> (puste kółka) → jest naelektryzowany <b>dodatnio</b>. Łączny ładunek nadal wynosi
             zero – to <b>zasada zachowania ładunku</b>.
           </p>
+          <p>
+            Uwaga: „nadmiar” pojawia się dopiero <b>po</b> potarciu. Przed pocieraniem i balon, i sweter są
+            obojętne (wszystkie ładunki w parach), więc żaden nie ma czego „oddawać”. Naelektryzowany balon
+            rzeczywiście chętnie pozbyłby się nadmiaru – i robi to, gdy dotkniemy go ręką lub metalem (mówimy,
+            że się <b>rozładowuje</b>).
+          </p>
           <p className="muted">
             Balon jest izolatorem, więc dodatkowe elektrony zostają tam, gdzie go potarto – nie rozpływają się
             po całym balonie.
