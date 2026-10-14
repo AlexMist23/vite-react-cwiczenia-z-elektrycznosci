@@ -632,3 +632,4 @@ html, body, #root { height: 100%; overflow: hidden; }
 .tri-example p { margin: 0; }
 .tri-example .formula-inline { font-size: 1rem; }
 .tri-example-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.effect-choices .chip { font-size: 1rem; padding: 8px 14px; }

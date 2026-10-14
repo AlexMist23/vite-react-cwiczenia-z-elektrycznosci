@@ -33,18 +33,29 @@ const deal = () => shuffle(DEVICES).slice(0, 8)
 
 export default function Effects({ record }) {
   const [cards, setCards] = useState(deal)
+  const [idx, setIdx] = useState(0)
   const [picked, setPicked] = useState({})
+  const [summary, setSummary] = useState(false)
 
   // przy głośniku czy dzwonku dobry jest i skutek dźwiękowy, i magnetyczny (działa tam elektromagnes)
   const isOk = (card, effect) => effect === card[2] || (card[4] ?? []).includes(effect)
-  const choose = (card, effect) => {
-    if (picked[card[0]]) return
-    setPicked((p) => ({ ...p, [card[0]]: effect }))
+  const card = cards[idx]
+  const [name, icon, correct, why, alt = []] = card
+  const p = picked[name]
+  const ok = p && isOk(card, p)
+  const good = cards.filter((c) => picked[c[0]] && isOk(c, picked[c[0]])).length
+
+  const choose = (effect) => {
+    if (p) return
+    setPicked((s) => ({ ...s, [name]: effect }))
     record('skutki', isOk(card, effect))
   }
-
-  const answered = Object.keys(picked).length
-  const good = cards.filter((c) => picked[c[0]] && isOk(c, picked[c[0]])).length
+  const restart = () => {
+    setCards(deal())
+    setIdx(0)
+    setPicked({})
+    setSummary(false)
+  }
 
   return (
     <div className="section">
@@ -61,52 +72,82 @@ export default function Effects({ record }) {
       </div>
 
       <div className="card">
-        <div className="score">
-          Wynik: <b>{good}</b> / {answered} {answered === cards.length && '– koniec rundy!'}
-        </div>
         <p className="question">Jaki skutek przepływu prądu jest najważniejszy w tym urządzeniu?</p>
-        <div className="device-list">
-          {cards.map((card) => {
-            const [name, icon, correct, why, alt = []] = card
-            const p = picked[name]
-            const ok = p && isOk(card, p)
+        <div className="carousel-dots" aria-label="Postęp rundy">
+          {cards.map((c, i) => {
+            const a = picked[c[0]]
             return (
-              <div key={name} className={`device ${p ? (ok ? 'ok' : 'bad') : ''}`}>
-                <div className="device-name">
-                  <span className="effect-icon">{icon}</span> {name}
-                </div>
-                <div className="chips">
-                  {Object.keys(EFFECTS).map((k) => (
-                    <button
-                      key={k}
-                      className={`chip ${p && (k === correct || alt.includes(k)) ? 'right' : ''} ${p === k && !ok ? 'wrong' : ''}`}
-                      disabled={!!p}
-                      onClick={() => choose(card, k)}
-                    >
-                      {EFFECTS[k].icon} {k}
-                    </button>
-                  ))}
-                </div>
-                {p && (
-                  <div className="material-why">
-                    <b>{ok ? '✔ Dobrze. ' : `✘ To skutek ${[correct, ...alt].join(' i ')}. `}</b>
-                    {why}
-                  </div>
-                )}
-              </div>
+              <span
+                key={c[0]}
+                className={`dot ${a ? (isOk(c, a) ? 'ok' : 'bad') : ''} ${!summary && i === idx ? 'cur' : ''}`}
+              />
             )
           })}
         </div>
-        {answered === cards.length && (
-          <button
-            className="btn primary"
-            onClick={() => {
-              setCards(deal())
-              setPicked({})
-            }}
-          >
-            Nowa runda →
-          </button>
+
+        {!summary ? (
+          <div className="carousel-card">
+            <div className="carousel-count">
+              Urządzenie {idx + 1} z {cards.length}
+            </div>
+            <div className="carousel-name">
+              <span className="effect-icon">{icon}</span> {name}
+            </div>
+            <div className="chips effect-choices">
+              {Object.keys(EFFECTS).map((k) => (
+                <button
+                  key={k}
+                  className={`chip ${p && (k === correct || alt.includes(k)) ? 'right' : ''} ${p === k && !ok ? 'wrong' : ''}`}
+                  disabled={!!p}
+                  onClick={() => choose(k)}
+                >
+                  {EFFECTS[k].icon} {k}
+                </button>
+              ))}
+            </div>
+            {p && (
+              <div className={ok ? 'feedback ok' : 'feedback bad'}>
+                <div>
+                  <b>{ok ? '✔ Dobrze. ' : `✘ To skutek ${[correct, ...alt].join(' i ')}. `}</b>
+                  {why}
+                </div>
+                <button
+                  className="btn primary"
+                  onClick={() => (idx + 1 < cards.length ? setIdx(idx + 1) : setSummary(true))}
+                >
+                  {idx + 1 < cards.length ? 'Następne urządzenie →' : 'Pokaż podsumowanie →'}
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="carousel-card">
+            <div className="carousel-count">
+              Podsumowanie rundy: <b>{good}</b> / {cards.length} dobrze.
+            </div>
+            <div className="device-list">
+              {cards.map((c) => {
+                const [n, ic, cor, w, al = []] = c
+                const good1 = isOk(c, picked[n])
+                return (
+                  <div key={n} className={`device ${good1 ? 'ok' : 'bad'}`}>
+                    <div className="device-name">
+                      <span className="effect-icon">{ic}</span> {n}
+                      <span className="muted small">
+                        {' '}
+                        – {[cor, ...al].map((k) => `${EFFECTS[k].icon} ${k}`).join(' i ')}
+                        {!good1 && ` (Twoja odpowiedź: ${picked[n]})`}
+                      </span>
+                    </div>
+                    <div className="material-why">{w}</div>
+                  </div>
+                )
+              })}
+            </div>
+            <button className="btn primary" onClick={restart}>
+              Nowa runda →
+            </button>
+          </div>
         )}
       </div>
     </div>
