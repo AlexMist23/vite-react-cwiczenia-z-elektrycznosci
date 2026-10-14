@@ -3,6 +3,8 @@ import AnswerBtn from '../components/AnswerBtn.jsx'
 import Pyramid from '../components/Pyramid.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 import { NAMES, TRIANGLES, letters } from '../lib/formulas.js'
+import { SCENARIOS, UNITS, substitute } from '../lib/scenarios.js'
+import { clean, fmt } from '../lib/physics.js'
 
 function newDrill() {
   const tri = pick(TRIANGLES)
@@ -29,6 +31,9 @@ function newDrill() {
 
 export default function Triangles({ record }) {
   const [covered, setCovered] = useState({})
+  // liczby do przykładów – osobno dla każdej piramidy; te same liczby pasują do każdej zakrytej litery
+  const [examples, setExamples] = useState(() => Object.fromEntries(TRIANGLES.map((t) => [t.id, SCENARIOS[t.id].values()])))
+  const reroll = (id) => setExamples((e) => ({ ...e, [id]: SCENARIOS[id].values() }))
   const [drill, setDrill] = useState(newDrill)
   const [answer, setAnswer] = useState(null)
   const [score, setScore] = useState({ ok: 0, all: 0 })
@@ -62,6 +67,7 @@ export default function Triangles({ record }) {
               />
               <div className="formula">{c ? tri.formulas[c] : 'Kliknij literę'}</div>
               <small className="muted">{c ? `${c} – ${NAMES[c][0]} [${NAMES[c][1]}]` : tri.unit}</small>
+              <Example tri={tri} target={c ?? tri.top} values={examples[tri.id]} onReroll={() => reroll(tri.id)} />
             </div>
           )
         })}
@@ -99,6 +105,32 @@ export default function Triangles({ record }) {
             </button>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+const f = (x) => fmt(clean(x))
+
+/** Przykład z życia do piramidy: treść, dane, wzór i obliczenie dla zakrytej litery. */
+function Example({ tri, target, values, onReroll }) {
+  const known = letters(tri).filter((l) => l !== target)
+  const formula = tri.formulas[target]
+  return (
+    <div className="tri-example">
+      <div className="tri-example-head">
+        <b>Przykład: szukamy {target}</b>
+        <button className="chip" onClick={onReroll} title="Losuj nowe liczby">
+          🎲 losuj
+        </button>
+      </div>
+      <p>{SCENARIOS[tri.id].text[target](values)}</p>
+      <div className="formula-inline">
+        Dane: {known.map((k) => `${k} = ${f(values[k])} ${UNITS[k]}`).join(', ')}
+      </div>
+      <div className="formula-inline">{formula}</div>
+      <div className="formula-inline">
+        {target} = {substitute(formula, values)} = <b>{f(values[target])} {UNITS[target]}</b>
       </div>
     </div>
   )
