@@ -84,7 +84,10 @@ export default function Triangles({ record }) {
         </div>
         {answer && (
           <div className={answer === drill.right ? 'feedback ok' : 'feedback bad'}>
-            {answer === drill.right ? 'Dobrze!' : `Poprawny wzór: ${drill.right}.`}
+            {answer === drill.right ? 'Dobrze! ' : `Poprawny wzór: ${drill.right}. `}
+            {drill.target === drill.tri.top
+              ? `${drill.target} jest na górze trójkąta – zakryj je, a zostaje dół: litery obok siebie, więc mnożymy.`
+              : `${drill.target} jest na dole – zakryj je, a zostaje ${drill.tri.top} nad pozostałymi literami, więc dzielimy ${drill.tri.top} przez nie.`}
             <button
               className="btn primary"
               onClick={() => {

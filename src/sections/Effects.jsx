@@ -11,22 +11,22 @@ const EFFECTS = {
 }
 
 const DEVICES = [
-  ['Grzejnik elektryczny', '♨️', 'cieplny'],
-  ['Czajnik elektryczny', '🫖', 'cieplny'],
-  ['Toster', '🍞', 'cieplny'],
-  ['Żelazko', '👕', 'cieplny'],
-  ['Żarówka', '💡', 'świetlny'],
-  ['Latarka', '🔦', 'świetlny'],
-  ['Wentylator', '🌀', 'mechaniczny'],
-  ['Wiertarka', '🛠️', 'mechaniczny'],
-  ['Hulajnoga elektryczna', '🛴', 'mechaniczny'],
-  ['Ładowanie akumulatora', '🔋', 'chemiczny'],
-  ['Elektroliza wody (rozkład na wodór i tlen)', '💧', 'chemiczny'],
-  ['Srebrzenie łyżeczki (galwanizacja)', '🥄', 'chemiczny'],
-  ['Głośnik', '🔈', 'dźwiękowy'],
-  ['Dzwonek do drzwi', '🔔', 'dźwiękowy'],
-  ['Słuchawki', '🎧', 'dźwiękowy'],
-  ['Elektromagnes w dźwigu na złomowisku', '🏗️', 'magnetyczny'],
+  ['Grzejnik elektryczny', '♨️', 'cieplny', 'Prąd rozgrzewa spiralę grzejną, a ona ogrzewa powietrze w pokoju.'],
+  ['Czajnik elektryczny', '🫖', 'cieplny', 'Prąd nagrzewa grzałkę na dnie czajnika, a grzałka podgrzewa wodę.'],
+  ['Toster', '🍞', 'cieplny', 'Rozgrzane do czerwoności druciki opiekają chleb – liczy się ciepło.'],
+  ['Żelazko', '👕', 'cieplny', 'Prąd nagrzewa stopę żelazka, która wygładza ubranie.'],
+  ['Żarówka', '💡', 'świetlny', 'Żarówka ma świecić – choć przy okazji się grzeje, jej zadaniem jest światło.'],
+  ['Latarka', '🔦', 'świetlny', 'Prąd z baterii zasila żarówkę lub diodę LED, która daje światło.'],
+  ['Wentylator', '🌀', 'mechaniczny', 'Silnik elektryczny obraca łopatki – prąd wywołuje ruch.'],
+  ['Wiertarka', '🛠️', 'mechaniczny', 'Silnik elektryczny obraca wiertło – to skutek mechaniczny.'],
+  ['Hulajnoga elektryczna', '🛴', 'mechaniczny', 'Silnik w kole zamienia energię prądu na ruch hulajnogi.'],
+  ['Ładowanie akumulatora', '🔋', 'chemiczny', 'Podczas ładowania prąd wywołuje w akumulatorze reakcje chemiczne – energia jest „magazynowana” chemicznie.'],
+  ['Elektroliza wody (rozkład na wodór i tlen)', '💧', 'chemiczny', 'Prąd rozkłada wodę na dwa gazy: wodór i tlen – to reakcja chemiczna.'],
+  ['Srebrzenie łyżeczki (galwanizacja)', '🥄', 'chemiczny', 'Prąd przenosi srebro z roztworu na łyżeczkę i pokrywa ją cienką warstwą – to skutek chemiczny.'],
+  ['Głośnik', '🔈', 'dźwiękowy', 'Prąd porusza membraną głośnika, a drgająca membrana wytwarza dźwięk.'],
+  ['Dzwonek do drzwi', '🔔', 'dźwiękowy', 'Elektromagnes w dzwonku uderza młoteczkiem w dzwonek i słychać dźwięk.'],
+  ['Słuchawki', '🎧', 'dźwiękowy', 'W słuchawkach są malutkie głośniki – prąd zamienia się w dźwięk.'],
+  ['Elektromagnes w dźwigu na złomowisku', '🏗️', 'magnetyczny', 'Gdy płynie prąd, elektromagnes przyciąga żelazny złom; po wyłączeniu prądu złom odpada.'],
 ]
 
 const deal = () => shuffle(DEVICES).slice(0, 8)
@@ -64,7 +64,7 @@ export default function Effects({ record }) {
         </div>
         <p className="question">Jaki skutek przepływu prądu jest najważniejszy w tym urządzeniu?</p>
         <div className="device-list">
-          {cards.map(([name, icon, correct]) => {
+          {cards.map(([name, icon, correct, why]) => {
             const p = picked[name]
             return (
               <div key={name} className={`device ${p ? (p === correct ? 'ok' : 'bad') : ''}`}>
@@ -83,6 +83,12 @@ export default function Effects({ record }) {
                     </button>
                   ))}
                 </div>
+                {p && (
+                  <div className="material-why">
+                    <b>{p === correct ? '✔ Dobrze. ' : `✘ To skutek ${correct}. `}</b>
+                    {why}
+                  </div>
+                )}
               </div>
             )
           })}

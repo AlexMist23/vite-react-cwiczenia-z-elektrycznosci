@@ -7,6 +7,17 @@ import { NAMES, TRIANGLES, letters, samePyramid } from '../lib/formulas.js'
 
 const ALL_LETTERS = Object.keys(NAMES)
 
+// skojarzenia, które pomagają zapamiętać symbol
+const WHY_SYMBOL = {
+  E: 'E od „energia”.',
+  W: 'W od angielskiego „work” – praca. Nie myl z jednostką mocy W (wat)!',
+  U: 'Napięcie oznaczamy literą U, a jego jednostką jest wolt (V).',
+  q: 'Małe q – ładunek (od łacińskiego „quantitas” – ilość).',
+  I: 'I od francuskiego „intensité” – natężenie.',
+  t: 't od „time” – czas.',
+  P: 'P od angielskiego „power” – moc.',
+}
+
 const MODES = [
   { id: 'piramida', label: '🔺 Ułóż piramidę' },
   { id: 'wzor', label: '🧱 Ułóż wzór' },
@@ -208,17 +219,18 @@ function newSymbolTask() {
   const sym = pick(ALL_LETTERS)
   const [name, unit] = NAMES[sym]
   const kind = pick(['name', 'unit', 'symbol'])
+  const why = `${sym} – ${name}, jednostka: ${unit}. ${WHY_SYMBOL[sym]}`
   if (kind === 'name') {
     const opts = shuffle([...new Set(ALL_LETTERS.map((l) => NAMES[l][0]))].filter((n) => n !== name)).slice(0, 3)
-    return { q: <>Co oznacza symbol <span className="formula">{sym}</span>?</>, right: name, options: shuffle([name, ...opts]) }
+    return { q: <>Co oznacza symbol <span className="formula">{sym}</span>?</>, right: name, options: shuffle([name, ...opts]), why }
   }
   if (kind === 'unit') {
     const opts = shuffle([...new Set(ALL_LETTERS.map((l) => NAMES[l][1]))].filter((u) => u !== unit)).slice(0, 3)
-    return { q: <>Jaka jest jednostka wielkości: {name} ({sym})?</>, right: unit, options: shuffle([unit, ...opts]) }
+    return { q: <>Jaka jest jednostka wielkości: {name} ({sym})?</>, right: unit, options: shuffle([unit, ...opts]), why }
   }
   // E i W mają ten sam opis jednostki, więc przy symbolu pytamy o nazwę, a nie o jednostkę
   const opts = shuffle(ALL_LETTERS.filter((l) => l !== sym)).slice(0, 3)
-  return { q: <>Jakim symbolem oznaczamy: {name}?</>, right: sym, options: shuffle([sym, ...opts]) }
+  return { q: <>Jakim symbolem oznaczamy: {name}?</>, right: sym, options: shuffle([sym, ...opts]), why }
 }
 
 function SymbolDrill({ onResult }) {
@@ -241,7 +253,8 @@ function SymbolDrill({ onResult }) {
       </div>
       {answer && (
         <div className={answer === task.right ? 'feedback ok' : 'feedback bad'}>
-          {answer === task.right ? 'Dobrze!' : `Poprawnie: ${task.right}.`}
+          {answer === task.right ? 'Dobrze! ' : `Poprawnie: ${task.right}. `}
+          {task.why}
           <button
             className="btn primary"
             onClick={() => {

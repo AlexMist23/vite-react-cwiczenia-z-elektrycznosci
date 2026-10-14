@@ -210,10 +210,24 @@ function ForceGame({ record }) {
 
 // ---------- Przewodnik czy izolator ----------
 const MATERIALS = [
-  ['aluminium', true], ['miedź', true], ['złoto', true], ['żelazo', true], ['srebro', true],
-  ['grafit (ołówek)', true], ['moneta', true], ['stalowy gwóźdź', true], ['woda z solą', true],
-  ['guma', false], ['papier', false], ['porcelana', false], ['szkło', false], ['plastik (słomka)', false],
-  ['drewno (suche)', false], ['korek', false], ['gumka do ścierania', false], ['powietrze (suche)', false],
+  ['aluminium', true, 'Metal – ma elektrony swobodne, które łatwo się przemieszczają. Z aluminium robi się np. przewody wysokiego napięcia.'],
+  ['miedź', true, 'Metal i jeden z najlepszych przewodników – dlatego przewody w domu i w kablach są miedziane.'],
+  ['złoto', true, 'Metal, bardzo dobry przewodnik, który nie rdzewieje – pokrywa się nim styki w elektronice.'],
+  ['żelazo', true, 'Metal – ma elektrony swobodne, więc przewodzi prąd (gorzej niż miedź, ale przewodzi).'],
+  ['srebro', true, 'Metal – najlepszy przewodnik ze wszystkich metali, ale za drogi na zwykłe przewody.'],
+  ['grafit (ołówek)', true, 'Grafit to odmiana węgla, która ma elektrony swobodne – przewodzi, choć nie jest metalem. Linia narysowana ołówkiem może zamknąć obwód!'],
+  ['moneta', true, 'Monety są z metalu (stopy miedzi, niklu, stali), więc przewodzą prąd.'],
+  ['stalowy gwóźdź', true, 'Stal to głównie żelazo, czyli metal – przewodzi prąd.'],
+  ['woda z solą', true, 'W wodzie z solą są jony (naładowane cząstki soli), które mogą się przemieszczać – dlatego przewodzi. Czysta woda destylowana prawie nie przewodzi.'],
+  ['guma', false, 'Guma nie ma swobodnych ładunków – to izolator. Dlatego przewody okrywa się gumą lub plastikiem.'],
+  ['papier', false, 'Suchy papier to izolator – ładunki praktycznie nie mogą się w nim przemieszczać.'],
+  ['porcelana', false, 'Porcelana to bardzo dobry izolator – robi się z niej izolatory na słupach energetycznych.'],
+  ['szkło', false, 'Szkło to izolator – nie ma elektronów swobodnych. Można je naelektryzować przez pocieranie.'],
+  ['plastik (słomka)', false, 'Plastik to izolator – z plastiku robi się obudowy wtyczek, gniazdek i osłony przewodów.'],
+  ['drewno (suche)', false, 'Suche drewno to izolator. Uwaga: mokre drewno może przewodzić, bo zawiera wodę z jonami.'],
+  ['korek', false, 'Korek to izolator – ładunki nie mogą się w nim przemieszczać.'],
+  ['gumka do ścierania', false, 'Gumka jest z gumy lub plastiku, więc to izolator.'],
+  ['powietrze (suche)', false, 'Suche powietrze to izolator – dzięki temu prąd nie „wycieka” z przewodów. Przewodzi dopiero przy bardzo dużym napięciu (np. błyskawica).'],
 ]
 
 function Conductors({ record }) {
@@ -234,7 +248,7 @@ function Conductors({ record }) {
         ładunki praktycznie nie mogą się przemieszczać.
       </p>
       <div className="material-grid">
-        {items.map(([name, correct]) => {
+        {items.map(([name, correct, why]) => {
           const p = picked[name]
           const state = p === undefined ? '' : p === correct ? 'ok' : 'bad'
           return (
@@ -256,6 +270,12 @@ function Conductors({ record }) {
                   🚫 izolator
                 </button>
               </div>
+              {p !== undefined && (
+                <div className="material-why">
+                  <b>{p === correct ? '✔ Dobrze. ' : `✘ To ${correct ? 'przewodnik' : 'izolator'}. `}</b>
+                  {why}
+                </div>
+              )}
             </div>
           )
         })}

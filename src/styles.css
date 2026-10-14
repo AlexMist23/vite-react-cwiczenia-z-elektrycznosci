@@ -461,6 +461,9 @@ html, body, #root { height: 100%; overflow: hidden; }
 .fly { animation: fly 0.7s ease-in-out forwards; }
 @keyframes fly { to { transform: translate(var(--dx), var(--dy)); } }
 .rub-explain p { margin: 8px 0 0; }
+.material-why { margin-top: 8px; font-size: 0.9rem; line-height: 1.4; }
+.device.ok .material-why b { color: var(--ok); }
+.device.bad .material-why b { color: var(--bad); }
 .balloon { fill: color-mix(in srgb, #40c057 30%, var(--panel-2)); }
 .chg circle { stroke: none; }
 .chg text { fill: #fff; font-size: 13px; font-weight: 800; }
