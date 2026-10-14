@@ -34,7 +34,7 @@ export default function Quiz({ record }) {
       <div className="section">
         <h2>Sprawdzian – quiz końcowy</h2>
         <p className="lead">
-          Pytania z całego działu: obwody, kierunek prądu, ośrodki, skutki, wzory, jednostki i rachunki.
+          Pytania z całego działu: elektryzowanie, obwody, kierunek prądu, ośrodki, skutki, wzory, jednostki i rachunki.
           Na końcu dostaniesz ocenę według progów procentowych z lekcji.
         </p>
         <div className="card">

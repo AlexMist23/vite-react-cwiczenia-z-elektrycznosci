@@ -86,12 +86,12 @@ const PROBLEMS = [
   {
     topic: 'Natężenie',
     make() {
-      const I = pick([5, 2, 10, 0.5])
+      const I = pick([5, 8, 10])
       const h = pick([1, 2, 0.5])
       const t = h * 3600
       const q = I * t
       return {
-        q: `Czajnik pobiera prąd o natężeniu ${f(I)} A przez ${f(h)} h. Jaki ładunek przez niego przepłynął?`,
+        q: `Grzejnik elektryczny pobiera prąd o natężeniu ${f(I)} A przez ${f(h)} h. Jaki ładunek przez niego przepłynął?`,
         answer: q,
         unit: 'C',
         steps: {

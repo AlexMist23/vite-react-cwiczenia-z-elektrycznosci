@@ -13,7 +13,7 @@ export const SCENARIOS = {
       return { U, q, E: U * q }
     },
     text: {
-      E: (v) => `Między biegunami baterii o napięciu ${f(v.U)} V przepłynął ładunek ${f(v.q)} C. Jaką energię przeniósł ten ładunek?`,
+      E: (v) => `Między biegunami źródła o napięciu ${f(v.U)} V przepłynął ładunek ${f(v.q)} C. Jaką energię przeniósł ten ładunek?`,
       U: (v) => `Przeniesienie ładunku ${f(v.q)} C między biegunami źródła wymagało energii ${f(v.E)} J. Jakie jest napięcie źródła?`,
       q: (v) => `Źródło o napięciu ${f(v.U)} V przekazało energię ${f(v.E)} J. Jaki ładunek przepłynął?`,
     },

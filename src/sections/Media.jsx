@@ -68,18 +68,18 @@ const MEDIA = [
 ]
 
 const ITEMS = [
-  ['Miedziany przewód w ścianie', 'solid'],
-  ['Woda z rozpuszczoną solą kuchenną', 'liquid'],
-  ['Błyskawica podczas burzy', 'gas'],
-  ['Kwas siarkowy w akumulatorze samochodowym', 'liquid'],
-  ['Świecąca neonówka (reklama)', 'gas'],
-  ['Aluminiowa folia', 'solid'],
-  ['Grafit w ołówku', 'solid'],
-  ['Sok z cytryny z wbitymi elektrodami', 'liquid'],
-  ['Iskra przeskakująca między przewodami', 'gas'],
-  ['Złoty styk w telefonie', 'solid'],
-  ['Świetlówka (lampa jarzeniowa)', 'gas'],
-  ['Woda morska', 'liquid'],
+  ['Miedziany przewód w ścianie', 'solid', 'Miedź to metal – płyną w niej elektrony swobodne, a jony miedzi stoją w miejscu.'],
+  ['Woda z rozpuszczoną solą kuchenną', 'liquid', 'Sól rozpada się w wodzie na jony Na⁺ i Cl⁻: dodatnie płyną do „−”, ujemne do „+”.'],
+  ['Błyskawica podczas burzy', 'gas', 'Ogromne napięcie jonizuje powietrze – powstają jony i wolne elektrony, które przenoszą ładunek.'],
+  ['Kwas siarkowy w akumulatorze samochodowym', 'liquid', 'Roztwór kwasu to elektrolit – ładunek przenoszą jony.'],
+  ['Świecąca neonówka (reklama)', 'gas', 'Gaz w rurce jest zjonizowany przez wysokie napięcie – płyną jony i elektrony, a gaz świeci.'],
+  ['Aluminiowa folia', 'solid', 'Aluminium to metal – ładunek przenoszą elektrony swobodne.'],
+  ['Grafit w ołówku', 'solid', 'Grafit to ciało stałe z elektronami swobodnymi – przewodzi jak metal, choć jest z węgla.'],
+  ['Sok z cytryny z wbitymi elektrodami', 'liquid', 'Sok to roztwór kwasu cytrynowego – są w nim jony, więc przewodzi jak elektrolit.'],
+  ['Iskra przeskakująca między przewodami', 'gas', 'Iskra to zjonizowane powietrze – przez krótką chwilę płyną w nim jony i elektrony.'],
+  ['Złoty styk w telefonie', 'solid', 'Złoto to metal – płyną w nim elektrony swobodne.'],
+  ['Świetlówka (lampa jarzeniowa)', 'gas', 'W rurze świetlówki są pary rtęci i gaz – po zjonizowaniu płyną w nich jony i elektrony.'],
+  ['Woda morska', 'liquid', 'Woda morska zawiera rozpuszczone sole, więc ładunek przenoszą jony.'],
 ]
 
 const LABEL = {
@@ -94,7 +94,7 @@ export default function Media({ record }) {
   const [answer, setAnswer] = useState(null)
   const [score, setScore] = useState({ ok: 0, all: 0 })
 
-  const [name, correct] = order[idx]
+  const [name, correct, why] = order[idx]
   const choose = (k) => {
     if (answer) return
     const ok = k === correct
@@ -152,7 +152,7 @@ export default function Media({ record }) {
         {answer && (
           <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
             {answer === correct ? 'Dobrze! ' : 'Nie tym razem. '}
-            {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}.
+            {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}. {why}
             <button className="btn primary" onClick={next}>
               Następne →
             </button>

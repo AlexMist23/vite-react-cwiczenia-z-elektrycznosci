@@ -14,7 +14,7 @@ const WHY_SYMBOL = {
   E: 'E od „energia”.',
   W: 'W od angielskiego „work” – praca. Nie myl z jednostką mocy W (wat)!',
   U: 'Napięcie oznaczamy literą U, a jego jednostką jest wolt (V).',
-  q: 'Małe q – ładunek (od łacińskiego „quantitas” – ilość).',
+  q: 'Małe q – ładunek (od angielskiego „quantity” – ilość ładunku). Duże Q też się spotyka.',
   I: 'I od francuskiego „intensité” – natężenie.',
   t: 't od „time” – czas.',
   P: 'P od angielskiego „power” – moc.',

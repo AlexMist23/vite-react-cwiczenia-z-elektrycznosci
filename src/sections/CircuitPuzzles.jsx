@@ -18,7 +18,7 @@ const TOPOLOGIES = [
     id: 'switch-shorts-bulb',
     answer: 'D',
     shines: (closed) => !closed,
-    why: 'Zamknięty wyłącznik łączy oba końce żarówki – prąd płynie łatwiejszą drogą przez wyłącznik (zwarcie żarówki).',
+    why: 'Zamknięty wyłącznik łączy oba końce żarówki zwykłym przewodem. Przewód prawie nie stawia oporu, więc prawie cały prąd płynie przez wyłącznik, a przez żarówkę – praktycznie nic. Uwaga: w tym obwodzie nie ma wtedy żadnego odbiornika, więc zamknięcie wyłącznika robi ZWARCIE baterii – rośnie natężenie, bateria i przewody się grzeją.',
     wires: ['M40,110 V30 H300 V190 H40 Z', 'M110,30 V95 H230 V30'],
     sw: { x: 170, y: 95, rot: 0 },
     dots: [[110, 30], [230, 30]],
@@ -27,7 +27,7 @@ const TOPOLOGIES = [
     id: 'wire-shorts-bulb',
     answer: 'B',
     shines: () => false,
-    why: 'Żarówkę „omija” zwykły przewód – prąd zawsze płynie tą łatwiejszą drogą, więc żarówka nigdy nie świeci.',
+    why: 'Żarówkę „omija” zwykły przewód. Przewód prawie nie stawia oporu, więc prawie cały prąd płynie nim, a żarówka nie świeci. Uwaga: przy zamkniętym wyłączniku to ZWARCIE baterii – takiego obwodu nie wolno budować naprawdę.',
     wires: ['M40,110 V30 H300 V190 H40 Z', 'M110,30 V95 H230 V30'],
     sw: { x: 300, y: 110, rot: 90 },
     dots: [[110, 30], [230, 30]],
@@ -222,8 +222,9 @@ export default function CircuitPuzzles({ record }) {
       <h2>Zagadki obwodowe</h2>
       <BookRef pages="29–34" topics="Obwód prądu elektrycznego" />
       <p className="lead">
-        Prąd płynie tylko w obwodzie <b>zamkniętym</b> i zawsze wybiera <b>łatwiejszą drogę</b> – jeśli
-        coś połączy końce żarówki zwykłym przewodem, prąd ją ominie.
+        Prąd płynie tylko w obwodzie <b>zamkniętym</b>. Jeśli końce żarówki połączy zwykły przewód,
+        prawie cały prąd popłynie tym przewodem (prawie nie stawia oporu), a żarówka zgaśnie. Gdy w obwodzie
+        nie zostaje żaden odbiornik, mamy <b>zwarcie</b>.
       </p>
       <BulbGame record={record} />
       <WaterAnalogy record={record} />

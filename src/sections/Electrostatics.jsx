@@ -227,7 +227,7 @@ const MATERIALS = [
   { name: 'żelazo', kind: 'p', els: ['Fe'], why: 'Metal – ma elektrony swobodne, więc przewodzi prąd (gorzej niż miedź, ale przewodzi).' },
   { name: 'srebro', kind: 'p', els: ['Ag'], why: 'Metal – najlepszy przewodnik ze wszystkich pierwiastków, ale za drogi na zwykłe przewody.' },
   { name: 'grafit (ołówek)', kind: 'p', els: ['C'], why: 'Grafit to czysty węgiel – niemetal, ale wyjątkowy: ma elektrony swobodne i przewodzi. Linia narysowana ołówkiem może zamknąć obwód!' },
-  { name: 'moneta', kind: 'p', els: ['Cu', 'Ni', 'Zn', 'Fe'], why: 'Monety są z metali: stopów miedzi, niklu i cynku albo ze stali pokrytej miedzią. Same metale – więc przewodzą.' },
+  { name: 'moneta', kind: 'p', els: ['Cu', 'Ni', 'Zn', 'Fe'], why: 'Monety są z metali: stopów miedzi, niklu i cynku albo ze stali pokrytej mosiądzem (stop miedzi i cynku). Same metale – więc przewodzą.' },
   { name: 'stalowy gwóźdź', kind: 'p', els: ['Fe', 'C'], why: 'Stal to żelazo z odrobiną węgla. Prawie w całości metal – przewodzi prąd.' },
   { name: 'woda z solą', kind: 'p', els: ['H', 'O', 'Na', 'Cl'], why: 'Woda (H₂O) i sól kuchenna (NaCl). Sól rozpada się w wodzie na jony Na⁺ i Cl⁻, które mogą płynąć – dlatego roztwór przewodzi. Czysta woda destylowana prawie nie przewodzi.' },
   { name: 'krzem', kind: 's', els: ['Si'], why: 'Krzem to półmetal – półprzewodnik. W temperaturze pokojowej przewodzi słabo, ale z domieszkami pozwala sterować prądem – dlatego jest w każdym procesorze i panelu słonecznym.' },
