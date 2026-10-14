@@ -49,6 +49,47 @@ const TOPOLOGIES = [
     wires: ['M150,190 H40 V30 H300 V190 H200'],
     sw: { x: 300, y: 110, rot: 90 },
   },
+  // Układy jak w podręczniku: inne położenie żarówki, baterii i wyłącznika.
+  {
+    id: 'book-middle-wire',
+    answer: 'A',
+    shines: () => true,
+    why: 'Środkowy przewód łączy górę z dołem obwodu, więc bateria, żarówka i ten przewód tworzą zamkniętą drogę niezależnie od wyłącznika. Wyłącznik jest tylko na dodatkowej, bocznej drodze – nic nie zmienia.',
+    wires: ['M40,110 V30 H300 V190 H40 Z', 'M210,30 V190'],
+    bulb: { x: 120, y: 30, rot: 0 },
+    sw: { x: 300, y: 110, rot: 90 },
+    dots: [[210, 30], [210, 190]],
+  },
+  {
+    id: 'book-bulb-parallel-switch',
+    answer: 'D',
+    shines: (closed) => !closed,
+    why: 'Żarówka i wyłącznik są połączone równolegle – każde w swojej gałęzi prosto do baterii. Gdy wyłącznik jest otwarty, prąd płynie przez żarówkę. Gdy go zamkniemy, bieguny baterii łączy sam przewód: prawie cały prąd płynie przez wyłącznik, a żarówka gaśnie. Uwaga: to ZWARCIE baterii.',
+    wires: ['M40,110 V30 H300 V190 H40 Z', 'M170,30 V190'],
+    bulb: { x: 170, y: 110, rot: 90 },
+    sw: { x: 300, y: 110, rot: 90 },
+    dots: [[170, 30], [170, 190]],
+  },
+  {
+    id: 'series-bottom-switch',
+    answer: 'C',
+    shines: (closed) => closed,
+    why: 'Bateria, żarówka i wyłącznik tworzą jedną pętlę (połączenie szeregowe). Otwarty wyłącznik przerywa obwód, a zamknięty go zamyka – wtedy żarówka świeci.',
+    wires: ['M40,110 V30 H300 V190 H40 Z'],
+    bulb: { x: 300, y: 110, rot: 90 },
+    sw: { x: 170, y: 190, rot: 0 },
+  },
+  {
+    id: 'book-bulb-shorted-top',
+    answer: 'B',
+    shines: () => false,
+    why: 'Oba końce żarówki są połączone z górnym przewodem – są w tym samym punkcie obwodu, więc między nimi nie ma napięcia i przez żarówkę nie płynie prąd. Zamknięcie wyłącznika łączy bieguny baterii samym przewodem – to ZWARCIE.',
+    wires: ['M40,140 V30 H300 V190 H40 Z', 'M40,80 H300'],
+    bat: { x: 40, y: 140, rot: 90 },
+    bulb: { x: 170, y: 80, rot: 0 },
+    sw: { x: 300, y: 140, rot: 90 },
+    dots: [[40, 80], [300, 80]],
+  },
 ]
 
 const DESCRIPTIONS = {
@@ -60,11 +101,17 @@ const DESCRIPTIONS = {
 
 function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const lit = showGlow && topo.shines(closed)
+  const bat = topo.bat ?? { x: 40, y: 110, rot: 90 } // „+” u góry, jak w podręczniku
+  const bulb = topo.bulb ?? { x: 170, y: 30, rot: 0 }
   return (
     <svg viewBox="0 0 410 220" className="circuit small-circuit">
       <CutWires
         id={`puzzle-wires-${topo.id}`}
-        holes={[[10, 80, 60, 60], [154, 14, 32, 32], [topo.sw.x - 24, topo.sw.y - 24, 48, 48]]}
+        holes={[
+          [bat.x - 30, bat.y - 30, 60, 60],
+          [bulb.x - 16, bulb.y - 16, 32, 32],
+          [topo.sw.x - 24, topo.sw.y - 24, 48, 48],
+        ]}
       >
         {topo.wires.map((d) => (
           <path key={d} d={d} className="wire" />
@@ -74,13 +121,11 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
         <circle key={`${x}-${y}`} cx={x} cy={y} r="4.5" fill="var(--wire)" />
       ))}
       <g className="el">
-        <rect x="10" y="80" width="60" height="60" className="el-bg" />
-        <Symbol type="cell" x={0} y={90} rotate={270} />
+        <Symbol type="cell" x={bat.x - 40} y={bat.y - 20} rotate={bat.rot} />
       </g>
       <g className="el">
-        {lit && <circle cx="170" cy="30" r="34" className="glow" />}
-        <rect x="154" y="14" width="32" height="32" className="el-bg" />
-        <Symbol type="bulb" x={130} y={10} />
+        {lit && <circle cx={bulb.x} cy={bulb.y} r="34" className="glow" />}
+        <Symbol type="bulb" x={bulb.x - 40} y={bulb.y - 20} rotate={bulb.rot} />
       </g>
       <g className="el clickable" onClick={onToggle}>
         <rect x={topo.sw.x - 24} y={topo.sw.y - 24} width="48" height="48" className="el-bg" />
