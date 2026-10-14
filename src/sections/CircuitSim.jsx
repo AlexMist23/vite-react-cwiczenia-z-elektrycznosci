@@ -142,6 +142,8 @@ export default function CircuitSim({ record }) {
   const bulbXs = { 1: [300], 2: [220, 380], 3: [180, 300, 420] }[bulbs]
   // środki elementów na przewodzie i połowa ich długości wzdłuż przewodu
   const elements = [[300, 60, 6], [60, 180, 14], [540, 180, 16], ...bulbXs.map((cx) => [cx, 300, 14])]
+  // strzałki przy baterii gasną, żeby nie zasłaniały znaków + i −
+  const arrowOpacity = (p) => (Math.abs(p.y - 60) > 5 ? 1 : Math.min(1, Math.max(0, (Math.abs(p.x - 300) - 30) / 14)))
   const insideElement = (p) => elements.some(([x, y, h]) => Math.max(Math.abs(p.x - x), Math.abs(p.y - y)) < h + 7)
   const showE = view !== 'current'
   const showI = view !== 'electrons'
@@ -239,6 +241,7 @@ export default function CircuitSim({ record }) {
                   key={i}
                   d="M -9 -7 L 9 0 L -9 7 Z"
                   className="arrow-current"
+                  style={{ opacity: arrowOpacity(p) }}
                   transform={`translate(${p.x + p.nx * 17} ${p.y + p.ny * 17}) rotate(${p.angle + (currentDir === 1 ? 0 : 180)})`}
                 />
               ))}

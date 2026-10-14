@@ -290,7 +290,8 @@ p { margin: 0 0 0.75em; }
 .sym { stroke: var(--wire); stroke-width: 3; fill: none; color: var(--wire); }
 .sym text { stroke: none; fill: var(--text); }
 .sym-letter { font-size: 17px; font-weight: 700; }
-.sym-pm { font-size: 12px; font-weight: 700; }
+.sym-plus { stroke: #e03131; stroke-width: 3.5; stroke-linecap: round; }
+.sym-minus { stroke: #1c7ed6; stroke-width: 3.5; stroke-linecap: round; }
 .el-bg { fill: transparent; stroke: none; } /* tylko pole do klikania; przewody wycina maska */
 .clickable { cursor: pointer; }
 .clickable:hover .sym { stroke: var(--accent); }

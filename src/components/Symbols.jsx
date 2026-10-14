@@ -16,6 +16,16 @@ function Meter({ letter }) {
   )
 }
 
+// Znaki biegunów jako kreski (nie tekst), żeby były grube i obracały się razem z symbolem.
+function PlusMinus({ px, mx, y = 7 }) {
+  return (
+    <>
+      <path d={`M${px - 6},${y} H${px + 6} M${px},${y - 6} V${y + 6}`} className="sym-plus" />
+      <path d={`M${mx - 6},${y} H${mx + 6}`} className="sym-minus" />
+    </>
+  )
+}
+
 export const SYMBOLS = {
   cell: {
     name: 'Ogniwo (źródło napięcia)',
@@ -26,8 +36,7 @@ export const SYMBOLS = {
         <line x1="35" y1="4" x2="35" y2="36" />
         <line x1="45" y1="12" x2="45" y2="28" strokeWidth="6" />
         {lead(45, 80)}
-        <text x="27" y="10" className="sym-pm">+</text>
-        <text x="51" y="10" className="sym-pm">−</text>
+        <PlusMinus px={24} mx={56} />
       </>
     ),
   },
@@ -43,6 +52,7 @@ export const SYMBOLS = {
         <line x1="48" y1="4" x2="48" y2="36" />
         <line x1="56" y1="12" x2="56" y2="28" strokeWidth="6" />
         {lead(56, 80)}
+        <PlusMinus px={14} mx={66} />
       </>
     ),
   },
