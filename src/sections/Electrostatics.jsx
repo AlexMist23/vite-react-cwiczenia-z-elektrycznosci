@@ -149,14 +149,14 @@ function RubDemo() {
 
 // ---------- Przyciągają czy odpychają ----------
 const BODIES = [
-  { name: 'balonik potarty swetrem', q: -1 },
-  { name: 'szklana pałeczka potarta jedwabiem', q: 1 },
-  { name: 'bursztyn potarty wełną', q: -1 },
-  { name: 'sweter po potarciu balonika', q: 1 },
-  { name: 'ciało naładowane ujemnie', q: -1 },
-  { name: 'ciało naładowane dodatnio', q: 1 },
-  { name: 'nienaelektryzowany pasek folii aluminiowej', q: 0 },
-  { name: 'skrawek papieru (obojętny)', q: 0 },
+  { name: 'balonik potarty swetrem', q: -1, why: 'guma zabrała elektrony z wełny, więc balonik ma ich nadmiar – jest naładowany ujemnie' },
+  { name: 'szklana pałeczka potarta jedwabiem', q: 1, why: 'szkło oddało elektrony jedwabiowi, więc ma ich niedobór – jest naładowana dodatnio' },
+  { name: 'bursztyn potarty wełną', q: -1, why: 'bursztyn zabrał elektrony z wełny, więc jest naładowany ujemnie' },
+  { name: 'sweter po potarciu balonika', q: 1, why: 'sweter oddał elektrony balonikowi, więc ma ich niedobór – jest naładowany dodatnio' },
+  { name: 'ciało naładowane ujemnie', q: -1, why: 'ma nadmiar elektronów – ładunek ujemny' },
+  { name: 'ciało naładowane dodatnio', q: 1, why: 'ma niedobór elektronów – ładunek dodatni' },
+  { name: 'nienaelektryzowany pasek folii aluminiowej', q: 0, why: 'nie jest naelektryzowany – ma tyle samo protonów co elektronów (obojętny)' },
+  { name: 'skrawek papieru (obojętny)', q: 0, why: 'jest obojętny – ma tyle samo ładunków dodatnich co ujemnych' },
 ]
 
 function forceTask() {
@@ -181,8 +181,8 @@ function ForceGame({ record }) {
     t.a.q === 0 || t.b.q === 0
       ? 'Ciało naelektryzowane przyciąga też ciała obojętne: ładunki w nich przesuwają się tak, że bliżej są ładunki przeciwnego znaku.'
       : t.correct === 'odpychają'
-        ? 'Ładunki tego samego znaku się odpychają.'
-        : 'Ładunki przeciwnych znaków się przyciągają.'
+        ? `Oba ciała mają ładunek ${t.a.q > 0 ? 'dodatni' : 'ujemny'}, a ładunki tego samego znaku się odpychają.`
+        : 'Jedno ciało jest naładowane dodatnio, a drugie ujemnie – ładunki przeciwnych znaków się przyciągają.'
   return (
     <div className="card game-card">
       <p className="question">
@@ -197,8 +197,17 @@ function ForceGame({ record }) {
       </div>
       {answer && (
         <div className={answer === t.correct ? 'feedback ok' : 'feedback bad'}>
-          {answer === t.correct ? 'Dobrze! ' : 'Nie. '}
-          {why}
+          <div>
+            <b>{answer === t.correct ? 'Dobrze! ' : 'Nie. '}</b>
+            {why}
+          </div>
+          <ul className="force-sides">
+            {[t.a, t.b].map((x) => (
+              <li key={x.name}>
+                <b>{x.q > 0 ? '➕' : x.q < 0 ? '➖' : '⚪'} {x.name[0].toUpperCase() + x.name.slice(1)}</b>: {x.why}.
+              </li>
+            ))}
+          </ul>
           <button className="btn primary" onClick={() => { setT(forceTask()); setAnswer(null) }}>
             Następne →
           </button>

@@ -561,3 +561,4 @@ html, body, #root { height: 100%; overflow: hidden; }
 .pyramid-picker { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
 .pyramid-picker .chip { font-size: 0.9rem; padding: 5px 12px; }
 .hint-chip { justify-self: start; }
+.force-sides { margin: 8px 0 10px; padding-left: 20px; display: grid; gap: 4px; }
