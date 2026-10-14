@@ -16,20 +16,21 @@ import Electrostatics from './sections/Electrostatics.jsx'
 import CircuitPuzzles from './sections/CircuitPuzzles.jsx'
 
 export const GROUPS = [
-  { id: 'ladunki', title: 'Ładunki i obwody', color: '#7048e8' },
+  { id: 'ladunki', title: 'Elektryzowanie ciał', color: '#ae3ec9' },
+  { id: 'obwody', title: 'Obwody elektryczne', color: '#7048e8' },
   { id: 'prad', title: 'Przepływ prądu', color: '#f76707' },
   { id: 'wzory', title: 'Wzory i obliczenia', color: '#1c7ed6' },
   { id: 'powtorka', title: 'Powtórka', color: '#2b8a3e' },
 ]
 
 export const SECTIONS = [
-  // kolejność jak w zeszycie: elektryzowanie → obwód → skutki → kierunek → ośrodki → napięcie, natężenie, praca i moc → przedrostki → zadania
+  // kolejność jak w zeszycie: elektryzowanie → obwód (z kierunkiem prądu) → skutki → ośrodki → napięcie, natężenie, praca i moc → przedrostki → zadania
   { id: 'elektrostatyka', group: 'ladunki', icon: '🎈', title: 'Elektryzowanie i ładunki', desc: 'Balon i sweter, przewodniki i izolatory, indukcja.', C: Electrostatics },
-  { id: 'obwod', group: 'ladunki', icon: '🔌', title: 'Symulator obwodu', desc: 'Zbuduj obwód, zamknij wyłącznik, zobacz prąd i elektrony.', C: CircuitSim },
-  { id: 'symbole', group: 'ladunki', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame },
-  { id: 'zagadki', group: 'ladunki', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
+  { id: 'obwod', group: 'obwody', icon: '🔌', title: 'Symulator obwodu', desc: 'Zbuduj obwód, zamknij wyłącznik, zobacz prąd i elektrony.', C: CircuitSim },
+  { id: 'symbole', group: 'obwody', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame },
+  { id: 'zagadki', group: 'obwody', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
+  { id: 'kierunki', group: 'obwody', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
   { id: 'skutki', group: 'prad', icon: '💡', title: 'Skutki prądu', desc: 'Cieplny, świetlny, mechaniczny, chemiczny…', C: Effects },
-  { id: 'kierunki', group: 'prad', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
   { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },
   { id: 'wzory', group: 'wzory', icon: '🔺', title: 'Trójkąty wzorów', desc: 'U = E/q, I = q/t, P = U·I, W = U·I·t', C: Triangles },
   { id: 'trening', group: 'wzory', icon: '🧠', title: 'Trening wzorów i piramid', desc: 'Ułóż piramidę, złóż wzór z klocków, symbole i jednostki.', C: FormulaTrainer },
