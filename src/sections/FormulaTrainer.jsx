@@ -242,11 +242,11 @@ function newSymbolTask(pool) {
   }
   if (kind === 'unit') {
     const opts = shuffle([...new Set(ALL_LETTERS.map((l) => NAMES[l][1]))].filter((u) => u !== unit)).slice(0, 3)
-    return { q: <>Jaka jest jednostka wielkości: {name} ({sym})?</>, right: unit, options: shuffle([unit, ...opts]), why }
+    return { q: <>Jaka jest jednostka wielkości „{name}” ({sym})?</>, right: unit, options: shuffle([unit, ...opts]), why }
   }
   // E i W mają ten sam opis jednostki, więc przy symbolu pytamy o nazwę, a nie o jednostkę
   const opts = shuffle(ALL_LETTERS.filter((l) => l !== sym)).slice(0, 3)
-  return { q: <>Jakim symbolem oznaczamy: {name}?</>, right: sym, options: shuffle([sym, ...opts]), why }
+  return { q: <>Jakim symbolem oznaczamy wielkość „{name}”?</>, right: sym, options: shuffle([sym, ...opts]), why }
 }
 
 function SymbolDrill({ pool, onResult }) {

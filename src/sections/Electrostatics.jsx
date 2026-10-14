@@ -223,7 +223,7 @@ function ForceGame({ record }) {
 const MATERIALS = [
   { name: 'aluminium', kind: 'p', els: ['Al'], why: 'Metal – ma elektrony swobodne, które łatwo się przemieszczają. Z aluminium robi się np. przewody wysokiego napięcia.' },
   { name: 'miedź', kind: 'p', els: ['Cu'], why: 'Metal i jeden z najlepszych przewodników – dlatego przewody w domu i w kablach są miedziane.' },
-  { name: 'złoto', kind: 'p', els: ['Au'], why: 'Metal, bardzo dobry przewodnik, który nie śniedzieje – pokrywa się nim styki w elektronice.' },
+  { name: 'złoto', kind: 'p', els: ['Au'], why: 'Metal, bardzo dobry przewodnik, który nie rdzewieje i nie koroduje – pokrywa się nim styki w elektronice.' },
   { name: 'żelazo', kind: 'p', els: ['Fe'], why: 'Metal – ma elektrony swobodne, więc przewodzi prąd (gorzej niż miedź, ale przewodzi).' },
   { name: 'srebro', kind: 'p', els: ['Ag'], why: 'Metal – najlepszy przewodnik ze wszystkich pierwiastków, ale za drogi na zwykłe przewody.' },
   { name: 'grafit (ołówek)', kind: 'p', els: ['C'], why: 'Grafit to czysty węgiel – niemetal, ale wyjątkowy: ma elektrony swobodne i przewodzi. Linia narysowana ołówkiem może zamknąć obwód!' },

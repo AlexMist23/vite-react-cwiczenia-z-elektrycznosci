@@ -28,7 +28,7 @@ export default function Notes() {
             <li><b>1 C</b> ≈ ładunek 6 · 10¹⁸ elektronów; ładunek elementarny e = 1,6 · 10⁻¹⁹ C.</li>
             <li><b>Zasada zachowania ładunku</b>: ładunek nie powstaje ani nie znika.</li>
             <li><b>Przewodniki</b> (metale – elektrony swobodne) i <b>izolatory</b> (szkło, porcelana, guma, tworzywa).</li>
-            <li><b>Indukcja</b>: zbliżone naelektryzowane ciało przesuwa elektrony w przewodniku, dlatego przyciąga też ciała obojętne.</li>
+            <li><b>Indukcja</b>: zbliżone naelektryzowane ciało przesuwa ładunki w ciele obojętnym (w przewodniku elektrony swobodne, w izolatorze ładunki w cząsteczkach), dlatego przyciąga też ciała obojętne, np. skrawki papieru.</li>
           </ul>
         </section>
 
@@ -120,6 +120,10 @@ export default function Notes() {
           <div className="formula big">W = U · I · t</div>
           <p className="small">W – praca [J], U – napięcie [V], I – natężenie [A], t – czas [s]</p>
           <div className="formula">1 J = 1 V · 1 A · 1 s</div>
+          <p className="small">
+            Skąd ten wzór? Z napięcia: E = U · q (energia to praca prądu, więc E = W), a ładunek q = I · t.
+            Razem: <b>W = U · q = U · I · t</b>.
+          </p>
           <div className="formula big">P = U · I</div>
           <p className="small">P – moc [W, wat]</p>
           <div className="formula">1 W = 1 V · 1 A</div>

@@ -104,7 +104,7 @@ function ahTask() {
   }
   const mah = pick([1000, 2000, 3000, 4500, 5000])
   return {
-    q: `Bateria telefonu ma ${mah} mAh. Ile to kulombów?`,
+    q: `Akumulator telefonu ma ${mah} mAh. Ile to kulombów?`,
     answer: mah * 3.6,
     unit: 'C',
     explain: `${mah} mAh = ${fmt(mah / 1000)} Ah, a 1 Ah = 3600 C, więc ${fmt(mah / 1000)} · 3600 = ${fmt(mah * 3.6)} C.`,
