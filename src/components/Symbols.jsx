@@ -7,7 +7,7 @@ function Meter({ letter }) {
   return (
     <>
       {lead(0, 26)}
-      <circle cx="40" cy="20" r="14" fill="var(--panel)" />
+      <circle cx="40" cy="20" r="14" fill="none" />
       <text x="40" y="25.5" textAnchor="middle" className="sym-letter">
         {letter}
       </text>
@@ -52,7 +52,7 @@ export const SYMBOLS = {
     draw: () => (
       <>
         {lead(0, 26)}
-        <circle cx="40" cy="20" r="14" fill="var(--panel)" />
+        <circle cx="40" cy="20" r="14" fill="none" />
         <line x1="30.1" y1="10.1" x2="49.9" y2="29.9" />
         <line x1="49.9" y1="10.1" x2="30.1" y2="29.9" />
         {lead(54, 80)}
@@ -74,12 +74,12 @@ export const SYMBOLS = {
   },
   switchClosed: {
     name: 'Wyłącznik zamknięty',
-    hint: 'Obwód zamknięty – prąd może płynąć.',
+    hint: 'Styk leży płasko – obwód zamknięty, prąd może płynąć.',
     draw: () => (
       <>
         {lead(0, 24)}
         <circle cx="24" cy="20" r="2.5" fill="currentColor" />
-        <line x1="24" y1="20" x2="56" y2="18" />
+        <line x1="24" y1="20" x2="56" y2="20" />
         <circle cx="56" cy="20" r="2.5" fill="currentColor" />
         {lead(56, 80)}
       </>
@@ -91,7 +91,7 @@ export const SYMBOLS = {
     draw: () => (
       <>
         {lead(0, 22)}
-        <rect x="22" y="12" width="36" height="16" fill="var(--panel)" />
+        <rect x="22" y="12" width="36" height="16" fill="none" />
         {lead(58, 80)}
       </>
     ),
@@ -127,6 +127,27 @@ export const SYMBOLS = {
       </>
     ),
   },
+}
+
+/**
+ * Przewody (i to, co po nich jeździ) z „dziurami” w miejscach elementów.
+ * Dzięki masce pod symbolami nie ma żadnego tła – przewód po prostu się urywa.
+ * holes: [[x, y, szer, wys], ...]
+ */
+export function CutWires({ id, holes, children }) {
+  return (
+    <>
+      <defs>
+        <mask id={id} maskUnits="userSpaceOnUse" x="-50" y="-50" width="2000" height="2000">
+          <rect x="-50" y="-50" width="2000" height="2000" fill="#fff" />
+          {holes.map(([x, y, w, h]) => (
+            <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} fill="#000" />
+          ))}
+        </mask>
+      </defs>
+      <g mask={`url(#${id})`}>{children}</g>
+    </>
+  )
 }
 
 export function Symbol({ type, x = 0, y = 0, rotate = 0, className = '' }) {

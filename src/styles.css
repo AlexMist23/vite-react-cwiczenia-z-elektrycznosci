@@ -291,7 +291,7 @@ p { margin: 0 0 0.75em; }
 .sym text { stroke: none; fill: var(--text); }
 .sym-letter { font-size: 17px; font-weight: 700; }
 .sym-pm { font-size: 12px; font-weight: 700; }
-.el-bg { fill: var(--panel); stroke: none; }
+.el-bg { fill: transparent; stroke: none; } /* tylko pole do klikania; przewody wycina maska */
 .clickable { cursor: pointer; }
 .clickable:hover .sym { stroke: var(--accent); }
 .label { fill: var(--text); font-size: 16px; font-weight: 700; }

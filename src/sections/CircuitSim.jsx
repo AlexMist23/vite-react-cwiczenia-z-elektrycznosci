@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Symbol } from '../components/Symbols.jsx'
+import { CutWires, Symbol } from '../components/Symbols.jsx'
 import BookRef from '../components/BookRef.jsx'
 import { fmt } from '../lib/physics.js'
 
@@ -156,43 +156,48 @@ export default function CircuitSim({ record }) {
       <div className="sim-layout">
         <div className="card sim-card">
           <svg viewBox="0 0 600 410" className="circuit" role="img" aria-label="Schemat obwodu">
-            {/* przewody */}
-            <polyline
-              points={LOOP.concat([LOOP[0]]).map((p) => p.join(',')).join(' ')}
-              className="wire"
-            />
-            {short && (
+            <CutWires
+              id="sim-wires"
+              holes={[[268, 30, 64, 60], [510, 140, 60, 80], [40, 152, 40, 56], ...bulbXs.map((cx) => [cx - 16, 284, 32, 32])]}
+            >
+              {/* przewody */}
               <polyline
-                points="100,300 100,360 500,360 500,300"
-                className="wire wire-short"
+                points={LOOP.concat([LOOP[0]]).map((p) => p.join(',')).join(' ')}
+                className="wire"
               />
-            )}
-            {short && (
-              <>
-                <circle cx="100" cy="300" r="5" className="dot-junction" />
-                <circle cx="500" cy="300" r="5" className="dot-junction" />
-              </>
-            )}
-
-            {/* elektrony */}
-            {showE &&
-              electrons.map((p, i) => (
-                <g key={i} transform={`translate(${p.x} ${p.y})`} className={`electron ${closed ? '' : 'idle'}`}>
-                  <circle r="6.5" />
-                  <text y="3.6" textAnchor="middle">−</text>
-                </g>
-              ))}
-
-            {/* strzałki prądu */}
-            {showI &&
-              arrows.map((p, i) => (
-                <path
-                  key={i}
-                  d="M -9 -7 L 9 0 L -9 7 Z"
-                  className="arrow-current"
-                  transform={`translate(${p.x + p.nx * 17} ${p.y + p.ny * 17}) rotate(${p.angle + (currentDir === 1 ? 0 : 180)})`}
+              {short && (
+                <polyline
+                  points="100,300 100,360 500,360 500,300"
+                  className="wire wire-short"
                 />
-              ))}
+              )}
+              {short && (
+                <>
+                  <circle cx="100" cy="300" r="5" className="dot-junction" />
+                  <circle cx="500" cy="300" r="5" className="dot-junction" />
+                </>
+              )}
+
+              {/* elektrony */}
+              {showE &&
+                electrons.map((p, i) => (
+                  <g key={i} transform={`translate(${p.x} ${p.y})`} className={`electron ${closed ? '' : 'idle'}`}>
+                    <circle r="6.5" />
+                    <text y="3.6" textAnchor="middle">−</text>
+                  </g>
+                ))}
+
+              {/* strzałki prądu */}
+              {showI &&
+                arrows.map((p, i) => (
+                  <path
+                    key={i}
+                    d="M -9 -7 L 9 0 L -9 7 Z"
+                    className="arrow-current"
+                    transform={`translate(${p.x + p.nx * 17} ${p.y + p.ny * 17}) rotate(${p.angle + (currentDir === 1 ? 0 : 180)})`}
+                  />
+                ))}
+            </CutWires>
 
             {/* bateria */}
             <g className="el">

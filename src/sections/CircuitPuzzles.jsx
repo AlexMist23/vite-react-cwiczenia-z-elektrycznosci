@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import BookRef from '../components/BookRef.jsx'
-import { Symbol } from '../components/Symbols.jsx'
+import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
 // Bateria po lewej, żarówka u góry. Każda topologia mówi, czy żarówka świeci przy danym stanie wyłącznika.
@@ -62,9 +62,14 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const lit = showGlow && topo.shines(closed)
   return (
     <svg viewBox="0 0 410 220" className="circuit small-circuit">
-      {topo.wires.map((d) => (
-        <path key={d} d={d} className="wire" />
-      ))}
+      <CutWires
+        id={`puzzle-wires-${topo.id}`}
+        holes={[[10, 80, 60, 60], [154, 14, 32, 32], [topo.sw.x - 24, topo.sw.y - 24, 48, 48]]}
+      >
+        {topo.wires.map((d) => (
+          <path key={d} d={d} className="wire" />
+        ))}
+      </CutWires>
       {topo.dots?.map(([x, y]) => (
         <circle key={`${x}-${y}`} cx={x} cy={y} r="4.5" fill="var(--wire)" />
       ))}

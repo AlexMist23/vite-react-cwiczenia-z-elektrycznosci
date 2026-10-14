@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Symbol } from '../components/Symbols.jsx'
+import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, rand } from '../lib/physics.js'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import BookRef from '../components/BookRef.jsx'
@@ -103,17 +103,26 @@ export default function DirectionGame({ record }) {
         <p className="question">{Q[task.kind]}</p>
 
         <svg viewBox="0 0 400 280" className="circuit small-circuit">
-          <rect x="60" y="40" width="280" height="200" className="wire" fill="none" />
-          {task.kind === 'which' && (
-            <Arrows cw={task.shownCW} className="arrow-neutral" skipSides={[task.batterySide]} />
-          )}
-          {answer && task.kind !== 'which' && (
-            <Arrows
-              cw={task.kind === 'current' ? task.currentCW : electronsCW}
-              className={task.kind === 'current' ? 'arrow-current' : 'arrow-electron'}
-              skipSides={[task.batterySide]}
-            />
-          )}
+          <CutWires
+            id="direction-wires"
+            holes={[
+              [b.c[0] - 30, b.c[1] - 30, 60, 60],
+              [side(task.bulbSide).c[0] - 16, side(task.bulbSide).c[1] - 16, 32, 32],
+              [side(task.switchSide).c[0] - 22, side(task.switchSide).c[1] - 22, 44, 44],
+            ]}
+          >
+            <rect x="60" y="40" width="280" height="200" className="wire" fill="none" />
+            {task.kind === 'which' && (
+              <Arrows cw={task.shownCW} className="arrow-neutral" skipSides={[task.batterySide]} />
+            )}
+            {answer && task.kind !== 'which' && (
+              <Arrows
+                cw={task.kind === 'current' ? task.currentCW : electronsCW}
+                className={task.kind === 'current' ? 'arrow-current' : 'arrow-electron'}
+                skipSides={[task.batterySide]}
+              />
+            )}
+          </CutWires>
           <g className="el">
             <rect x={b.c[0] - 30} y={b.c[1] - 30} width="60" height="60" className="el-bg" />
             <Symbol type="cell" x={b.c[0] - 40} y={b.c[1] - 20} rotate={b.rot + (task.flip ? 180 : 0)} />
