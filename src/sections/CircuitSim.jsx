@@ -140,6 +140,9 @@ export default function CircuitSim({ record }) {
   }, [path, offset, closed, currentDir])
 
   const bulbXs = { 1: [300], 2: [220, 380], 3: [180, 300, 420] }[bulbs]
+  // środki elementów na przewodzie i połowa ich długości wzdłuż przewodu
+  const elements = [[300, 60, 6], [60, 180, 14], [540, 180, 16], ...bulbXs.map((cx) => [cx, 300, 14])]
+  const insideElement = (p) => elements.some(([x, y, h]) => Math.max(Math.abs(p.x - x), Math.abs(p.y - y)) < h + 7)
   const showE = view !== 'current'
   const showI = view !== 'electrons'
 
@@ -177,17 +180,16 @@ export default function CircuitSim({ record }) {
                   <circle cx="500" cy="300" r="5" className="dot-junction" />
                 </>
               )}
-
-              {/* elektrony */}
-              {showE &&
-                electrons.map((p, i) => (
-                  <g key={i} transform={`translate(${p.x} ${p.y})`} className={`electron ${closed ? '' : 'idle'}`}>
-                    <circle r="6.5" />
-                    <text y="3.6" textAnchor="middle">−</text>
-                  </g>
-                ))}
-
             </CutWires>
+
+            {/* elektrony – chowają się w elementach, zamiast być ucinane w połowie */}
+            {showE &&
+              electrons.filter((p) => !insideElement(p)).map((p, i) => (
+                <g key={i} transform={`translate(${p.x} ${p.y})`} className={`electron ${closed ? '' : 'idle'}`}>
+                  <circle r="6.5" />
+                  <text y="3.6" textAnchor="middle">−</text>
+                </g>
+              ))}
 
             {/* bateria */}
             <g className="el">
