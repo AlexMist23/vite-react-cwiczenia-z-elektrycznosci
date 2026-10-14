@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SYMBOLS, SymbolIcon } from '../components/Symbols.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
+import BookRef from '../components/BookRef.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
 const TYPES = Object.keys(SYMBOLS)
@@ -30,6 +31,7 @@ export default function SymbolGame({ record }) {
   return (
     <div className="section">
       <h2>Symbole elementów obwodu</h2>
+      <BookRef pages="32" topics="Symbole elementów w obwodach elektrycznych" />
       <p className="lead">
         Schemat obwodu rysujemy za pomocą umownych symboli. Rozpoznaj je wszystkie!
       </p>

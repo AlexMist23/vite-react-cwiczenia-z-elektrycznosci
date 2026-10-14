@@ -10,9 +10,13 @@ import Triangles from './sections/Triangles.jsx'
 import Units from './sections/Units.jsx'
 import Problems from './sections/Problems.jsx'
 import Quiz from './sections/Quiz.jsx'
+import Electrostatics from './sections/Electrostatics.jsx'
+import CircuitPuzzles from './sections/CircuitPuzzles.jsx'
 
 export const SECTIONS = [
+  { id: 'elektrostatyka', icon: '🎈', title: 'Elektryzowanie i ładunki', desc: 'Balon i sweter, przewodniki i izolatory, indukcja.', C: Electrostatics },
   { id: 'obwod', icon: '🔌', title: 'Symulator obwodu', desc: 'Zbuduj obwód, zamknij wyłącznik, zobacz prąd i elektrony.', C: CircuitSim },
+  { id: 'zagadki', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
   { id: 'kierunki', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
   { id: 'symbole', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame },
   { id: 'osrodki', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },

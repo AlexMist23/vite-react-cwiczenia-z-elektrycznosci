@@ -3,6 +3,8 @@
 Interaktywna aplikacja (Vite + React) do nauki o prądzie elektrycznym. Cała treść po polsku.
 
 ## Działy
+- **Elektryzowanie i ładunki** – balon i sweter, przyciąganie/odpychanie, przewodniki i izolatory, indukcja.
+- **Zagadki obwodowe** – „Czy żarówka świeci?” i analogia prądu do wody.
 - **Symulator obwodu** – źródło napięcia, wyłącznik, 1–3 żarówki, amperomierz, zwarcie; animacja kierunku prądu (od „+” do „−”) i ruchu elektronów (od „−” do „+”), liczniki U, I, P, t, q, W oraz wyzwania.
 - **Kierunek prądu** – zgadnij kierunek prądu / elektronów na losowym schemacie.
 - **Symbole** – rozpoznawanie symboli elementów obwodu.
@@ -22,3 +24,11 @@ npm test             # testy wzorów i formatowania liczb
 npm run build        # wersja produkcyjna w dist/
 npm run build:single # jeden plik HTML w dist-single/
 ```
+
+## Strona w internecie
+Każdy push do `main` buduje aplikację i publikuje ją na GitHub Pages (`.github/workflows/deploy.yml`).
+W ustawieniach repozytorium: **Settings → Pages → Source: GitHub Actions**.
+
+## Podręcznik
+Ćwiczenia są powiązane ze stronami podręcznika „To jest fizyka 8” (Nowa Era), s. 16–35.
+Treść podręcznika nie jest kopiowana do aplikacji – zadania są napisane własnymi słowami.

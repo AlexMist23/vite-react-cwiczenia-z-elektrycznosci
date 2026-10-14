@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Symbol } from '../components/Symbols.jsx'
 import { pick, rand } from '../lib/physics.js'
 import AnswerBtn from '../components/AnswerBtn.jsx'
+import BookRef from '../components/BookRef.jsx'
 
 // Prostokątny obwód; boki w kolejności obiegu zgodnego z ruchem wskazówek zegara.
 const SIDES = [
@@ -80,6 +81,7 @@ export default function DirectionGame({ record }) {
   return (
     <div className="section">
       <h2>Kierunek prądu i ruch elektronów</h2>
+      <BookRef pages="31–32" topics="Kierunek przepływu prądu a kierunek ruchu elektronów" />
       <div className="rule-box">
         <div className="c-current">
           <b>Kierunek prądu (umowny)</b>: w obwodzie zewnętrznym od bieguna <b>dodatniego (+)</b> do{' '}

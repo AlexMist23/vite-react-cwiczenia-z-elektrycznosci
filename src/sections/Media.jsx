@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
+import BookRef from '../components/BookRef.jsx'
 import { shuffle } from '../lib/physics.js'
 
 // Animacja nośników ładunku między elektrodami: „+” po lewej, „−” po prawej.
@@ -113,6 +114,7 @@ export default function Media({ record }) {
   return (
     <div className="section">
       <h2>Prąd w ciałach stałych, cieczach i gazach</h2>
+      <BookRef pages="23, 29, 35" topics="Elektrony swobodne, jony" />
       <div className="callout info">
         <b>Prąd elektryczny</b> to uporządkowany ruch <b>ładunków elektrycznych</b>. W metalach są to
         elektrony (ładunki ujemne), ale w cieczach i gazach płyną też <b>jony dodatnie</b> – dlatego

@@ -1,6 +1,90 @@
 // Pytania quizu. Pierwsza odpowiedź w `a` jest poprawna (kolejność jest losowana w aplikacji).
 
 export const QUIZ = [
+  // Elektrostatyka (podręcznik s. 16–28)
+  {
+    topic: 'Elektrostatyka',
+    q: 'Gdy pocieramy balonik wełnianym swetrem, z jednego ciała na drugie przechodzą…',
+    a: ['elektrony', 'protony', 'neutrony', 'całe atomy'],
+    why: 'Protony są w jądrach i zostają na miejscu – przemieszczają się tylko elektrony.',
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Ciało, które zyskało elektrony, jest naelektryzowane…',
+    a: ['ujemnie', 'dodatnio', 'obojętnie', 'raz dodatnio, raz ujemnie'],
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Dwa balony potarte tym samym swetrem…',
+    a: ['odpychają się', 'przyciągają się', 'nie oddziałują', 'łączą się w jeden'],
+    why: 'Mają ładunki tego samego znaku.',
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Naelektryzowany balon zbliżony do obojętnych skrawków papieru…',
+    a: ['przyciąga je', 'odpycha je', 'nie działa na nie', 'elektryzuje je dodatnio przez dotyk'],
+    why: 'Ładunki w cząsteczkach papieru przesuwają się i bliżej balonu są ładunki przeciwnego znaku.',
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Zasada zachowania ładunku mówi, że…',
+    a: ['ładunek nie powstaje ani nie znika, a łączny ładunek się nie zmienia', 'każde ciało ma zawsze ładunek zero', 'ładunek dodatni zamienia się w ujemny', 'ładunek znika po odsunięciu ciał'],
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: '1 C to ładunek około…',
+    a: ['6 · 10¹⁸ elektronów', '1000 elektronów', '1 elektronu', '1,6 · 10⁻¹⁹ elektronów'],
+    why: 'Jeden elektron ma ładunek −1,6 · 10⁻¹⁹ C.',
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Która substancja jest izolatorem?',
+    a: ['porcelana', 'miedź', 'aluminium', 'żelazo'],
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Dlaczego metale dobrze przewodzą prąd?',
+    a: ['mają elektrony swobodne', 'nie mają elektronów', 'mają dużo neutronów', 'są ciężkie'],
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Do jednego końca obojętnej metalowej sztabki zbliżamy ujemny balonik (bez dotykania). Ten bliższy koniec…',
+    a: ['naładuje się dodatnio', 'naładuje się ujemnie', 'pozostanie obojętny', 'zacznie świecić'],
+    why: 'Balonik odpycha elektrony swobodne na dalszy koniec – to indukcja elektrostatyczna.',
+  },
+  {
+    topic: 'Elektrostatyka',
+    q: 'Do czego służy elektroskop?',
+    a: ['do sprawdzania, czy ciało jest naelektryzowane', 'do mierzenia natężenia prądu', 'do wytwarzania napięcia', 'do mierzenia mocy'],
+  },
+  // Obwód (podręcznik s. 29–34)
+  {
+    topic: 'Obwód',
+    q: 'Dlaczego ptak siedzący na jednym przewodzie linii wysokiego napięcia nie zostaje porażony?',
+    a: ['nie zamyka obwodu – nie dotyka jednocześnie ziemi ani drugiego przewodu', 'ma pióra, które są przewodnikiem', 'w przewodach nie płynie prąd', 'jest za mały'],
+  },
+  {
+    topic: 'Obwód',
+    q: 'Uchwyty kombinerek dla elektryków są pokryte grubym tworzywem sztucznym, bo…',
+    a: ['tworzywo jest izolatorem', 'tworzywo jest przewodnikiem', 'stal jest izolatorem', 'tworzywo zwiększa napięcie'],
+  },
+  {
+    topic: 'Obwód',
+    q: 'W analogii „prąd jak woda” napięciu elektrycznemu odpowiada…',
+    a: ['różnica poziomów wody', 'pompa', 'rura', 'ilość wody w zbiorniku'],
+    why: 'Pompie odpowiada bateria, rurom – przewody.',
+  },
+  {
+    topic: 'Obwód',
+    q: 'Żarówka zapala się od razu po zamknięciu obwodu, bo…',
+    a: ['elektrony swobodne są w całym przewodzie i ruszają jednocześnie', 'elektrony pędzą z prędkością światła z baterii', 'prąd płynie tylko w żarówce', 'żarówka ma własną baterię'],
+  },
+  {
+    topic: 'Obwód',
+    q: 'Bateria 9 V to w środku…',
+    a: ['6 ogniw po 1,5 V', '1 ogniwo 9 V', '9 ogniw po 1 V', '3 ogniwa po 1,5 V'],
+    why: '6 · 1,5 V = 9 V.',
+  },
   // Obwód i prąd
   {
     topic: 'Obwód',

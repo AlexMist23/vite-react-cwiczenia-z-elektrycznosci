@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Symbol } from '../components/Symbols.jsx'
+import BookRef from '../components/BookRef.jsx'
 import { fmt } from '../lib/physics.js'
 
 const CELL_V = 1.5
@@ -145,6 +146,7 @@ export default function CircuitSim({ record }) {
   return (
     <div className="section">
       <h2>Symulator obwodu elektrycznego</h2>
+      <BookRef pages="29–31" topics="Obwód prądu elektrycznego, zwarcie" />
       <p className="lead">
         Zbuduj prosty obwód: źródło napięcia, przewody, wyłącznik i żarówki. Kliknij wyłącznik,
         żeby zamknąć obwód. Obserwuj, w którą stronę płynie <b className="c-current">prąd</b>, a w którą

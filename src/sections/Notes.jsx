@@ -19,6 +19,20 @@ export default function Notes() {
 
       <div className="notes-grid">
         <section className="card note">
+          <h3>Elektryzowanie ciał</h3>
+          <p className="small muted">📖 Podręcznik s. 16–28</p>
+          <ul>
+            <li>Ładunki: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się odpychają, różnoimienne przyciągają.</li>
+            <li>Atom: jądro (protony +, neutrony 0) i elektrony −.</li>
+            <li>Elektryzowanie przez <b>potarcie</b> i przez <b>dotyk</b> – przemieszczają się tylko elektrony. Kto zyskał elektrony – ujemny, kto stracił – dodatni.</li>
+            <li><b>1 C</b> ≈ ładunek 6 · 10¹⁸ elektronów; ładunek elementarny e = 1,6 · 10⁻¹⁹ C.</li>
+            <li><b>Zasada zachowania ładunku</b>: ładunek nie powstaje ani nie znika.</li>
+            <li><b>Przewodniki</b> (metale – elektrony swobodne) i <b>izolatory</b> (szkło, porcelana, guma, tworzywa).</li>
+            <li><b>Indukcja</b>: zbliżone naelektryzowane ciało przesuwa elektrony w przewodniku, dlatego przyciąga też ciała obojętne.</li>
+          </ul>
+        </section>
+
+        <section className="card note">
           <h3>Obwód elektryczny</h3>
           <p>
             <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych.
@@ -34,6 +48,10 @@ export default function Notes() {
           <p>
             <b>Zwarcie</b> – połączenie biegunów źródła przewodem z pominięciem odbiornika. Natężenie
             prądu bardzo rośnie, przewody się nagrzewają – to niebezpieczne.
+          </p>
+          <p>
+            <b>Prąd jak woda</b>: bateria ↔ pompa, napięcie ↔ różnica poziomów wody, przewody ↔ rury,
+            żarówka ↔ koło wodne. <span className="small muted">📖 s. 29–34</span>
           </p>
         </section>
 
