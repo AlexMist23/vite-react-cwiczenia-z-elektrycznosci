@@ -1,85 +1,8 @@
 import { useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
+import Pyramid from '../components/Pyramid.jsx'
 import { pick, shuffle } from '../lib/physics.js'
-
-const NAMES = {
-  E: ['energia elektryczna', 'J (dżul)'],
-  W: ['praca prądu', 'J (dżul)'],
-  U: ['napięcie elektryczne', 'V (wolt)'],
-  q: ['ładunek elektryczny', 'C (kulomb)'],
-  I: ['natężenie prądu', 'A (amper)'],
-  t: ['czas', 's (sekunda)'],
-  P: ['moc', 'W (wat)'],
-}
-
-const TRIANGLES = [
-  {
-    id: 'E',
-    title: 'Napięcie',
-    top: 'E',
-    bottom: ['q', 'U'],
-    formulas: { E: 'E = U · q', U: 'U = E / q', q: 'q = E / U' },
-    unit: '1 V = 1 J / 1 C',
-  },
-  {
-    id: 'q',
-    title: 'Natężenie prądu',
-    top: 'q',
-    bottom: ['I', 't'],
-    formulas: { q: 'q = I · t', I: 'I = q / t', t: 't = q / I' },
-    unit: '1 A = 1 C / 1 s',
-  },
-  {
-    id: 'P',
-    title: 'Moc prądu',
-    top: 'P',
-    bottom: ['U', 'I'],
-    formulas: { P: 'P = U · I', U: 'U = P / I', I: 'I = P / U' },
-    unit: '1 W = 1 V · 1 A',
-  },
-  {
-    id: 'W',
-    title: 'Praca prądu',
-    top: 'W',
-    bottom: ['U', 'I', 't'],
-    formulas: { W: 'W = U · I · t', U: 'U = W / (I · t)', I: 'I = W / (U · t)', t: 't = W / (U · I)' },
-    unit: '1 J = 1 V · 1 A · 1 s',
-  },
-]
-
-function Triangle({ tri, covered, onCover }) {
-  const n = tri.bottom.length
-  const cell = (label, x, y) => (
-    <g
-      key={label + x}
-      className={`tri-cell ${covered === label ? 'covered' : ''}`}
-      onClick={() => onCover(label)}
-      role="button"
-      aria-label={`Zakryj ${label}`}
-    >
-      <circle cx={x} cy={y} r="24" className="tri-hit" />
-      <text x={x} y={y + 11} textAnchor="middle" className="tri-letter">
-        {label}
-      </text>
-    </g>
-  )
-  return (
-    <svg viewBox="0 0 200 180" className="triangle">
-      <polygon points="100,8 194,174 6,174" className="tri-shape" />
-      <line x1="53" y1="95" x2="147" y2="95" className="tri-line" />
-      {n === 2 && <line x1="100" y1="95" x2="100" y2="174" className="tri-line" />}
-      {n === 3 && (
-        <>
-          <line x1="76" y1="95" x2="76" y2="174" className="tri-line" />
-          <line x1="124" y1="95" x2="124" y2="174" className="tri-line" />
-        </>
-      )}
-      {cell(tri.top, 100, 62)}
-      {n === 2 && tri.bottom.map((b, i) => cell(b, i ? 132 : 68, 140))}
-      {n === 3 && tri.bottom.map((b, i) => cell(b, [48, 100, 152][i], 140))}
-    </svg>
-  )
-}
+import { NAMES, TRIANGLES, letters } from '../lib/formulas.js'
 
 function newDrill() {
   const tri = pick(TRIANGLES)
@@ -133,7 +56,10 @@ export default function Triangles({ record }) {
           return (
             <div key={tri.id} className="card tri-card">
               <h3>{tri.title}</h3>
-              <Triangle tri={tri} covered={c} onCover={(l) => setCovered((s) => ({ ...s, [tri.id]: l }))} />
+              <Pyramid
+                cells={letters(tri).map((l) => ({ label: l, cls: c === l ? 'covered' : '' }))}
+                onCell={(i) => setCovered((s) => ({ ...s, [tri.id]: letters(tri)[i] }))}
+              />
               <div className="formula">{c ? tri.formulas[c] : 'Kliknij literę'}</div>
               <small className="muted">{c ? `${c} – ${NAMES[c][0]} [${NAMES[c][1]}]` : tri.unit}</small>
             </div>

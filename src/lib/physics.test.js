@@ -39,3 +39,27 @@ describe('progi ocen z zeszytu', () => {
     '%i%% → %i', (p, g) => expect(gradeFor(p).grade).toBe(g),
   )
 })
+
+import { evaluate, rhs, sameFormula, samePyramid, tokenize, TRIANGLES } from './formulas.js'
+
+describe('układanie wzorów', () => {
+  const W = TRIANGLES.find((t) => t.id === 'W')
+  it('rozbija wzór na symbole', () => expect(rhs('U = W / (I · t)')).toEqual(['W', '/', '(', 'I', '·', 't', ')']))
+  it('liczy z nawiasami', () => expect(evaluate(tokenize('W / (I · t)'), { W: 120, I: 2, t: 10 })).toBe(6))
+  it('odrzuca błędny zapis', () => {
+    expect(evaluate(['U', 'I'], { U: 2, I: 3 })).toBeNaN()
+    expect(evaluate(['U', '·'], { U: 2 })).toBeNaN()
+    expect(evaluate(['(', 'U'], { U: 2 })).toBeNaN()
+  })
+  it('uznaje równoważne wzory', () => {
+    const vars = ['W', 'I', 't']
+    expect(sameFormula(tokenize('W / U / I'.replace('U', 't')), rhs(W.formulas.U), vars)).toBe(true)
+    expect(sameFormula(tokenize('W / (t · I)'), rhs(W.formulas.U), vars)).toBe(true)
+    expect(sameFormula(tokenize('W / I · t'), rhs(W.formulas.U), vars)).toBe(false)
+    expect(sameFormula(tokenize('W · I · t'), rhs(W.formulas.U), vars)).toBe(false)
+  })
+  it('sprawdza piramidę', () => {
+    expect(samePyramid(['W', 't', 'U', 'I'], W)).toBe(true)
+    expect(samePyramid(['U', 'W', 'I', 't'], W)).toBe(false)
+  })
+})

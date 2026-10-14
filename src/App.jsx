@@ -7,6 +7,8 @@ import DirectionGame from './sections/DirectionGame.jsx'
 import Media from './sections/Media.jsx'
 import Effects from './sections/Effects.jsx'
 import Triangles from './sections/Triangles.jsx'
+import FormulaTrainer from './sections/FormulaTrainer.jsx'
+import FormulaToCalc from './sections/FormulaToCalc.jsx'
 import Units from './sections/Units.jsx'
 import Problems from './sections/Problems.jsx'
 import Quiz from './sections/Quiz.jsx'
@@ -29,6 +31,8 @@ export const SECTIONS = [
   { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },
   { id: 'skutki', group: 'prad', icon: '💡', title: 'Skutki prądu', desc: 'Cieplny, świetlny, mechaniczny, chemiczny…', C: Effects },
   { id: 'wzory', group: 'wzory', icon: '🔺', title: 'Trójkąty wzorów', desc: 'U = E/q, I = q/t, P = U·I, W = U·I·t', C: Triangles },
+  { id: 'trening', group: 'wzory', icon: '🧠', title: 'Trening wzorów i piramid', desc: 'Ułóż piramidę, złóż wzór z klocków, symbole i jednostki.', C: FormulaTrainer },
+  { id: 'wzor-obliczenie', group: 'wzory', icon: '🧪', title: 'Wzór → obliczenie', desc: 'Najpierw ułóż wzór, potem policz – wynik jest sprawdzany.', C: FormulaToCalc },
   { id: 'jednostki', group: 'wzory', icon: '📏', title: 'Jednostki i przedrostki', desc: 'mA, kV, kWh, Ah – zamieniaj bez pomyłek.', C: Units },
   { id: 'zadania', group: 'wzory', icon: '🧮', title: 'Zadania obliczeniowe', desc: 'Dane, szukane, wzór, wynik – krok po kroku.', C: Problems },
   { id: 'quiz', group: 'powtorka', icon: '🏆', title: 'Sprawdzian', desc: 'Quiz z całego działu z oceną jak w szkole.', C: Quiz },

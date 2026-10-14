@@ -515,3 +515,32 @@ p { margin: 0 0 0.75em; }
   .topbar:has(.topbar-title) .brand { display: none; }
   .topbar-title { margin-left: 4px; font-size: 1.05rem; }
 }
+
+/* ---------- trening wzorów ---------- */
+.tri-cell.empty .tri-letter { fill: var(--muted); opacity: 0.5; }
+.tri-cell.filled.right .tri-hit { fill: var(--ok-soft); }
+.tri-cell.filled.wrong .tri-hit { fill: var(--bad-soft); }
+.pyramid-play { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 8px 0 12px; }
+.pyramid-play .triangle { max-width: 240px; }
+.hint-pyramid .triangle { max-width: 150px; }
+.hint-pyramid .tri-cell { cursor: default; }
+.builder { display: grid; gap: 10px; margin: 10px 0; }
+.builder-display {
+  min-height: 56px; display: flex; align-items: center; padding: 8px 16px;
+  border: 2px dashed var(--border); border-radius: 12px; background: var(--panel-2);
+}
+.builder-display .formula-inline { font-size: 1.5rem; font-style: italic; }
+.builder-display.ok { border: 2px solid var(--ok); background: var(--ok-soft); }
+.builder-display.bad { border: 2px solid var(--bad); background: var(--bad-soft); }
+.builder-tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+.tile-btn {
+  font: inherit; font-size: 1.4rem; cursor: pointer; min-width: 52px; min-height: 52px;
+  border: 2px solid var(--border); background: var(--panel); color: var(--text);
+  border-radius: 12px; padding: 4px 12px;
+}
+.tile-btn:hover:not(:disabled) { border-color: var(--sec); background: var(--accent-soft); }
+.tile-btn:disabled { opacity: 0.35; cursor: default; }
+.tile-btn.letter { font-family: Georgia, serif; font-style: italic; font-weight: 800; color: var(--accent); }
+.tile-btn.op { font-weight: 700; }
+.step-title { margin: 18px 0 4px; color: var(--sec); font-size: 1.05rem; }
+.data-box { background: var(--panel-2); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
