@@ -2,8 +2,9 @@ import { useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
 import Pyramid from '../components/Pyramid.jsx'
+import PyramidPicker, { HintButton, poolFor } from '../components/PyramidPicker.jsx'
 import { pick, shuffle } from '../lib/physics.js'
-import { NAMES, TRIANGLES, letters, samePyramid } from '../lib/formulas.js'
+import { NAMES, letters, samePyramid } from '../lib/formulas.js'
 
 const ALL_LETTERS = Object.keys(NAMES)
 
@@ -26,6 +27,8 @@ const MODES = [
 
 export default function FormulaTrainer({ record }) {
   const [mode, setMode] = useState('piramida')
+  const [pyr, setPyr] = useState('all')
+  const pool = poolFor(pyr)
   const [score, setScore] = useState({ ok: 0, all: 0 })
   const result = (ok) => {
     setScore((s) => ({ ok: s.ok + ok, all: s.all + 1 }))
@@ -46,13 +49,14 @@ export default function FormulaTrainer({ record }) {
           </button>
         ))}
       </div>
+      <PyramidPicker value={pyr} onChange={setPyr} />
       <div className="card game-card">
         <div className="score">
           Wynik: <b>{score.ok}</b> / {score.all}
         </div>
-        {mode === 'piramida' && <PyramidDrill onResult={result} />}
-        {mode === 'wzor' && <BuildDrill onResult={result} />}
-        {mode === 'symbole' && <SymbolDrill onResult={result} />}
+        {mode === 'piramida' && <PyramidDrill key={pyr} pool={pool} onResult={result} />}
+        {mode === 'wzor' && <BuildDrill key={pyr} pool={pool} onResult={result} />}
+        {mode === 'symbole' && <SymbolDrill key={pyr} pool={pool} onResult={result} />}
       </div>
     </div>
   )
@@ -60,15 +64,15 @@ export default function FormulaTrainer({ record }) {
 
 /* ---------- 1. Ułóż piramidę z liter ---------- */
 
-function newPyramidTask() {
-  const tri = pick(TRIANGLES)
-  const given = pick(Object.values(tri.formulas))
+function newPyramidTask(pool, prev) {
+  const tri = pick(pool)
+  const given = pick(Object.values(tri.formulas).filter((f) => f !== prev?.given))
   const extra = shuffle(ALL_LETTERS.filter((l) => !letters(tri).includes(l))).slice(0, 2)
   return { tri, given, pool: shuffle([...letters(tri), ...extra]) }
 }
 
-function PyramidDrill({ onResult }) {
-  const [task, setTask] = useState(newPyramidTask)
+function PyramidDrill({ pool, onResult }) {
+  const [task, setTask] = useState(() => newPyramidTask(pool))
   const [cells, setCells] = useState(() => letters(task.tri).map(() => ''))
   const [state, setState] = useState(null) // null | 'ok' | 'bad' | 'shown'
   const [tries, setTries] = useState(0)
@@ -99,7 +103,7 @@ function PyramidDrill({ onResult }) {
     setState('shown')
   }
   const next = () => {
-    const t = newPyramidTask()
+    const t = newPyramidTask(pool, task)
     setTask(t)
     setCells(letters(t.tri).map(() => ''))
     setState(null)
@@ -158,21 +162,22 @@ function PyramidDrill({ onResult }) {
 
 /* ---------- 2. Ułóż wzór z klocków ---------- */
 
-function newBuildTask() {
-  const tri = pick(TRIANGLES)
-  const target = pick(letters(tri))
-  return { tri, target, key: Math.random() }
+function newBuildTask(pool, prev) {
+  // nie powtarzamy tego samego pytania dwa razy z rzędu
+  const options = pool.flatMap((tri) => letters(tri).map((target) => ({ tri, target })))
+  const fresh = options.filter((o) => !(prev && o.tri === prev.tri && o.target === prev.target))
+  return { ...pick(fresh), key: Math.random() }
 }
 
-function BuildDrill({ onResult }) {
-  const [task, setTask] = useState(newBuildTask)
+function BuildDrill({ pool, onResult }) {
+  const [task, setTask] = useState(() => newBuildTask(pool))
   const [done, setDone] = useState(false)
   const [hint, setHint] = useState(false)
   const { tri, target } = task
   const known = letters(tri).filter((l) => l !== target)
 
   const next = () => {
-    setTask(newBuildTask())
+    setTask(newBuildTask(pool, task))
     setDone(false)
     setHint(false)
   }
@@ -189,9 +194,7 @@ function BuildDrill({ onResult }) {
         </div>
       ) : (
         !done && (
-          <button className="chip" onClick={() => setHint(true)}>
-            💡 podpowiedź: pokaż piramidę
-          </button>
+          <HintButton onReveal={() => setHint(true)} />
         )
       )}
       <FormulaBuilder
@@ -215,8 +218,8 @@ function BuildDrill({ onResult }) {
 
 /* ---------- 3. Symbol, nazwa i jednostka ---------- */
 
-function newSymbolTask() {
-  const sym = pick(ALL_LETTERS)
+function newSymbolTask(pool) {
+  const sym = pick([...new Set(pool.flatMap(letters))])
   const [name, unit] = NAMES[sym]
   const kind = pick(['name', 'unit', 'symbol'])
   const why = `${sym} – ${name}, jednostka: ${unit}. ${WHY_SYMBOL[sym]}`
@@ -233,8 +236,8 @@ function newSymbolTask() {
   return { q: <>Jakim symbolem oznaczamy: {name}?</>, right: sym, options: shuffle([sym, ...opts]), why }
 }
 
-function SymbolDrill({ onResult }) {
-  const [task, setTask] = useState(newSymbolTask)
+function SymbolDrill({ pool, onResult }) {
+  const [task, setTask] = useState(() => newSymbolTask(pool))
   const [answer, setAnswer] = useState(null)
   const choose = (a) => {
     if (answer) return
@@ -258,7 +261,7 @@ function SymbolDrill({ onResult }) {
           <button
             className="btn primary"
             onClick={() => {
-              setTask(newSymbolTask())
+              setTask(newSymbolTask(pool))
               setAnswer(null)
             }}
           >

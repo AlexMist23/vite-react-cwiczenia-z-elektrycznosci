@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
+import Pyramid from '../components/Pyramid.jsx'
+import PyramidPicker, { HintButton, poolFor } from '../components/PyramidPicker.jsx'
 import { clean, fmt, isClose, parseNum, pick } from '../lib/physics.js'
-import { NAMES, TRIANGLES } from '../lib/formulas.js'
+import { NAMES, letters } from '../lib/formulas.js'
 
 const f = (x) => fmt(clean(x))
 const UNITS = { E: 'J', W: 'J', U: 'V', q: 'C', I: 'A', t: 's', P: 'W' }
@@ -60,17 +62,20 @@ const SCENARIOS = {
   },
 }
 
-function newTask() {
-  const tri = pick(TRIANGLES)
+function newTask(pool, prev) {
+  const options = pool.flatMap((t) => Object.keys(SCENARIOS[t.id].text).map((target) => ({ tri: t, target })))
+  const fresh = options.filter((o) => !(prev && o.tri === prev.tri && o.target === prev.target))
+  const { tri, target } = pick(fresh)
   const sc = SCENARIOS[tri.id]
-  const target = pick(Object.keys(sc.text))
   const values = sc.values()
   const known = [tri.top, ...tri.bottom].filter((l) => l !== target)
   return { tri, target, values, known, text: sc.text[target](values), key: Math.random() }
 }
 
 export default function FormulaToCalc({ record }) {
-  const [task, setTask] = useState(newTask)
+  const [pyr, setPyr] = useState('all')
+  const [task, setTask] = useState(() => newTask(poolFor('all')))
+  const [hint, setHint] = useState(false)
   const [formulaOk, setFormulaOk] = useState(null) // null | true (za 1. razem) | false
   const [value, setValue] = useState('')
   const [state, setState] = useState(null) // null | 'ok' | 'bad' | 'nan' | 'shown'
@@ -85,7 +90,7 @@ export default function FormulaToCalc({ record }) {
 
   // zadanie liczy się jako dobre, gdy i wzór, i wynik były dobre za pierwszym razem
   const finish = (ok) => {
-    const all = ok && formulaOk
+    const all = ok && formulaOk && !hint
     setScore((s) => ({ ok: s.ok + all, all: s.all + 1 }))
     record('wzor-obliczenie', all)
   }
@@ -109,8 +114,9 @@ export default function FormulaToCalc({ record }) {
     setState('shown')
   }
 
-  const next = () => {
-    setTask(newTask())
+  const next = (choice = pyr) => {
+    setTask(newTask(poolFor(choice), task))
+    setHint(false)
     setFormulaOk(null)
     setValue('')
     setState(null)
@@ -130,6 +136,13 @@ export default function FormulaToCalc({ record }) {
         Każde zadanie ma dwa kroki. <b>Krok 1:</b> ułóż z klocków wzór na szukaną wielkość. <b>Krok 2:</b>{' '}
         podstaw liczby i wpisz wynik – sprawdzimy go.
       </p>
+      <PyramidPicker
+        value={pyr}
+        onChange={(id) => {
+          setPyr(id)
+          next(id)
+        }}
+      />
       <div className="card game-card">
         <div className="score">
           Wynik: <b>{score.ok}</b> / {score.all}
@@ -153,6 +166,13 @@ export default function FormulaToCalc({ record }) {
         </div>
 
         <h3 className="step-title">Krok 1: wzór</h3>
+        {hint ? (
+          <div className="hint-pyramid">
+            <Pyramid cells={letters(tri).map((l) => ({ label: l, cls: l === target ? 'covered' : '' }))} />
+          </div>
+        ) : (
+          !finished && <HintButton onReveal={() => setHint(true)} />
+        )}
         <FormulaBuilder
           key={task.key}
           target={target}
@@ -204,7 +224,7 @@ export default function FormulaToCalc({ record }) {
                     {target} = {substituted} = <b>{f(answer)} {unit}</b>
                   </span>
                 </div>
-                <button className="btn primary" onClick={next}>
+                <button className="btn primary" onClick={() => next()}>
                   Następne zadanie →
                 </button>
               </div>

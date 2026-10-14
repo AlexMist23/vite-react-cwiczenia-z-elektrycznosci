@@ -558,3 +558,6 @@ html, body, #root { height: 100%; overflow: hidden; }
 .tile-btn.op { font-weight: 700; }
 .step-title { margin: 18px 0 4px; color: var(--sec); font-size: 1.05rem; }
 .data-box { background: var(--panel-2); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
+.pyramid-picker { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+.pyramid-picker .chip { font-size: 0.9rem; padding: 5px 12px; }
+.hint-chip { justify-self: start; }
