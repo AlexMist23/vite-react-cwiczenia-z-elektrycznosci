@@ -158,7 +158,7 @@ export default function CircuitSim({ record }) {
           <svg viewBox="0 0 600 410" className="circuit" role="img" aria-label="Schemat obwodu">
             <CutWires
               id="sim-wires"
-              holes={[[268, 30, 64, 60], [510, 140, 60, 80], [40, 152, 40, 56], ...bulbXs.map((cx) => [cx - 16, 284, 32, 32])]}
+              holes={[[268, 48, 64, 24], [528, 140, 24, 80], [48, 152, 24, 56], ...bulbXs.map((cx) => [cx - 16, 288, 32, 24])]}
             >
               {/* przewody */}
               <polyline
