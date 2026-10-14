@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, rand } from '../lib/physics.js'
 import AnswerBtn from '../components/AnswerBtn.jsx'
@@ -31,6 +31,62 @@ function newTask() {
   const shownCW = Math.random() < 0.5 // tylko dla pytania "which"
   return { batterySide, bulbSide, switchSide, flip, currentCW, kind, shownCW }
 }
+
+// Obwód jako prostokąt obiegany zgodnie z ruchem wskazówek zegara: punkt na obwodzie dla drogi s.
+const PERIM = 2 * (280 + 200)
+function along(s) {
+  s = ((s % PERIM) + PERIM) % PERIM
+  if (s < 280) return { x: 60 + s, y: 40, nx: 0, ny: -1, a: 0 }
+  if (s < 480) return { x: 340, y: 40 + (s - 280), nx: 1, ny: 0, a: 90 }
+  if (s < 760) return { x: 340 - (s - 480), y: 240, nx: 0, ny: 1, a: 180 }
+  return { x: 60, y: 240 - (s - 760), nx: -1, ny: 0, a: 270 }
+}
+
+/** Animacja po odpowiedzi: strzałki prądu (na zewnątrz przewodu) i elektrony (na przewodzie). */
+function Flow({ currentCW, elements }) {
+  const [t, setT] = useState(0)
+  useEffect(() => {
+    let raf
+    let last = performance.now()
+    const tick = (now) => {
+      setT((v) => v + Math.min(0.1, (now - last) / 1000))
+      last = now
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  const speed = 45 // jednostek rysunku na sekundę
+  const dirI = currentCW ? 1 : -1
+  // elektron „chowa się” w elemencie, zamiast po nim przejeżdżać
+  const hidden = (p) => elements.some(([x, y, h]) => Math.abs(p.x - x) < h && Math.abs(p.y - y) < h)
+  const electrons = Array.from({ length: 24 }, (_, i) => along(i * (PERIM / 24) - dirI * t * speed)).filter((p) => !hidden(p))
+  // przy baterii strzałki by zasłaniały znaki „+” i „−”
+  const [bx, by] = elements[0]
+  const arrows = Array.from({ length: 10 }, (_, i) => along(i * (PERIM / 10) + dirI * t * speed)).filter(
+    (p) => !(Math.abs(p.x - bx) < 34 && Math.abs(p.y - by) < 34),
+  )
+  return (
+    <>
+      {electrons.map((p, i) => (
+        <g key={`e${i}`} transform={`translate(${p.x} ${p.y})`} className="electron">
+          <circle r="6" />
+          <text y="3.6" textAnchor="middle">−</text>
+        </g>
+      ))}
+      {arrows.map((p, i) => (
+        <path
+          key={`a${i}`}
+          d="M -8 -6 L 8 0 L -8 6 Z"
+          className="arrow-current"
+          transform={`translate(${p.x + p.nx * 16} ${p.y + p.ny * 16}) rotate(${p.a + (currentCW ? 0 : 180)})`}
+        />
+      ))}
+    </>
+  )
+}
+
+const dirWord = (cw) => (cw ? 'zgodnie z ruchem wskazówek zegara ↻' : 'przeciwnie do ruchu wskazówek zegara ↺')
 
 function Arrows({ cw, className, skipSides }) {
   return ARROW_SPOTS.filter((_, i) => !skipSides.includes(Math.floor(i / 2))).map(([x, y, a], i) => (
@@ -112,15 +168,8 @@ export default function DirectionGame({ record }) {
             ]}
           >
             <rect x="60" y="40" width="280" height="200" className="wire" fill="none" />
-            {task.kind === 'which' && (
+            {task.kind === 'which' && !answer && (
               <Arrows cw={task.shownCW} className="arrow-neutral" skipSides={[task.batterySide]} />
-            )}
-            {answer && task.kind !== 'which' && (
-              <Arrows
-                cw={task.kind === 'current' ? task.currentCW : electronsCW}
-                className={task.kind === 'current' ? 'arrow-current' : 'arrow-electron'}
-                skipSides={[task.batterySide]}
-              />
             )}
           </CutWires>
           <g className="el">
@@ -135,7 +184,22 @@ export default function DirectionGame({ record }) {
             <rect x={side(task.switchSide).c[0] - 22} y={side(task.switchSide).c[1] - 22} width="44" height="44" className="el-bg" />
             <Symbol type="switchClosed" x={side(task.switchSide).c[0] - 40} y={side(task.switchSide).c[1] - 20} rotate={side(task.switchSide).rot} />
           </g>
+          {answer && (
+            <Flow
+              currentCW={task.currentCW}
+              elements={[
+                [...b.c, 14],
+                [...side(task.bulbSide).c, 20],
+              ]}
+            />
+          )}
         </svg>
+        {answer && (
+          <div className="legend">
+            <span><i className="lg-current" /> kierunek prądu (umowny): od „+” do „−”</span>
+            <span><i className="lg-electron" /> elektrony: od „−” do „+”</span>
+          </div>
+        )}
 
         <div className="answers two">
           {task.kind === 'which' ? (
@@ -165,6 +229,16 @@ export default function DirectionGame({ record }) {
               : task.kind === 'current'
                 ? 'Prąd wypływa z bieguna dodatniego (dłuższa kreska) i wraca do ujemnego.'
                 : 'Elektrony wypływają z bieguna ujemnego (krótsza, gruba kreska) i płyną do dodatniego.'}
+            <ul className="force-sides">
+              <li className="c-current">
+                <b>Prąd</b> płynie od bieguna „+” (dłuższa, cienka kreska) przez żarówkę i wyłącznik do bieguna „−” –
+                tutaj {dirWord(task.currentCW)}. To kierunek <b>umowny</b>, ustalony, zanim odkryto elektrony.
+              </li>
+              <li className="c-electron">
+                <b>Elektrony</b> mają ładunek ujemny, więc odpycha je „−” i przyciąga „+”: płyną od bieguna „−” (krótsza,
+                gruba kreska) do „+” – tutaj {dirWord(electronsCW)}, czyli odwrotnie niż prąd.
+              </li>
+            </ul>
             <button className="btn primary" onClick={next}>
               Następne →
             </button>

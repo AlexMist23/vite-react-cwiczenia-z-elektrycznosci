@@ -16,12 +16,13 @@ function Meter({ letter }) {
   )
 }
 
-// Znaki biegunów jako kreski (nie tekst), żeby były grube i obracały się razem z symbolem.
-function PlusMinus({ px, mx, y = 7 }) {
+// Znaki biegunów jako kreski (nie tekst), żeby były grube. Każdy znak obracamy z powrotem o kąt
+// symbolu, żeby „−” zawsze był poziomy (inaczej po obrocie o 90° wyglądałby jak „|”).
+function PlusMinus({ px, mx, y = 7, rot = 0 }) {
   return (
     <>
-      <path d={`M${px - 6},${y} H${px + 6} M${px},${y - 6} V${y + 6}`} className="sym-plus" />
-      <path d={`M${mx - 6},${y} H${mx + 6}`} className="sym-minus" />
+      <path transform={`rotate(${-rot} ${px} ${y})`} d={`M${px - 6},${y} H${px + 6} M${px},${y - 6} V${y + 6}`} className="sym-plus" />
+      <path transform={`rotate(${-rot} ${mx} ${y})`} d={`M${mx - 6},${y} H${mx + 6}`} className="sym-minus" />
     </>
   )
 }
@@ -30,20 +31,20 @@ export const SYMBOLS = {
   cell: {
     name: 'Ogniwo (źródło napięcia)',
     hint: 'Dłuższa, cienka kreska to biegun dodatni (+), krótsza i grubsza to ujemny (−).',
-    draw: () => (
+    draw: ({ rotate = 0 } = {}) => (
       <>
         {lead(0, 35)}
         <line x1="35" y1="4" x2="35" y2="36" />
         <line x1="45" y1="12" x2="45" y2="28" strokeWidth="6" />
         {lead(45, 80)}
-        <PlusMinus px={24} mx={56} />
+        <PlusMinus px={24} mx={56} rot={rotate} />
       </>
     ),
   },
   battery: {
     name: 'Bateria (kilka ogniw)',
     hint: 'Kilka ogniw połączonych jedno za drugim.',
-    draw: () => (
+    draw: ({ rotate = 0 } = {}) => (
       <>
         {lead(0, 24)}
         <line x1="24" y1="4" x2="24" y2="36" />
@@ -52,7 +53,7 @@ export const SYMBOLS = {
         <line x1="48" y1="4" x2="48" y2="36" />
         <line x1="56" y1="12" x2="56" y2="28" strokeWidth="6" />
         {lead(56, 80)}
-        <PlusMinus px={14} mx={66} />
+        <PlusMinus px={14} mx={66} rot={rotate} />
       </>
     ),
   },
@@ -167,7 +168,7 @@ export function Symbol({ type, x = 0, y = 0, rotate = 0, className = '' }) {
       transform={`translate(${x} ${y}) rotate(${rotate} 40 20)`}
       className={`sym ${className}`}
     >
-      {s.draw()}
+      {s.draw({ rotate })}
     </g>
   )
 }
