@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
 import Pyramid from '../components/Pyramid.jsx'
+import PyramidChoice from '../components/PyramidChoice.jsx'
 import PyramidPicker, { HintButton, poolFor } from '../components/PyramidPicker.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 import { NAMES, letters, samePyramid } from '../lib/formulas.js'
@@ -173,6 +174,9 @@ function BuildDrill({ pool, onResult }) {
   const [task, setTask] = useState(() => newBuildTask(pool))
   const [done, setDone] = useState(false)
   const [hint, setHint] = useState(false)
+  // przy wszystkich piramidach najpierw trzeba dobrać właściwą; przy jednej – można ją odsłonić bez punktu
+  const choosePyr = pool.length > 1
+  const [pyrOk, setPyrOk] = useState(null)
   const { tri, target } = task
   const known = letters(tri).filter((l) => l !== target)
 
@@ -180,6 +184,7 @@ function BuildDrill({ pool, onResult }) {
     setTask(newBuildTask(pool, task))
     setDone(false)
     setHint(false)
+    setPyrOk(null)
   }
 
   return (
@@ -188,25 +193,33 @@ function BuildDrill({ pool, onResult }) {
         Ułóż wzór na <b>{target}</b> ({NAMES[target][0]}), gdy znasz:{' '}
         {known.map((k) => `${k} (${NAMES[k][0]})`).join(', ')}.
       </p>
-      {hint ? (
+      {choosePyr ? (
+        <>
+          <h3 className="step-title">Krok 1: która piramida pasuje?</h3>
+          <PyramidChoice key={task.key} correct={tri} needed={[target, ...known]} onDone={setPyrOk} />
+        </>
+      ) : hint ? (
         <div className="hint-pyramid">
           <Pyramid cells={letters(tri).map((l) => ({ label: l, cls: l === target ? 'covered' : '' }))} />
         </div>
       ) : (
-        !done && (
-          <HintButton onReveal={() => setHint(true)} />
-        )
+        !done && <HintButton onReveal={() => setHint(true)} />
       )}
-      <FormulaBuilder
-        key={task.key}
-        target={target}
-        vars={letters(tri)}
-        formula={tri.formulas[target]}
-        onDone={(ok) => {
-          onResult(ok && !hint)
-          setDone(true)
-        }}
-      />
+      {(!choosePyr || pyrOk !== null) && (
+        <>
+          {choosePyr && <h3 className="step-title">Krok 2: ułóż wzór</h3>}
+          <FormulaBuilder
+            key={task.key}
+            target={target}
+            vars={letters(tri)}
+            formula={tri.formulas[target]}
+            onDone={(ok) => {
+              onResult(ok && !hint && (!choosePyr || pyrOk))
+              setDone(true)
+            }}
+          />
+        </>
+      )}
       {done && (
         <button className="btn primary" onClick={next}>
           Następne →

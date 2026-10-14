@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
-import Pyramid from '../components/Pyramid.jsx'
-import PyramidPicker, { HintButton, poolFor } from '../components/PyramidPicker.jsx'
+import PyramidChoice from '../components/PyramidChoice.jsx'
+import PyramidPicker, { poolFor } from '../components/PyramidPicker.jsx'
 import { clean, fmt, isClose, parseNum, pick } from '../lib/physics.js'
-import { NAMES, letters } from '../lib/formulas.js'
+import { NAMES } from '../lib/formulas.js'
 
 const f = (x) => fmt(clean(x))
 const UNITS = { E: 'J', W: 'J', U: 'V', q: 'C', I: 'A', t: 's', P: 'W' }
@@ -75,7 +75,8 @@ function newTask(pool, prev) {
 export default function FormulaToCalc({ record }) {
   const [pyr, setPyr] = useState('all')
   const [task, setTask] = useState(() => newTask(poolFor('all')))
-  const [hint, setHint] = useState(false)
+  // dobór piramidy: null – jeszcze nie, true/false – trafiony za 1. razem (przy jednej piramidzie pomijamy)
+  const [pyrOk, setPyrOk] = useState(null)
   const [formulaOk, setFormulaOk] = useState(null) // null | true (za 1. razem) | false
   const [value, setValue] = useState('')
   const [state, setState] = useState(null) // null | 'ok' | 'bad' | 'nan' | 'shown'
@@ -85,12 +86,15 @@ export default function FormulaToCalc({ record }) {
   const { tri, target, values, known } = task
   const answer = values[target]
   const unit = UNITS[target]
-  const step2 = formulaOk !== null
+  const choosePyr = pyr === 'all'
+  const stepFormula = !choosePyr || pyrOk !== null
+  const step2 = stepFormula && formulaOk !== null
+  const n = choosePyr ? 1 : 0
   const finished = state === 'ok' || state === 'shown'
 
-  // zadanie liczy się jako dobre, gdy i wzór, i wynik były dobre za pierwszym razem
+  // zadanie liczy się jako dobre, gdy piramida, wzór i wynik były dobre za pierwszym razem
   const finish = (ok) => {
-    const all = ok && formulaOk && !hint
+    const all = ok && formulaOk && (!choosePyr || pyrOk)
     setScore((s) => ({ ok: s.ok + all, all: s.all + 1 }))
     record('wzor-obliczenie', all)
   }
@@ -116,7 +120,7 @@ export default function FormulaToCalc({ record }) {
 
   const next = (choice = pyr) => {
     setTask(newTask(poolFor(choice), task))
-    setHint(false)
+    setPyrOk(null)
     setFormulaOk(null)
     setValue('')
     setState(null)
@@ -133,8 +137,9 @@ export default function FormulaToCalc({ record }) {
     <div className="section">
       <h2>Wzór → obliczenie</h2>
       <p className="lead">
-        Każde zadanie ma dwa kroki. <b>Krok 1:</b> ułóż z klocków wzór na szukaną wielkość. <b>Krok 2:</b>{' '}
-        podstaw liczby i wpisz wynik – sprawdzimy go.
+        <b>Krok 1:</b> dobierz piramidę, która pasuje do zadania. <b>Krok 2:</b> ułóż z klocków wzór na szukaną
+        wielkość. <b>Krok 3:</b> podstaw liczby i wpisz wynik – sprawdzimy go. Punkt dostajesz, gdy wszystko
+        zrobisz dobrze za pierwszym razem. (Po wybraniu jednej piramidy krok 1 jest pomijany.)
       </p>
       <PyramidPicker
         value={pyr}
@@ -165,25 +170,29 @@ export default function FormulaToCalc({ record }) {
           </div>
         </div>
 
-        <h3 className="step-title">Krok 1: wzór</h3>
-        {hint ? (
-          <div className="hint-pyramid">
-            <Pyramid cells={letters(tri).map((l) => ({ label: l, cls: l === target ? 'covered' : '' }))} />
-          </div>
-        ) : (
-          !finished && <HintButton onReveal={() => setHint(true)} />
+        {choosePyr && (
+          <>
+            <h3 className="step-title">Krok 1: która piramida pasuje do zadania?</h3>
+            <PyramidChoice key={task.key} correct={tri} needed={[target, ...known]} onDone={setPyrOk} />
+          </>
         )}
-        <FormulaBuilder
-          key={task.key}
-          target={target}
-          vars={[tri.top, ...tri.bottom]}
-          formula={formula}
-          onDone={(ok) => setFormulaOk(ok)}
-        />
+
+        {stepFormula && (
+          <>
+            <h3 className="step-title">Krok {n + 1}: wzór</h3>
+            <FormulaBuilder
+              key={task.key}
+              target={target}
+              vars={[tri.top, ...tri.bottom]}
+              formula={formula}
+              onDone={(ok) => setFormulaOk(ok)}
+            />
+          </>
+        )}
 
         {step2 && (
           <>
-            <h3 className="step-title">Krok 2: obliczenie</h3>
+            <h3 className="step-title">Krok {n + 2}: obliczenie</h3>
             <p className="formula-inline">
               {target} = {substituted} = ?
             </p>
