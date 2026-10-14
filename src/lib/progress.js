@@ -34,5 +34,13 @@ export function useProgress() {
 
   const reset = useCallback(() => setData({}), [])
 
-  return { data, record, reset }
+  /** Zeruje postępy tylko jednego działu. */
+  const resetSection = useCallback((section) => {
+    setData((d) => {
+      const { [section]: _, ...rest } = d
+      return rest
+    })
+  }, [])
+
+  return { data, record, reset, resetSection }
 }

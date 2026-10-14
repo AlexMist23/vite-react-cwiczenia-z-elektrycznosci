@@ -47,7 +47,9 @@ const readHash = () => window.location.hash.replace('#', '') || 'start'
 export default function App() {
   const [route, setRoute] = useState(readHash)
   const [menuOpen, setMenuOpen] = useState(false)
-  const { data, record } = useProgress()
+  const { data, record, resetSection } = useProgress()
+  // zmiana klucza montuje dział od nowa – zerują się też wyniki w samych ćwiczeniach
+  const [resetCount, setResetCount] = useState(0)
   const mainRef = useRef(null)
 
   useEffect(() => {
@@ -92,7 +94,16 @@ export default function App() {
         </aside>
 
         <main className="main" ref={mainRef}>
-          {current ? <current.C record={record} /> : <Home data={data} />}
+          {current && (
+            <SectionProgress
+              p={data[current.id]}
+              onReset={() => {
+                resetSection(current.id)
+                setResetCount((n) => n + 1)
+              }}
+            />
+          )}
+          {current ? <current.C key={`${current.id}-${resetCount}`} record={record} /> : <Home data={data} />}
           {current && (
             <nav className="pager">
               {prev ? (
@@ -142,6 +153,39 @@ export default function App() {
             <SectionList route={route} data={data} onPick={() => setMenuOpen(false)} />
           </div>
         </div>
+      )}
+    </div>
+  )
+}
+
+function SectionProgress({ p, onReset }) {
+  const [confirm, setConfirm] = useState(false)
+  useEffect(() => setConfirm(false), [p])
+  return (
+    <div className="section-progress">
+      <span>
+        Twoje postępy w tym dziale:{' '}
+        {p ? (
+          <>
+            <b>{p.ok}</b> poprawnych z {p.all}
+          </>
+        ) : (
+          'jeszcze brak odpowiedzi'
+        )}
+      </span>
+      {confirm ? (
+        <span className="btn-row">
+          <button className="chip danger-chip" onClick={onReset}>
+            Tak, wyzeruj
+          </button>
+          <button className="chip" onClick={() => setConfirm(false)}>
+            Anuluj
+          </button>
+        </span>
+      ) : (
+        <button className="chip" onClick={() => setConfirm(true)}>
+          ↺ wyzeruj ten dział
+        </button>
       )}
     </div>
   )

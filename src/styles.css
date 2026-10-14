@@ -634,3 +634,10 @@ html, body, #root { height: 100%; overflow: hidden; }
 .tri-example-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .effect-choices .chip { font-size: 1rem; padding: 8px 14px; }
 .level-desc { margin: 10px 0 14px; }
+
+.section-progress {
+  display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between;
+  font-size: 0.88rem; color: var(--muted); margin-bottom: 14px; padding: 8px 12px;
+  border-radius: 12px; background: var(--panel); border: 1px solid var(--border);
+}
+.danger-chip { color: #fff; background: var(--bad); border-color: var(--bad); }
