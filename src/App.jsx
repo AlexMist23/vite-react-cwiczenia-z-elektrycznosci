@@ -17,23 +17,24 @@ import CircuitPuzzles from './sections/CircuitPuzzles.jsx'
 
 export const GROUPS = [
   { id: 'ladunki', title: 'Ładunki i obwody', color: '#7048e8' },
-  { id: 'prad', title: 'Prąd w praktyce', color: '#f76707' },
+  { id: 'prad', title: 'Przepływ prądu', color: '#f76707' },
   { id: 'wzory', title: 'Wzory i obliczenia', color: '#1c7ed6' },
   { id: 'powtorka', title: 'Powtórka', color: '#2b8a3e' },
 ]
 
 export const SECTIONS = [
+  // kolejność jak w zeszycie: elektryzowanie → obwód → skutki → kierunek → ośrodki → napięcie, natężenie, praca i moc → przedrostki → zadania
   { id: 'elektrostatyka', group: 'ladunki', icon: '🎈', title: 'Elektryzowanie i ładunki', desc: 'Balon i sweter, przewodniki i izolatory, indukcja.', C: Electrostatics },
   { id: 'obwod', group: 'ladunki', icon: '🔌', title: 'Symulator obwodu', desc: 'Zbuduj obwód, zamknij wyłącznik, zobacz prąd i elektrony.', C: CircuitSim },
-  { id: 'zagadki', group: 'ladunki', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
-  { id: 'kierunki', group: 'ladunki', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
   { id: 'symbole', group: 'ladunki', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame },
-  { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },
+  { id: 'zagadki', group: 'ladunki', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
   { id: 'skutki', group: 'prad', icon: '💡', title: 'Skutki prądu', desc: 'Cieplny, świetlny, mechaniczny, chemiczny…', C: Effects },
+  { id: 'kierunki', group: 'prad', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
+  { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },
   { id: 'wzory', group: 'wzory', icon: '🔺', title: 'Trójkąty wzorów', desc: 'U = E/q, I = q/t, P = U·I, W = U·I·t', C: Triangles },
   { id: 'trening', group: 'wzory', icon: '🧠', title: 'Trening wzorów i piramid', desc: 'Ułóż piramidę, złóż wzór z klocków, symbole i jednostki.', C: FormulaTrainer },
-  { id: 'wzor-obliczenie', group: 'wzory', icon: '🧪', title: 'Wzór → obliczenie', desc: 'Najpierw ułóż wzór, potem policz – wynik jest sprawdzany.', C: FormulaToCalc },
   { id: 'jednostki', group: 'wzory', icon: '📏', title: 'Jednostki i przedrostki', desc: 'mA, kV, kWh, Ah – zamieniaj bez pomyłek.', C: Units },
+  { id: 'wzor-obliczenie', group: 'wzory', icon: '🧪', title: 'Wzór → obliczenie', desc: 'Najpierw ułóż wzór, potem policz – wynik jest sprawdzany.', C: FormulaToCalc },
   { id: 'zadania', group: 'wzory', icon: '🧮', title: 'Zadania obliczeniowe', desc: 'Dane, szukane, wzór, wynik – krok po kroku.', C: Problems },
   { id: 'quiz', group: 'powtorka', icon: '🏆', title: 'Sprawdzian', desc: 'Quiz z całego działu z oceną jak w szkole.', C: Quiz },
   { id: 'notatki', group: 'powtorka', icon: '📒', title: 'Ściąga', desc: 'Notatki z lekcji – uporządkowane i poprawione.', C: Notes },
