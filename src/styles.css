@@ -641,3 +641,4 @@ html, body, #root { height: 100%; overflow: hidden; }
   border-radius: 12px; background: var(--panel); border: 1px solid var(--border);
 }
 .danger-chip { color: #fff; background: var(--bad); border-color: var(--bad); }
+.reset-all { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin: 24px 0 8px; font-size: 0.9rem; color: var(--muted); }

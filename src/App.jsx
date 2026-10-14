@@ -47,7 +47,7 @@ const readHash = () => window.location.hash.replace('#', '') || 'start'
 export default function App() {
   const [route, setRoute] = useState(readHash)
   const [menuOpen, setMenuOpen] = useState(false)
-  const { data, record, resetSection } = useProgress()
+  const { data, record, reset, resetSection } = useProgress()
   // zmiana klucza montuje dział od nowa – zerują się też wyniki w samych ćwiczeniach
   const [resetCount, setResetCount] = useState(0)
   const mainRef = useRef(null)
@@ -103,7 +103,7 @@ export default function App() {
               }}
             />
           )}
-          {current ? <current.C key={`${current.id}-${resetCount}`} record={record} /> : <Home data={data} />}
+          {current ? <current.C key={`${current.id}-${resetCount}`} record={record} /> : <Home data={data} onResetAll={reset} />}
           {current && (
             <nav className="pager">
               {prev ? (
@@ -211,7 +211,9 @@ function SectionList({ route, data, onPick }) {
   ))
 }
 
-function Home({ data }) {
+function Home({ data, onResetAll }) {
+  const [confirm, setConfirm] = useState(false)
+  const any = Object.keys(data).length > 0
   return (
     <div className="section">
       <div className="hero">
@@ -241,6 +243,29 @@ function Home({ data }) {
           </div>
         </div>
       ))}
+      <div className="reset-all">
+        {confirm ? (
+          <>
+            <span>Na pewno wyzerować postępy we wszystkich działach?</span>
+            <button
+              className="chip danger-chip"
+              onClick={() => {
+                onResetAll()
+                setConfirm(false)
+              }}
+            >
+              Tak, wyzeruj wszystko
+            </button>
+            <button className="chip" onClick={() => setConfirm(false)}>
+              Anuluj
+            </button>
+          </>
+        ) : (
+          <button className="chip" disabled={!any} onClick={() => setConfirm(true)}>
+            ↺ Wyzeruj wszystkie postępy
+          </button>
+        )}
+      </div>
     </div>
   )
 }
