@@ -187,16 +187,6 @@ export default function CircuitSim({ record }) {
                   </g>
                 ))}
 
-              {/* strzałki prądu */}
-              {showI &&
-                arrows.map((p, i) => (
-                  <path
-                    key={i}
-                    d="M -9 -7 L 9 0 L -9 7 Z"
-                    className="arrow-current"
-                    transform={`translate(${p.x + p.nx * 17} ${p.y + p.ny * 17}) rotate(${p.angle + (currentDir === 1 ? 0 : 180)})`}
-                  />
-                ))}
             </CutWires>
 
             {/* bateria */}
@@ -240,6 +230,16 @@ export default function CircuitSim({ record }) {
               </g>
             ))}
 
+            {/* strzałki prądu – nad elementami, żeby maska ich nie ucinała */}
+            {showI &&
+              arrows.map((p, i) => (
+                <path
+                  key={i}
+                  d="M -9 -7 L 9 0 L -9 7 Z"
+                  className="arrow-current"
+                  transform={`translate(${p.x + p.nx * 17} ${p.y + p.ny * 17}) rotate(${p.angle + (currentDir === 1 ? 0 : 180)})`}
+                />
+              ))}
             {short && (
               <text x="300" y="402" textAnchor="middle" className="label danger">
                 ZWARCIE! Prąd omija żarówki.
