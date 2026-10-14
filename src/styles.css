@@ -453,7 +453,14 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 .book-icon { font-size: 1.1rem; }
 .center { text-align: center; }
-.sweater { fill: color-mix(in srgb, #868e96 30%, var(--panel-2)); }
+.sweater-body { fill: color-mix(in srgb, #e64980 22%, var(--panel-2)); stroke: color-mix(in srgb, #e64980 55%, var(--panel-2)); stroke-width: 2; stroke-linejoin: round; }
+.sweater-rib { fill: none; stroke: color-mix(in srgb, #e64980 55%, var(--panel-2)); stroke-width: 2; stroke-linecap: round; }
+.balloon-knot { fill: color-mix(in srgb, #40c057 45%, var(--panel-2)); stroke: color-mix(in srgb, #40c057 60%, var(--panel-2)); stroke-width: 1.5; }
+.chg-hole { fill: none; stroke: var(--electron); stroke-width: 2; stroke-dasharray: 3 3; }
+.chg.extra circle { stroke: var(--volt); stroke-width: 2.5; }
+.fly { animation: fly 0.7s ease-in-out forwards; }
+@keyframes fly { to { transform: translate(var(--dx), var(--dy)); } }
+.rub-explain p { margin: 8px 0 0; }
 .balloon { fill: color-mix(in srgb, #40c057 30%, var(--panel-2)); }
 .chg circle { stroke: none; }
 .chg text { fill: #fff; font-size: 13px; font-weight: 800; }

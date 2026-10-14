@@ -1,55 +1,119 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import BookRef from '../components/BookRef.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
 // ---------- Balon i sweter: elektryzowanie przez potarcie ----------
-const SWEATER_PAIRS = 8
-const BALLOON_PAIRS = 5
-const MAX_MOVED = 6
+// Para „+ −” to obojętny kawałek materii (proton i elektron). Pocieranie przenosi
+// pojedyncze elektrony ze swetra na balon; protony zostają na miejscu.
+const SWEATER_PAIRS = [
+  [145, 85], [145, 115], [145, 145], [145, 175],
+  [85, 85], [85, 115], [85, 145], [85, 175],
+] // najpierw prawa kolumna – ta strona swetra dotyka balonu
+const BALLOON_PAIRS = [[395, 60], [445, 60], [390, 105], [445, 105], [415, 150]]
+// balon jest izolatorem: dodatkowe elektrony zostają tam, gdzie go potarto (lewy bok)
+const BALLOON_EXTRA = [-10, 10, -30, 30, -50, 50].map((deg) => {
+  const r = (deg * Math.PI) / 180
+  return [Math.round(400 - 80 * Math.cos(r)), Math.round(105 + 75 * Math.sin(r))]
+})
+const MAX_MOVED = BALLOON_EXTRA.length
 
-function Charges({ plus, minus, cx, cy, w, h }) {
-  const items = [
-    ...Array.from({ length: plus }, () => '+'),
-    ...Array.from({ length: minus }, () => '−'),
-  ]
-  const cols = 4
-  return items.map((s, i) => {
-    const x = cx - w / 2 + (w / cols) * ((i % cols) + 0.5)
-    const y = cy - h / 2 + 22 * Math.floor(i / cols) + 14
-    return (
-      <g key={i} className={s === '+' ? 'chg pos' : 'chg neg'}>
-        <circle cx={x} cy={y} r="9" />
-        <text x={x} y={y + 4.5} textAnchor="middle">{s}</text>
-      </g>
-    )
-  })
+function Charge({ x, y, sign, cls = '' }) {
+  return (
+    <g className={`chg ${sign === '+' ? 'pos' : 'neg'} ${cls}`}>
+      <circle cx={x} cy={y} r="9" />
+      <text x={x} y={y + 4.5} textAnchor="middle">{sign}</text>
+    </g>
+  )
+}
+
+function Sweater() {
+  return (
+    <g className="sweater">
+      <path
+        className="sweater-body"
+        d="M78,32 Q120,62 162,32 L205,46 Q222,58 232,118 L206,128 L190,92 L190,202 L50,202 L50,92 L34,128 L8,118 Q18,58 35,46 Z"
+      />
+      <path className="sweater-rib" d="M78,32 Q120,62 162,32 M84,34 Q120,56 156,34" />
+      <path className="sweater-rib" d="M50,190 H190 M60,190 V202 M75,190 V202 M90,190 V202 M105,190 V202 M120,190 V202 M135,190 V202 M150,190 V202 M165,190 V202 M180,190 V202" />
+      <path className="sweater-rib" d="M10,110 L35,120 M230,110 L205,120" />
+    </g>
+  )
 }
 
 function RubDemo() {
   const [moved, setMoved] = useState(0)
+  const [flying, setFlying] = useState(null) // numer elektronu, który właśnie leci
   const sw = moved
   const bl = -moved
   const sign = (q) => (q > 0 ? `+${q}` : q < 0 ? `−${-q}` : '0')
+
+  // zapas na wypadek, gdyby animacja się nie zakończyła (np. karta w tle)
+  useEffect(() => {
+    if (flying === null) return
+    const t = setTimeout(() => setFlying(null), 900)
+    return () => clearTimeout(t)
+  }, [flying])
+
+  const rub = () => {
+    if (moved >= MAX_MOVED) return
+    setFlying(moved)
+    setMoved((m) => m + 1)
+  }
+
+  const from = flying !== null ? SWEATER_PAIRS[flying] : null
+  const to = flying !== null ? BALLOON_EXTRA[flying] : null
+
   return (
     <div className="card">
       <h3>Balon i wełniany sweter</h3>
       <p className="small muted">
-        Każde kółko to ładunek jednej cząstki. Pocieraj i patrz, które ładunki się przemieszczają.
+        Para <b className="c-current">+</b><b className="c-electron">−</b> to ładunki, które się równoważą
+        (proton i elektron). Pocieraj i patrz, które ładunki się przemieszczają.
       </p>
-      <svg viewBox="0 0 520 230" className="circuit medium-circuit">
-        <rect x="20" y="30" width="200" height="170" rx="30" className="sweater" />
-        <text x="120" y="222" textAnchor="middle" className="label small">sweter</text>
-        <Charges plus={SWEATER_PAIRS} minus={SWEATER_PAIRS - moved} cx={120} cy={110} w={180} h={150} />
-        <ellipse cx="400" cy="110" rx="95" ry="90" className="balloon" />
-        <text x="400" y="222" textAnchor="middle" className="label small">balon</text>
-        <Charges plus={BALLOON_PAIRS} minus={BALLOON_PAIRS + moved} cx={400} cy={100} w={150} h={140} />
+      <svg viewBox="0 0 520 232" className="circuit medium-circuit">
+        <Sweater />
+        <text x="120" y="224" textAnchor="middle" className="label small">wełniany sweter</text>
+        {SWEATER_PAIRS.map(([x, y], i) => (
+          <g key={i}>
+            <Charge x={x - 11} y={y} sign="+" />
+            {i < moved ? (
+              <circle cx={x + 11} cy={y} r="8" className="chg-hole" />
+            ) : (
+              <Charge x={x + 11} y={y} sign="−" />
+            )}
+          </g>
+        ))}
+
+        <ellipse cx="400" cy="105" rx="95" ry="90" className="balloon" />
+        <path d="M400,195 l-7,10 h14 Z M400,205 q-8,12 4,24" className="balloon-knot" />
+        <text x="470" y="224" textAnchor="middle" className="label small">balon</text>
+        {BALLOON_PAIRS.map(([x, y], i) => (
+          <g key={i}>
+            <Charge x={x - 11} y={y} sign="+" />
+            <Charge x={x + 11} y={y} sign="−" />
+          </g>
+        ))}
+        {BALLOON_EXTRA.slice(0, moved).map(([x, y], i) =>
+          i === flying ? null : <Charge key={i} x={x} y={y} sign="−" cls="extra" />,
+        )}
+
+        {flying !== null && (
+          <g
+            key={flying}
+            className="fly"
+            style={{ '--dx': `${to[0] - from[0] - 11}px`, '--dy': `${to[1] - from[1]}px` }}
+            onAnimationEnd={() => setFlying(null)}
+          >
+            <Charge x={from[0] + 11} y={from[1]} sign="−" />
+          </g>
+        )}
       </svg>
       <div className="btn-row">
-        <button className="btn primary" disabled={moved >= MAX_MOVED} onClick={() => setMoved((m) => m + 1)}>
+        <button className="btn primary" disabled={moved >= MAX_MOVED} onClick={rub}>
           Potrzyj balon swetrem
         </button>
-        <button className="btn" onClick={() => setMoved(0)}>Od nowa</button>
+        <button className="btn" onClick={() => { setMoved(0); setFlying(null) }}>Od nowa</button>
       </div>
       <div className="readout three">
         <div><span>ładunek swetra</span><b>{sign(sw)}</b></div>
@@ -57,11 +121,21 @@ function RubDemo() {
         <div><span>razem</span><b>{sign(sw + bl)}</b></div>
       </div>
       {moved > 0 && (
-        <p className="small">
-          Przy pocieraniu przechodzą tylko <b>elektrony</b> (ze swetra na balon). Protony zostają na miejscu.
-          Balon ma nadmiar elektronów, więc jest naelektryzowany <b>ujemnie</b>, a sweter, któremu brakuje
-          elektronów, <b>dodatnio</b>. Łączny ładunek wciąż wynosi zero – to <b>zasada zachowania ładunku</b>.
-        </p>
+        <div className="small rub-explain">
+          <p>
+            Przechodzą tylko <b>elektrony</b> – ze swetra na balon. Protony siedzą w jądrach atomów i się nie
+            ruszają. Guma balonu mocniej „trzyma” elektrony niż wełna, dlatego płyną właśnie w tę stronę.
+          </p>
+          <p>
+            Balon ma <b>nadmiar elektronów</b> → jest naelektryzowany <b>ujemnie</b>. Swetrowi elektronów{' '}
+            <b>brakuje</b> (puste kółka) → jest naelektryzowany <b>dodatnio</b>. Łączny ładunek nadal wynosi
+            zero – to <b>zasada zachowania ładunku</b>.
+          </p>
+          <p className="muted">
+            Balon jest izolatorem, więc dodatkowe elektrony zostają tam, gdzie go potarto – nie rozpływają się
+            po całym balonie.
+          </p>
+        </div>
       )}
     </div>
   )
