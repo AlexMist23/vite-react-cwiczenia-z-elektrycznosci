@@ -67,9 +67,9 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 .brand { font-weight: 800; font-size: 1.2rem; white-space: nowrap; }
 .bolt { color: var(--volt); }
-.brand { margin-left: auto; }
+.brand { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-shrink: 1; }
 .topbar-title {
-  font-weight: 600; color: var(--volt);
+  margin-left: auto; text-align: right; font-weight: 600; color: var(--volt);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
 .menu-btn {
@@ -514,7 +514,10 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 .book-ref { flex-wrap: nowrap; align-items: flex-start; }
 @media (max-width: 640px) {
-  .topbar-title { font-size: 1.05rem; }
+  .topbar-title { font-size: 0.95rem; }
+  .brand { font-size: 0.95rem; }
+  /* na telefonie przy otwartej lekcji zostaje sama błyskawica – miejsce na nazwę lekcji */
+  .topbar:has(.topbar-title) .brand-text { display: none; }
 }
 
 /* ---------- trening wzorów ---------- */

@@ -71,14 +71,17 @@ export default function App() {
           <span />
           <span />
         </button>
+        {/* lewa strona: kategoria wybranej lekcji (na stronie głównej nazwa aplikacji) */}
+        <a href="#start" className="brand">
+          <span className="bolt">⚡</span>{' '}
+          <span className="brand-text">{current ? GROUPS.find((g) => g.id === current.group).title : 'Prąd'}</span>
+        </a>
+        {/* prawa strona: nazwa wybranej lekcji, a bez lekcji nic */}
         {current && (
           <span className="topbar-title">
             {current.icon} {current.title}
           </span>
         )}
-        <a href="#start" className="brand">
-          <span className="bolt">⚡</span> Prąd
-        </a>
       </header>
 
       <div className="layout">
