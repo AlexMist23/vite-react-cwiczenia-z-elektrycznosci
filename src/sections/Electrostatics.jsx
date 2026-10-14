@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import BookRef from '../components/BookRef.jsx'
+import PeriodicTable from '../components/PeriodicTable.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
 // ---------- Balon i sweter: elektryzowanie przez potarcie ----------
@@ -382,6 +383,7 @@ export default function Electrostatics({ record }) {
       <RubDemo />
       <ForceGame record={record} />
       <Conductors record={record} />
+      <PeriodicTable />
       <Induction record={record} />
     </div>
   )

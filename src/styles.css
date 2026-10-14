@@ -562,3 +562,28 @@ html, body, #root { height: 100%; overflow: hidden; }
 .pyramid-picker .chip { font-size: 0.9rem; padding: 5px 12px; }
 .hint-chip { justify-self: start; }
 .force-sides { margin: 8px 0 10px; padding-left: 20px; display: grid; gap: 4px; }
+
+/* ---------- układ okresowy ---------- */
+.pt-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; font-size: 0.85rem; }
+.pt-key { padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+.pt-key.m, .pt-cell.m, .pt-info.m { background: #ffe3c2; color: #8a3b00; }
+.pt-key.s, .pt-cell.s, .pt-info.s { background: #d3f9d8; color: #1b5e20; }
+.pt-key.n, .pt-cell.n, .pt-info.n { background: #dbe4ff; color: #1c3a8a; }
+.pt-scroll { overflow-x: auto; padding-bottom: 4px; }
+.pt-grid {
+  display: grid; grid-template-columns: repeat(18, minmax(28px, 1fr)); grid-template-rows: repeat(7, 34px);
+  gap: 3px; min-width: 560px;
+}
+.pt-cell {
+  font: inherit; font-size: 0.82rem; font-weight: 700; border: 0; border-radius: 6px;
+  cursor: pointer; padding: 0; transition: transform 0.1s;
+}
+.pt-cell.x { font-size: 0.6rem; }
+.pt-cell:hover { transform: scale(1.12); }
+.pt-cell.sel { outline: 3px solid var(--text); outline-offset: 1px; }
+.pt-info { margin-top: 12px; border-radius: 12px; padding: 12px 14px; background: var(--panel-2); color: var(--text); }
+.pt-info p { margin: 8px 0 0; color: var(--text); }
+.pt-info-head { display: flex; align-items: center; gap: 14px; }
+.pt-big { font-size: 2rem; font-family: Georgia, serif; min-width: 56px; text-align: center; }
+.pt-fact { font-weight: 600; }
+.pt-note { margin-top: 10px; }
