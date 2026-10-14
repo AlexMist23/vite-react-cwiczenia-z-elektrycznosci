@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // Uproszczony układ okresowy: [symbol, nazwa, okres, grupa, rodzaj]
 // rodzaj: m – metal, s – półmetal, n – niemetal, x – rodzina (lantanowce, aktynowce)
@@ -78,12 +78,20 @@ const FACTS = {
   Pb: 'Ołów przewodzi – używa się go w akumulatorach samochodowych.',
 }
 
-export default function PeriodicTable() {
+/** highlight – symbole pierwiastków do podświetlenia (np. z czego zbudowany jest materiał z pytania). */
+export default function PeriodicTable({ highlight = [] }) {
   const [sel, setSel] = useState(null)
+  const key = highlight.join(',')
+  // po nowym podświetleniu pokazujemy opis pierwszego pierwiastka (przy kilku naraz – żadnego)
+  useEffect(() => {
+    setSel(highlight.length && highlight.length <= 4 ? highlight[0] : null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key])
   const el = sel && ELEMENTS.find((e) => e[0] === sel)
+  const lit = new Set(highlight)
   return (
-    <div className="card">
-      <h3>Dlaczego przewodzi, a dlaczego nie? Układ okresowy</h3>
+    <div className="pt-wrap">
+      <h4>Dlaczego przewodzi, a dlaczego nie? Układ okresowy</h4>
       <p className="small muted">
         Kliknij pierwiastek. Kolor mówi, czy jest metalem, półmetalem czy niemetalem – a to decyduje, czy
         przewodzi prąd.
@@ -98,7 +106,7 @@ export default function PeriodicTable() {
           {ELEMENTS.map(([sym, , period, group, kind]) => (
             <button
               key={sym}
-              className={`pt-cell ${kind === 'x' ? 'm x' : kind} ${sel === sym ? 'sel' : ''}`}
+              className={`pt-cell ${kind === 'x' ? 'm x' : kind} ${sel === sym ? 'sel' : ''} ${lit.size ? (lit.has(sym) ? 'lit' : 'dim') : ''}`}
               style={{ gridRow: period, gridColumn: group }}
               onClick={() => setSel(sym)}
               aria-label={sym}

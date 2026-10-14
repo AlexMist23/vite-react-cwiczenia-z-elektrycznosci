@@ -219,85 +219,155 @@ function ForceGame({ record }) {
 }
 
 // ---------- Przewodnik czy izolator ----------
+// kind: p – przewodnik, s – półprzewodnik, i – izolator; els – pierwiastki, z których jest zbudowany
 const MATERIALS = [
-  ['aluminium', true, 'Metal – ma elektrony swobodne, które łatwo się przemieszczają. Z aluminium robi się np. przewody wysokiego napięcia.'],
-  ['miedź', true, 'Metal i jeden z najlepszych przewodników – dlatego przewody w domu i w kablach są miedziane.'],
-  ['złoto', true, 'Metal, bardzo dobry przewodnik, który nie rdzewieje – pokrywa się nim styki w elektronice.'],
-  ['żelazo', true, 'Metal – ma elektrony swobodne, więc przewodzi prąd (gorzej niż miedź, ale przewodzi).'],
-  ['srebro', true, 'Metal – najlepszy przewodnik ze wszystkich metali, ale za drogi na zwykłe przewody.'],
-  ['grafit (ołówek)', true, 'Grafit to odmiana węgla, która ma elektrony swobodne – przewodzi, choć nie jest metalem. Linia narysowana ołówkiem może zamknąć obwód!'],
-  ['moneta', true, 'Monety są z metalu (stopy miedzi, niklu, stali), więc przewodzą prąd.'],
-  ['stalowy gwóźdź', true, 'Stal to głównie żelazo, czyli metal – przewodzi prąd.'],
-  ['woda z solą', true, 'W wodzie z solą są jony (naładowane cząstki soli), które mogą się przemieszczać – dlatego przewodzi. Czysta woda destylowana prawie nie przewodzi.'],
-  ['guma', false, 'Guma nie ma swobodnych ładunków – to izolator. Dlatego przewody okrywa się gumą lub plastikiem.'],
-  ['papier', false, 'Suchy papier to izolator – ładunki praktycznie nie mogą się w nim przemieszczać.'],
-  ['porcelana', false, 'Porcelana to bardzo dobry izolator – robi się z niej izolatory na słupach energetycznych.'],
-  ['szkło', false, 'Szkło to izolator – nie ma elektronów swobodnych. Można je naelektryzować przez pocieranie.'],
-  ['plastik (słomka)', false, 'Plastik to izolator – z plastiku robi się obudowy wtyczek, gniazdek i osłony przewodów.'],
-  ['drewno (suche)', false, 'Suche drewno to izolator. Uwaga: mokre drewno może przewodzić, bo zawiera wodę z jonami.'],
-  ['korek', false, 'Korek to izolator – ładunki nie mogą się w nim przemieszczać.'],
-  ['gumka do ścierania', false, 'Gumka jest z gumy lub plastiku, więc to izolator.'],
-  ['powietrze (suche)', false, 'Suche powietrze to izolator – dzięki temu prąd nie „wycieka” z przewodów. Przewodzi dopiero przy bardzo dużym napięciu (np. błyskawica).'],
+  { name: 'aluminium', kind: 'p', els: ['Al'], why: 'Metal – ma elektrony swobodne, które łatwo się przemieszczają. Z aluminium robi się np. przewody wysokiego napięcia.' },
+  { name: 'miedź', kind: 'p', els: ['Cu'], why: 'Metal i jeden z najlepszych przewodników – dlatego przewody w domu i w kablach są miedziane.' },
+  { name: 'złoto', kind: 'p', els: ['Au'], why: 'Metal, bardzo dobry przewodnik, który nie śniedzieje – pokrywa się nim styki w elektronice.' },
+  { name: 'żelazo', kind: 'p', els: ['Fe'], why: 'Metal – ma elektrony swobodne, więc przewodzi prąd (gorzej niż miedź, ale przewodzi).' },
+  { name: 'srebro', kind: 'p', els: ['Ag'], why: 'Metal – najlepszy przewodnik ze wszystkich pierwiastków, ale za drogi na zwykłe przewody.' },
+  { name: 'grafit (ołówek)', kind: 'p', els: ['C'], why: 'Grafit to czysty węgiel – niemetal, ale wyjątkowy: ma elektrony swobodne i przewodzi. Linia narysowana ołówkiem może zamknąć obwód!' },
+  { name: 'moneta', kind: 'p', els: ['Cu', 'Ni', 'Zn', 'Fe'], why: 'Monety są z metali: stopów miedzi, niklu i cynku albo ze stali pokrytej miedzią. Same metale – więc przewodzą.' },
+  { name: 'stalowy gwóźdź', kind: 'p', els: ['Fe', 'C'], why: 'Stal to żelazo z odrobiną węgla. Prawie w całości metal – przewodzi prąd.' },
+  { name: 'woda z solą', kind: 'p', els: ['H', 'O', 'Na', 'Cl'], why: 'Woda (H₂O) i sól kuchenna (NaCl). Sól rozpada się w wodzie na jony Na⁺ i Cl⁻, które mogą płynąć – dlatego roztwór przewodzi. Czysta woda destylowana prawie nie przewodzi.' },
+  { name: 'krzem', kind: 's', els: ['Si'], why: 'Krzem to półmetal – półprzewodnik. W temperaturze pokojowej przewodzi słabo, ale z domieszkami pozwala sterować prądem – dlatego jest w każdym procesorze i panelu słonecznym.' },
+  { name: 'german', kind: 's', els: ['Ge'], why: 'German to półmetal – półprzewodnik. Przewodzi słabo; robiono z niego pierwsze tranzystory.' },
+  { name: 'guma', kind: 'i', els: ['C', 'H', 'S'], why: 'Guma to związek węgla i wodoru (z dodatkiem siarki). Elektrony są zajęte w wiązaniach – brak elektronów swobodnych, więc to izolator. Dlatego przewody okrywa się gumą lub plastikiem.' },
+  { name: 'papier', kind: 'i', els: ['C', 'H', 'O'], why: 'Papier (celuloza) to związek węgla, wodoru i tlenu – izolator. Choć grafit z węgla przewodzi, w papierze węgiel jest związany z innymi atomami.' },
+  { name: 'porcelana', kind: 'i', els: ['Si', 'Al', 'O'], why: 'Porcelana to związki krzemu, glinu i tlenu. Atomy metalu są związane z tlenem, więc nie ma elektronów swobodnych – to bardzo dobry izolator (izolatory na słupach).' },
+  { name: 'szkło', kind: 'i', els: ['Si', 'O', 'Na', 'Ca'], why: 'Szkło to głównie krzem połączony z tlenem (plus trochę sodu i wapnia). Choć sam krzem jest półprzewodnikiem, a sód metalem, w szkle są związane z tlenem – izolator.' },
+  { name: 'plastik (słomka)', kind: 'i', els: ['C', 'H'], why: 'Plastik to długie cząsteczki z węgla i wodoru. Elektrony są zajęte w wiązaniach – izolator. Z plastiku robi się obudowy wtyczek i osłony przewodów.' },
+  { name: 'drewno (suche)', kind: 'i', els: ['C', 'H', 'O'], why: 'Drewno to związki węgla, wodoru i tlenu – suche jest izolatorem. Mokre może przewodzić, bo zawiera wodę z jonami.' },
+  { name: 'korek', kind: 'i', els: ['C', 'H', 'O'], why: 'Korek to kora drzewa – związki węgla, wodoru i tlenu. Izolator.' },
+  { name: 'gumka do ścierania', kind: 'i', els: ['C', 'H'], why: 'Gumka jest z gumy lub plastiku – związków węgla i wodoru. Izolator.' },
+  { name: 'powietrze (suche)', kind: 'i', els: ['N', 'O', 'Ar'], why: 'Powietrze to głównie azot i tlen (i trochę argonu) – niemetale w postaci gazu. Izolator; przewodzi dopiero przy ogromnym napięciu (błyskawica).' },
 ]
 
+const KIND_LABEL = { p: '⚡ przewodnik', s: '〰️ półprzewodnik', i: '🚫 izolator' }
+const KIND_WORD = { p: 'przewodnik', s: 'półprzewodnik', i: 'izolator' }
+const ROUND = 10
+
+// w każdej rundzie jest jeden półprzewodnik, reszta losowo
+const dealMaterials = () =>
+  shuffle([pick(MATERIALS.filter((m) => m.kind === 's')), ...shuffle(MATERIALS.filter((m) => m.kind !== 's')).slice(0, ROUND - 1)])
+
 function Conductors({ record }) {
-  const [items, setItems] = useState(() => shuffle(MATERIALS).slice(0, 10))
+  const [items, setItems] = useState(dealMaterials)
+  const [idx, setIdx] = useState(0)
   const [picked, setPicked] = useState({})
-  const choose = (name, val, correct) => {
-    if (name in picked) return
-    setPicked((p) => ({ ...p, [name]: val }))
-    record('elektrostatyka', val === correct)
+  const [summary, setSummary] = useState(false)
+  const [focus, setFocus] = useState(null) // materiał podświetlony w podsumowaniu
+
+  const m = items[idx]
+  const p = picked[m.name]
+  const good = items.filter((x) => picked[x.name] === x.kind).length
+
+  const choose = (k) => {
+    if (p) return
+    setPicked((s) => ({ ...s, [m.name]: k }))
+    record('elektrostatyka', k === m.kind)
   }
-  const done = Object.keys(picked).length === items.length
-  const good = items.filter(([n, c]) => picked[n] === c).length
+  const restart = () => {
+    setItems(dealMaterials())
+    setIdx(0)
+    setPicked({})
+    setSummary(false)
+    setFocus(null)
+  }
+
+  // co podświetlić w układzie okresowym
+  const highlight = summary ? (focus ? focus.els : [...new Set(items.flatMap((x) => x.els))]) : p ? m.els : []
+
   return (
     <div className="card">
-      <h3>Przewodnik czy izolator?</h3>
+      <h3>Przewodnik, półprzewodnik czy izolator?</h3>
       <p className="small muted">
-        Przewodnik – ładunki mogą się w nim przemieszczać (w metalach są elektrony swobodne). Izolator –
-        ładunki praktycznie nie mogą się przemieszczać.
+        Przewodnik – ładunki mogą się w nim przemieszczać (w metalach są elektrony swobodne). Izolator – ładunki
+        praktycznie nie mogą się przemieszczać. Półprzewodnik – przewodzi słabo. Po odpowiedzi zobaczysz w układzie
+        okresowym, z jakich pierwiastków jest zbudowany materiał.
       </p>
-      <div className="material-grid">
-        {items.map(([name, correct, why]) => {
-          const p = picked[name]
-          const state = p === undefined ? '' : p === correct ? 'ok' : 'bad'
+
+      <div className="carousel-dots" aria-label="Postęp rundy">
+        {items.map((x, i) => {
+          const a = picked[x.name]
           return (
-            <div key={name} className={`device ${state}`}>
-              <div className="device-name">{name}</div>
-              <div className="chips">
-                <button
-                  className={`chip ${p !== undefined && correct ? 'right' : ''} ${p === true && !correct ? 'wrong' : ''}`}
-                  disabled={p !== undefined}
-                  onClick={() => choose(name, true, correct)}
-                >
-                  ⚡ przewodnik
-                </button>
-                <button
-                  className={`chip ${p !== undefined && !correct ? 'right' : ''} ${p === false && correct ? 'wrong' : ''}`}
-                  disabled={p !== undefined}
-                  onClick={() => choose(name, false, correct)}
-                >
-                  🚫 izolator
-                </button>
-              </div>
-              {p !== undefined && (
-                <div className="material-why">
-                  <b>{p === correct ? '✔ Dobrze. ' : `✘ To ${correct ? 'przewodnik' : 'izolator'}. `}</b>
-                  {why}
-                </div>
-              )}
-            </div>
+            <span
+              key={x.name}
+              className={`dot ${a ? (a === x.kind ? 'ok' : 'bad') : ''} ${!summary && i === idx ? 'cur' : ''}`}
+            />
           )
         })}
       </div>
-      {done && (
-        <div className="feedback info">
-          Wynik: {good} / {items.length}.
-          <button className="btn primary" onClick={() => { setItems(shuffle(MATERIALS).slice(0, 10)); setPicked({}) }}>
+
+      {!summary ? (
+        <div className="carousel-card">
+          <div className="carousel-count">
+            Materiał {idx + 1} z {items.length}
+          </div>
+          <div className="carousel-name">{m.name}</div>
+          <div className="answers three">
+            {['p', 's', 'i'].map((k) => (
+              <AnswerBtn key={k} id={k} answer={p} correct={m.kind} choose={choose}>
+                {KIND_LABEL[k]}
+              </AnswerBtn>
+            ))}
+          </div>
+          {p && (
+            <div className={p === m.kind ? 'feedback ok' : 'feedback bad'}>
+              <div>
+                <b>{p === m.kind ? '✔ Dobrze. ' : `✘ To ${KIND_WORD[m.kind]}. `}</b>
+                {m.why}
+              </div>
+              <div className="els-line">
+                Zbudowany z:{' '}
+                {m.els.map((e) => (
+                  <span key={e} className="el-chip">{e}</span>
+                ))}
+              </div>
+              <button
+                className="btn primary"
+                onClick={() => (idx + 1 < items.length ? setIdx(idx + 1) : setSummary(true))}
+              >
+                {idx + 1 < items.length ? 'Następny materiał →' : 'Pokaż podsumowanie →'}
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="carousel-card">
+          <div className="carousel-count">
+            Podsumowanie rundy: <b>{good}</b> / {items.length} dobrze. Kliknij materiał, żeby zobaczyć jego
+            pierwiastki.
+          </div>
+          <div className="summary-list">
+            {items.map((x) => {
+              const ok = picked[x.name] === x.kind
+              return (
+                <button
+                  key={x.name}
+                  className={`summary-row ${ok ? 'ok' : 'bad'} ${focus === x ? 'sel' : ''}`}
+                  onClick={() => setFocus(focus === x ? null : x)}
+                >
+                  <span>
+                    {ok ? '✔' : '✘'} <b>{x.name}</b>
+                  </span>
+                  <span className="muted">{KIND_LABEL[x.kind]}</span>
+                  <span>
+                    {x.els.map((e) => (
+                      <span key={e} className="el-chip">{e}</span>
+                    ))}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          <button className="btn primary" onClick={restart}>
             Nowa runda →
           </button>
         </div>
       )}
+
+      <PeriodicTable highlight={highlight} />
     </div>
   )
 }
@@ -383,7 +453,6 @@ export default function Electrostatics({ record }) {
       <RubDemo />
       <ForceGame record={record} />
       <Conductors record={record} />
-      <PeriodicTable />
       <Induction record={record} />
     </div>
   )
