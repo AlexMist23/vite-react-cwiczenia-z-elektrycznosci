@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useProgress } from './lib/progress.js'
 import Notes from './sections/Notes.jsx'
 import CircuitSim from './sections/CircuitSim.jsx'
@@ -45,21 +45,18 @@ const readHash = () => window.location.hash.replace('#', '') || 'start'
 export default function App() {
   const [route, setRoute] = useState(readHash)
   const [menuOpen, setMenuOpen] = useState(false)
-  const { data, record, reset } = useProgress()
+  const { data, record } = useProgress()
+  const mainRef = useRef(null)
 
   useEffect(() => {
     const on = () => {
       setRoute(readHash())
       setMenuOpen(false)
-      window.scrollTo(0, 0)
+      mainRef.current?.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', on)
     return () => window.removeEventListener('hashchange', on)
   }, [])
-
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-  }, [menuOpen])
 
   const idx = SECTIONS.findIndex((s) => s.id === route)
   const current = SECTIONS[idx]
@@ -74,14 +71,14 @@ export default function App() {
           <span />
           <span />
         </button>
-        <a href="#start" className="brand">
-          <span className="bolt">⚡</span> Prąd <small>klasa 8</small>
-        </a>
         {current && (
           <span className="topbar-title">
             {current.icon} {current.title}
           </span>
         )}
+        <a href="#start" className="brand">
+          <span className="bolt">⚡</span> Prąd
+        </a>
       </header>
 
       <div className="layout">
@@ -89,8 +86,8 @@ export default function App() {
           <SectionList route={route} data={data} />
         </aside>
 
-        <main className="main">
-          {current ? <current.C record={record} /> : <Home data={data} reset={reset} />}
+        <main className="main" ref={mainRef}>
+          {current ? <current.C record={record} /> : <Home data={data} />}
           {current && (
             <nav className="pager">
               {prev ? (
@@ -165,8 +162,7 @@ function SectionList({ route, data, onPick }) {
   ))
 }
 
-function Home({ data, reset }) {
-  const total = Object.values(data).reduce((a, s) => ({ ok: a.ok + s.ok, all: a.all + s.all }), { ok: 0, all: 0 })
+function Home({ data }) {
   return (
     <div className="section">
       <div className="hero">
@@ -175,12 +171,6 @@ function Home({ data, reset }) {
           Ładunki, obwody, kierunek prądu i ruch elektronów, napięcie, natężenie, praca i moc. Wybierz
           ćwiczenie – każde możesz powtarzać dowolnie wiele razy.
         </p>
-        {total.all > 0 && (
-          <p className="hero-stats">
-            Twoje odpowiedzi: <b>{total.ok}</b> poprawnych z {total.all}
-            <button className="chip" onClick={reset}>wyzeruj postępy</button>
-          </p>
-        )}
       </div>
       {GROUPS.map((g) => (
         <div key={g.id} className="tile-group" style={{ '--g': g.color }}>
