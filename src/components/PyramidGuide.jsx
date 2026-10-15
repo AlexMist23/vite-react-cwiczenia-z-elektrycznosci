@@ -201,7 +201,7 @@ export default function PyramidGuide({ id }) {
 /** Zwarta karta ze wszystkimi wzorami ze wszystkich piramid – do ściągi i powtórki. */
 export function FormulaSheet() {
   return (
-    <div className="grid gap-4">
+    <div className="grid w-full gap-4">
       {TRIANGLES.map((tri) => (
         <div key={tri.id} className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
@@ -210,7 +210,7 @@ export function FormulaSheet() {
             </div>
             <div>
               <b>{tri.title}</b>
-              <ul className="text-sm text-muted-foreground">
+              <ul className="list-none! pl-0! text-sm text-muted-foreground">
                 {letters(tri).map((l) => (
                   <li key={l}>
                     <b className="font-formula text-foreground italic">{l}</b> – {NAMES[l][0]}{' '}

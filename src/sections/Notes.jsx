@@ -29,6 +29,11 @@ function Pages({ children }) {
 
 /** Karty ściągi – używane też w podsumowaniach lekcji. */
 export const NOTES = {
+  pyramids: () => (
+    <Note title="Piramidy – wszystkie wzory" wide>
+      <FormulaSheet />
+    </Note>
+  ),
   charges: () => (
     <Note title="Elektryzowanie ciał">
       <Pages>Podręcznik s. 16–28</Pages>
@@ -144,11 +149,6 @@ export const NOTES = {
       <p className="text-sm">
         Z wzoru na pracę: <b>I = W / (U · t)</b>.
       </p>
-    </Note>
-  ),
-  pyramids: () => (
-    <Note title="Piramidy – wszystkie wzory" wide>
-      <FormulaSheet />
     </Note>
   ),
   prefixes: () => (
