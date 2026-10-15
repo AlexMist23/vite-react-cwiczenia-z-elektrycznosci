@@ -26,20 +26,6 @@
 .electron.idle { opacity: 0.5; }
 .arrow-current { fill: var(--current); }
 
-/* płynący prąd w zagadkach: kreski prądu (od „+”) i kropki elektronów (w przeciwną stronę) */
-.flow-current {
-  fill: none; stroke: var(--current); stroke-width: 3.5; stroke-linecap: round;
-  stroke-dasharray: 9 15; animation: flow-forward 0.9s linear infinite;
-}
-.flow-electrons {
-  fill: none; stroke: var(--electron); stroke-width: 7; stroke-linecap: round;
-  stroke-dasharray: 0.1 24; animation: flow-back 1.8s linear infinite;
-}
-@keyframes flow-forward { to { stroke-dashoffset: -24; } }
-@keyframes flow-back { to { stroke-dashoffset: 24; } }
-@media (prefers-reduced-motion: reduce) {
-  .flow-current, .flow-electrons { animation-duration: 8s; }
-}
 .arrow-neutral { fill: #868e96; }
 
 /* ---------- ośrodki ---------- */

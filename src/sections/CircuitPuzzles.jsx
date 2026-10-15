@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, Droplets, MoveHorizontal, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -6,6 +6,7 @@ import { Answers, Callout, Feedback, FlowLegend, Panel, Score, Section, Verdict 
 import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
+import { makeAlong } from '../lib/pathFlow.js'
 import { pick, shuffle } from '../lib/physics.js'
 
 // Bateria po lewej, żarówka u góry. Każda topologia mówi, czy żarówka świeci przy danym stanie wyłącznika.
@@ -121,6 +122,60 @@ const FLOWS = {
   'book-bulb-shorted-top': (c) => ({ paths: c ? ['M40,140 V30 H300 V190 H40 Z'] : [], short: c }),
 }
 
+const SPEED = 40 // jednostek rysunku na sekundę – jak w symulatorze
+const GAP_E = 34 // odstęp między elektronami
+const GAP_I = 70 // odstęp między strzałkami prądu
+
+/**
+ * Ruch jak w symulatorze: elektrony (kółka z „−”) jadą po przewodzie od „−” do „+”,
+ * a strzałki prądu obok przewodu – od „+” do „−”. Ścieżki są rysowane od bieguna „+”.
+ * hide – kwadraty [x, y, pół-boku], w których elektron „chowa się” w elemencie; noArrows – gdzie nie rysować strzałek.
+ */
+function MovingCharges({ paths, hide, noArrows }) {
+  const [t, setT] = useState(0)
+  useEffect(() => {
+    const slow = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 0.25 : 1
+    let raf
+    let last = performance.now()
+    const tick = (now) => {
+      setT((v) => v + Math.min(0.1, (now - last) / 1000) * slow)
+      last = now
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  const routes = useMemo(() => paths.map(makeAlong), [paths])
+  const inside = (p, [x, y, h]) => Math.abs(p.x - x) < h && Math.abs(p.y - y) < h
+
+  return routes.map(({ along, length }, r) => {
+    const nE = Math.max(1, Math.round(length / GAP_E))
+    const nI = Math.max(1, Math.round(length / GAP_I))
+    const electrons = Array.from({ length: nE }, (_, i) => along((i * length) / nE - t * SPEED)).filter(
+      (p) => !hide.some((h) => inside(p, h)),
+    )
+    // strzałki po lewej stronie kierunku ruchu – dla pętli od „+” to strona zewnętrzna
+    const arrows = Array.from({ length: nI }, (_, i) => along((i * length) / nI + t * SPEED))
+      .map((p) => ({ ...p, x: p.x + p.dy * 14, y: p.y - p.dx * 14 }))
+      .filter((p) => !noArrows.some((h) => inside(p, h)))
+    return (
+      <g key={r}>
+        {electrons.map((p, i) => (
+          <g key={`e${i}`} transform={`translate(${p.x} ${p.y})`} className="electron">
+            <circle r="6" />
+            <text y="3.6" textAnchor="middle">
+              −
+            </text>
+          </g>
+        ))}
+        {arrows.map((p, i) => (
+          <path key={`a${i}`} d="M -8 -6 L 8 0 L -8 6 Z" className="arrow-current" transform={`translate(${p.x} ${p.y}) rotate(${p.angle})`} />
+        ))}
+      </g>
+    )
+  })
+}
+
 /** showGlow – po odpowiedzi: żarówka świeci (albo nie) i widać, którędy płynie prąd. */
 function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const lit = showGlow && topo.shines(closed)
@@ -128,7 +183,7 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const bat = topo.bat ?? { x: 40, y: 110, rot: 90 } // „+” u góry, jak w podręczniku
   const bulb = topo.bulb ?? { x: 170, y: 30, rot: 0 }
   return (
-    <svg viewBox="0 0 410 220" className="drawing mx-auto max-w-115">
+    <svg viewBox="0 0 410 236" className="drawing mx-auto max-w-115">
       <CutWires
         id={`puzzle-wires-${topo.id}`}
         holes={[
@@ -140,16 +195,9 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
         {topo.wires.map((d) => (
           <path key={d} d={d} className="wire" />
         ))}
-        {/* prąd (umowny, od „+”) i elektrony (w przeciwną stronę) – jadą po przewodach */}
-        {flow.paths.map((d) => (
-          <path key={`i${d}`} d={d} className="flow-current" />
-        ))}
-        {flow.paths.map((d) => (
-          <path key={`e${d}`} d={d} className="flow-electrons" />
-        ))}
       </CutWires>
       {flow.short && (
-        <text x="170" y="214" textAnchor="middle" className="label danger">
+        <text x="170" y="230" textAnchor="middle" className="label danger">
           ZWARCIE – prąd omija żarówkę
         </text>
       )}
@@ -172,6 +220,22 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
           rotate={topo.sw.rot}
         />
       </g>
+      {/* nad elementami, tak jak w symulatorze; key – po zmianie drogi prądu ruch zaczyna się od nowa */}
+      {flow.paths.length > 0 && (
+        <MovingCharges
+          key={flow.paths.join('|')}
+          paths={flow.paths}
+          hide={[
+            [bat.x, bat.y, 30],
+            [bulb.x, bulb.y, 18],
+            [topo.sw.x, topo.sw.y, 24],
+          ]}
+          noArrows={[
+            [bat.x, bat.y, 34],
+            [bulb.x, bulb.y, 28],
+          ]}
+        />
+      )}
     </svg>
   )
 }
