@@ -20,14 +20,8 @@ const WHY_SYMBOL = {
   P: 'P od angielskiego „power” – moc.',
 }
 
-const MODES = [
-  { id: 'piramida', label: '🔺 Ułóż piramidę' },
-  { id: 'wzor', label: '🧱 Ułóż wzór' },
-  { id: 'symbole', label: '🔤 Symbol i jednostka' },
-]
-
-export default function FormulaTrainer({ record }) {
-  const [mode, setMode] = useState('piramida')
+export default function FormulaTrainer({ record, sub = 'piramida' }) {
+  const mode = sub
   const [pyr, setPyr] = useState('all')
   const pool = poolFor(pyr)
   const [score, setScore] = useState({ ok: 0, all: 0 })
@@ -43,13 +37,6 @@ export default function FormulaTrainer({ record }) {
         Najpierw naucz się piramid na pamięć, potem przekształcaj wzory bez podglądania. Na górze piramidy
         jest to, co powstaje z mnożenia (E, q, P, W), na dole – to, co mnożymy.
       </p>
-      <div className="seg wrap">
-        {MODES.map((m) => (
-          <button key={m.id} className={mode === m.id ? 'active' : ''} onClick={() => setMode(m.id)}>
-            {m.label}
-          </button>
-        ))}
-      </div>
       <PyramidPicker value={pyr} onChange={setPyr} />
       <div className="card game-card">
         <div className="score">

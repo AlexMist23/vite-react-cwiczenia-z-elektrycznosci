@@ -440,20 +440,24 @@ function Induction({ record }) {
   )
 }
 
-export default function Electrostatics({ record }) {
+export default function Electrostatics({ record, sub = 'teoria' }) {
   return (
     <div className="section">
       <h2>Elektryzowanie ciał i ładunki</h2>
       <BookRef pages="16–28" topics="Elektryzowanie ciał · Ładunki elektryczne · Indukcja elektrostatyczna" />
-      <div className="rule-box">
-        <div>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</div>
-        <div>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</div>
-        <div><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</div>
-      </div>
-      <RubDemo />
-      <ForceGame record={record} />
-      <Conductors record={record} />
-      <Induction record={record} />
+      {sub === 'teoria' && (
+        <>
+        <div className="rule-box">
+          <div>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</div>
+          <div>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</div>
+          <div><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</div>
+        </div>
+        <RubDemo />
+        </>
+      )}
+      {sub === 'przyciaganie' && <ForceGame record={record} />}
+      {sub === 'przewodniki' && <Conductors record={record} />}
+      {sub === 'indukcja' && <Induction record={record} />}
     </div>
   )
 }

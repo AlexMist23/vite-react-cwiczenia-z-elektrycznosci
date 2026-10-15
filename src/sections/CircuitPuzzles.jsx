@@ -261,7 +261,7 @@ function WaterAnalogy({ record }) {
   )
 }
 
-export default function CircuitPuzzles({ record }) {
+export default function CircuitPuzzles({ record, sub = 'zarowka' }) {
   return (
     <div className="section">
       <h2>Zagadki obwodowe</h2>
@@ -271,8 +271,8 @@ export default function CircuitPuzzles({ record }) {
         prawie cały prąd popłynie tym przewodem (prawie nie stawia oporu), a żarówka zgaśnie. Gdy w obwodzie
         nie zostaje żaden odbiornik, mamy <b>zwarcie</b>.
       </p>
-      <BulbGame record={record} />
-      <WaterAnalogy record={record} />
+      {sub === 'zarowka' && <BulbGame record={record} />}
+      {sub === 'woda' && <WaterAnalogy record={record} />}
     </div>
   )
 }

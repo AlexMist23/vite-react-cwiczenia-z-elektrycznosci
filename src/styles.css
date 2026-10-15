@@ -642,3 +642,22 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 .danger-chip { color: #fff; background: var(--bad); border-color: var(--bad); }
 .reset-all { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin: 24px 0 8px; font-size: 0.9rem; color: var(--muted); }
+
+/* ---------- podstrony działu ---------- */
+.subnav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.subnav-link {
+  display: flex; flex-direction: column; gap: 1px; padding: 8px 14px; border-radius: 12px;
+  border: 2px solid var(--border); background: var(--panel); font-weight: 600; font-size: 0.95rem;
+}
+.subnav-link:hover { border-color: var(--sec); }
+.subnav-link.active { border-color: var(--sec); background: var(--sec); color: #fff; }
+.subnav-kind { font-size: 0.72rem; font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.04em; }
+.side-subs { display: grid; gap: 2px; margin: 2px 0 6px 38px; }
+.side-sub { font-size: 0.86rem; padding: 4px 10px; border-radius: 8px; color: var(--muted); }
+.side-sub:hover { background: var(--panel-2); }
+.side-sub.active { color: var(--sec); font-weight: 700; background: var(--panel-2); }
+.tile-subs { margin-top: 2px; opacity: 0.8; }
+@media (max-width: 640px) {
+  .subnav { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .subnav-link { flex: 0 0 auto; }
+}

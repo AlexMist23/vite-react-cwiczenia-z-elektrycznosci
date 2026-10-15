@@ -88,7 +88,7 @@ const LABEL = {
   gas: 'Jony i elektrony',
 }
 
-export default function Media({ record }) {
+export default function Media({ record, sub = 'nosniki' }) {
   const [order, setOrder] = useState(() => shuffle(ITEMS))
   const [idx, setIdx] = useState(0)
   const [answer, setAnswer] = useState(null)
@@ -115,50 +115,58 @@ export default function Media({ record }) {
     <div className="section">
       <h2>Prąd w ciałach stałych, cieczach i gazach</h2>
       <BookRef pages="23, 29, 35" topics="Elektrony swobodne, jony" />
-      <div className="callout info">
-        <b>Prąd elektryczny</b> to uporządkowany ruch <b>ładunków elektrycznych</b>. W metalach są to
-        elektrony (ładunki ujemne), ale w cieczach i gazach płyną też <b>jony dodatnie</b> – dlatego
-        mówimy ogólnie o ładunkach, a nie tylko o ujemnych.
-      </div>
-
-      <div className="media-grid">
-        {MEDIA.map((m) => (
-          <div key={m.kind} className="card media-card">
-            <h3>{m.title}</h3>
-            <Chamber kind={m.kind} />
-            <p>
-              <b>Nośniki ładunku:</b> {m.carriers}
-            </p>
-            <p className="small">{m.text}</p>
-            <p className="small muted">Przykłady: {m.examples}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="card game-card">
-        <div className="score">
-          Wynik: <b>{score.ok}</b> / {score.all}
+      {sub === 'nosniki' && (
+        <>
+        <div className="callout info">
+          <b>Prąd elektryczny</b> to uporządkowany ruch <b>ładunków elektrycznych</b>. W metalach są to
+          elektrony (ładunki ujemne), ale w cieczach i gazach płyną też <b>jony dodatnie</b> – dlatego
+          mówimy ogólnie o ładunkach, a nie tylko o ujemnych.
         </div>
-        <p className="question">
-          Co przenosi ładunek? <b>{name}</b>
-        </p>
-        <div className="answers three">
-          {Object.entries(LABEL).map(([k, t]) => (
-            <AnswerBtn key={k} id={k} answer={answer} correct={correct} choose={choose}>
-              {t}
-            </AnswerBtn>
+
+        <div className="media-grid">
+          {MEDIA.map((m) => (
+            <div key={m.kind} className="card media-card">
+              <h3>{m.title}</h3>
+              <Chamber kind={m.kind} />
+              <p>
+                <b>Nośniki ładunku:</b> {m.carriers}
+              </p>
+              <p className="small">{m.text}</p>
+              <p className="small muted">Przykłady: {m.examples}</p>
+            </div>
           ))}
         </div>
-        {answer && (
-          <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
-            {answer === correct ? 'Dobrze! ' : 'Nie tym razem. '}
-            {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}. {why}
-            <button className="btn primary" onClick={next}>
-              Następne →
-            </button>
+
+        </>
+      )}
+      {sub === 'cwiczenie' && (
+        <>
+        <div className="card game-card">
+          <div className="score">
+            Wynik: <b>{score.ok}</b> / {score.all}
           </div>
-        )}
-      </div>
+          <p className="question">
+            Co przenosi ładunek? <b>{name}</b>
+          </p>
+          <div className="answers three">
+            {Object.entries(LABEL).map(([k, t]) => (
+              <AnswerBtn key={k} id={k} answer={answer} correct={correct} choose={choose}>
+                {t}
+              </AnswerBtn>
+            ))}
+          </div>
+          {answer && (
+            <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
+              {answer === correct ? 'Dobrze! ' : 'Nie tym razem. '}
+              {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}. {why}
+              <button className="btn primary" onClick={next}>
+                Następne →
+              </button>
+            </div>
+          )}
+        </div>
+        </>
+      )}
     </div>
   )
 }

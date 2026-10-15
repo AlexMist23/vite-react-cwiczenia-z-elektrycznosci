@@ -14,11 +14,10 @@ function newTask(prev) {
   return { type, options, reverse: Math.random() < 0.4 }
 }
 
-export default function SymbolGame({ record }) {
+export default function SymbolGame({ record, sub = 'sciaga' }) {
   const [task, setTask] = useState(() => newTask())
   const [answer, setAnswer] = useState(null)
   const [score, setScore] = useState({ ok: 0, all: 0 })
-  const [showAll, setShowAll] = useState(false)
 
   const choose = (id) => {
     if (answer) return
@@ -36,59 +35,60 @@ export default function SymbolGame({ record }) {
         Schemat obwodu rysujemy za pomocą umownych symboli. Rozpoznaj je wszystkie!
       </p>
 
-      <div className="card game-card">
-        <div className="score">
-          Wynik: <b>{score.ok}</b> / {score.all}
-        </div>
-        {task.reverse ? (
-          <>
-            <p className="question">
-              Który symbol oznacza: <b>{SYMBOLS[task.type].name.toLowerCase()}</b>?
-            </p>
-            <div className="answers four">
-              {task.options.map((t) => (
-                <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
-                  <SymbolIcon type={t} size={110} />
-                </AnswerBtn>
-              ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="question">Co oznacza ten symbol?</p>
-            <div className="symbol-big">
-              <SymbolIcon type={task.type} size={220} />
-            </div>
-            <div className="answers two">
-              {task.options.map((t) => (
-                <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
-                  {SYMBOLS[t].name}
-                </AnswerBtn>
-              ))}
-            </div>
-          </>
-        )}
-        {answer && (
-          <div className={answer === task.type ? 'feedback ok' : 'feedback bad'}>
-            {answer === task.type ? 'Dobrze! ' : `To jest: ${SYMBOLS[task.type].name}. `}
-            {SYMBOLS[task.type].hint}
-            <button
-              className="btn primary"
-              onClick={() => {
-                setTask(newTask(task.type))
-                setAnswer(null)
-              }}
-            >
-              Następne →
-            </button>
+      {sub === 'rozpoznaj' && (
+        <>
+        <div className="card game-card">
+          <div className="score">
+            Wynik: <b>{score.ok}</b> / {score.all}
           </div>
-        )}
-      </div>
+          {task.reverse ? (
+            <>
+              <p className="question">
+                Który symbol oznacza: <b>{SYMBOLS[task.type].name.toLowerCase()}</b>?
+              </p>
+              <div className="answers four">
+                {task.options.map((t) => (
+                  <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
+                    <SymbolIcon type={t} size={110} />
+                  </AnswerBtn>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="question">Co oznacza ten symbol?</p>
+              <div className="symbol-big">
+                <SymbolIcon type={task.type} size={220} />
+              </div>
+              <div className="answers two">
+                {task.options.map((t) => (
+                  <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
+                    {SYMBOLS[t].name}
+                  </AnswerBtn>
+                ))}
+              </div>
+            </>
+          )}
+          {answer && (
+            <div className={answer === task.type ? 'feedback ok' : 'feedback bad'}>
+              {answer === task.type ? 'Dobrze! ' : `To jest: ${SYMBOLS[task.type].name}. `}
+              {SYMBOLS[task.type].hint}
+              <button
+                className="btn primary"
+                onClick={() => {
+                  setTask(newTask(task.type))
+                  setAnswer(null)
+                }}
+              >
+                Następne →
+              </button>
+            </div>
+          )}
+        </div>
 
-      <button className="btn" onClick={() => setShowAll((s) => !s)}>
-        {showAll ? 'Ukryj ściągę symboli' : 'Pokaż ściągę symboli'}
-      </button>
-      {showAll && (
+        </>
+      )}
+      {sub === 'sciaga' && (
         <div className="symbol-grid">
           {TYPES.map((t) => (
             <div key={t} className="card symbol-tile">

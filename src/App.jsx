@@ -25,16 +25,16 @@ export const GROUPS = [
 
 export const SECTIONS = [
   // kolejność jak w zeszycie: elektryzowanie → obwód (z kierunkiem prądu) → skutki → ośrodki → napięcie, natężenie, praca i moc → przedrostki → zadania
-  { id: 'elektrostatyka', group: 'ladunki', icon: '🎈', title: 'Elektryzowanie i ładunki', desc: 'Balon i sweter, przewodniki i izolatory, indukcja.', C: Electrostatics },
+  { id: 'elektrostatyka', group: 'ladunki', icon: '🎈', title: 'Elektryzowanie i ładunki', desc: 'Balon i sweter, przewodniki i izolatory, indukcja.', C: Electrostatics, subs: [{ id: 'teoria', title: 'Ładunki i elektryzowanie', kind: 't' }, { id: 'przyciaganie', title: 'Przyciągają czy odpychają?', kind: 'c' }, { id: 'przewodniki', title: 'Przewodnik czy izolator?', kind: 'c' }, { id: 'indukcja', title: 'Indukcja', kind: 'c' }] },
   { id: 'obwod', group: 'obwody', icon: '🔌', title: 'Symulator obwodu', desc: 'Zbuduj obwód, zamknij wyłącznik, zobacz prąd i elektrony.', C: CircuitSim },
-  { id: 'symbole', group: 'obwody', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame },
-  { id: 'zagadki', group: 'obwody', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles },
-  { id: 'kierunki', group: 'obwody', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame },
-  { id: 'skutki', group: 'prad', icon: '💡', title: 'Skutki prądu', desc: 'Cieplny, świetlny, mechaniczny, chemiczny…', C: Effects },
-  { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media },
-  { id: 'wzory', group: 'wzory', icon: '🔺', title: 'Trójkąty wzorów', desc: 'U = E/q, I = q/t, P = U·I, W = U·I·t', C: Triangles },
-  { id: 'trening', group: 'wzory', icon: '🧠', title: 'Trening wzorów i piramid', desc: 'Ułóż piramidę, złóż wzór z klocków, symbole i jednostki.', C: FormulaTrainer },
-  { id: 'jednostki', group: 'wzory', icon: '📏', title: 'Jednostki i przedrostki', desc: 'mA, kV, kWh, Ah – zamieniaj bez pomyłek.', C: Units },
+  { id: 'symbole', group: 'obwody', icon: '✏️', title: 'Symbole', desc: 'Rozpoznaj symbole elementów obwodu.', C: SymbolGame, subs: [{ id: 'sciaga', title: 'Ściąga symboli', kind: 't' }, { id: 'rozpoznaj', title: 'Rozpoznaj symbol', kind: 'c' }] },
+  { id: 'zagadki', group: 'obwody', icon: '🧩', title: 'Zagadki obwodowe', desc: 'Czy żarówka świeci? Prąd jak woda.', C: CircuitPuzzles, subs: [{ id: 'zarowka', title: 'Czy żarówka świeci?', kind: 'c' }, { id: 'woda', title: 'Prąd jak woda', kind: 'c' }] },
+  { id: 'kierunki', group: 'obwody', icon: '🔄', title: 'Kierunek prądu', desc: 'Prąd od „+” do „−”, elektrony od „−” do „+”.', C: DirectionGame, subs: [{ id: 'zasada', title: 'Zasada i pokaz', kind: 't' }, { id: 'cwiczenie', title: 'W którą stronę?', kind: 'c' }] },
+  { id: 'skutki', group: 'prad', icon: '💡', title: 'Skutki prądu', desc: 'Cieplny, świetlny, mechaniczny, chemiczny…', C: Effects, subs: [{ id: 'rodzaje', title: 'Rodzaje skutków', kind: 't' }, { id: 'cwiczenie', title: 'Jaki skutek?', kind: 'c' }] },
+  { id: 'osrodki', group: 'prad', icon: '🧊', title: 'Ciała stałe, ciecze, gazy', desc: 'Co przenosi ładunek w różnych ośrodkach?', C: Media, subs: [{ id: 'nosniki', title: 'Nośniki ładunku', kind: 't' }, { id: 'cwiczenie', title: 'Co przenosi ładunek?', kind: 'c' }] },
+  { id: 'wzory', group: 'wzory', icon: '🔺', title: 'Trójkąty wzorów', desc: 'U = E/q, I = q/t, P = U·I, W = U·I·t', C: Triangles, subs: [{ id: 'piramidy', title: 'Piramidy i przykłady', kind: 't' }, { id: 'cwiczenie', title: 'Który wzór?', kind: 'c' }] },
+  { id: 'trening', group: 'wzory', icon: '🧠', title: 'Trening wzorów i piramid', desc: 'Ułóż piramidę, złóż wzór z klocków, symbole i jednostki.', C: FormulaTrainer, subs: [{ id: 'piramida', title: 'Ułóż piramidę', kind: 'c' }, { id: 'wzor', title: 'Ułóż wzór', kind: 'c' }, { id: 'symbole', title: 'Symbol i jednostka', kind: 'c' }] },
+  { id: 'jednostki', group: 'wzory', icon: '📏', title: 'Jednostki i przedrostki', desc: 'mA, kV, kWh, Ah – zamieniaj bez pomyłek.', C: Units, subs: [{ id: 'przedrostki', title: 'Przedrostki i jednostki', kind: 't' }, { id: 'cwiczenie', title: 'Zamień jednostki', kind: 'c' }] },
   { id: 'wzor-obliczenie', group: 'wzory', icon: '🧪', title: 'Wzór → obliczenie', desc: 'Najpierw ułóż wzór, potem policz – wynik jest sprawdzany.', C: FormulaToCalc },
   { id: 'zadania', group: 'wzory', icon: '🧮', title: 'Zadania obliczeniowe', desc: 'Dane, szukane, wzór, wynik – krok po kroku.', C: Problems },
   { id: 'quiz', group: 'powtorka', icon: '🏆', title: 'Sprawdzian', desc: 'Quiz z całego działu z oceną jak w szkole.', C: Quiz },
@@ -43,6 +43,12 @@ export const SECTIONS = [
 
 const groupColor = (g) => GROUPS.find((x) => x.id === g).color
 const readHash = () => window.location.hash.replace('#', '') || 'start'
+const KIND_ICON = { t: '📖', c: '✏️' }
+
+// wszystkie strony po kolei (dział albo dział/podstrona) – do przycisków „poprzedni / następny”
+const PAGES = SECTIONS.flatMap((s) =>
+  s.subs ? s.subs.map((u) => ({ s, u, hash: `${s.id}/${u.id}` })) : [{ s, u: null, hash: s.id }],
+)
 
 export default function App() {
   const [route, setRoute] = useState(readHash)
@@ -62,10 +68,14 @@ export default function App() {
     return () => window.removeEventListener('hashchange', on)
   }, [])
 
-  const idx = SECTIONS.findIndex((s) => s.id === route)
-  const current = SECTIONS[idx]
-  const prev = idx > 0 ? SECTIONS[idx - 1] : null
-  const next = idx >= 0 && idx < SECTIONS.length - 1 ? SECTIONS[idx + 1] : null
+  const [secId, subId] = route.split('/')
+  const current = SECTIONS.find((s) => s.id === secId)
+  const sub = current?.subs ? current.subs.find((u) => u.id === subId) ?? current.subs[0] : null
+  const pageIdx = current ? PAGES.findIndex((p) => p.s === current && p.u === sub) : -1
+  const prev = pageIdx > 0 ? PAGES[pageIdx - 1] : null
+  const next = pageIdx >= 0 && pageIdx < PAGES.length - 1 ? PAGES[pageIdx + 1] : null
+  // w obrębie działu pokazujemy nazwę podstrony, a przy przejściu do innego działu – nazwę działu
+  const pageLabel = (p) => (p.u && p.s === current ? `${KIND_ICON[p.u.kind]} ${p.u.title}` : `${p.s.icon} ${p.s.title}`)
 
   return (
     <div className="app" style={current ? { '--sec': groupColor(current.group) } : undefined}>
@@ -90,7 +100,7 @@ export default function App() {
 
       <div className="layout">
         <aside className="sidebar" aria-label="Działy">
-          <SectionList route={route} data={data} />
+          <SectionList current={current} sub={sub} data={data} />
         </aside>
 
         <main className="main" ref={mainRef}>
@@ -103,19 +113,24 @@ export default function App() {
               }}
             />
           )}
-          {current ? <current.C key={`${current.id}-${resetCount}`} record={record} /> : <Home data={data} onResetAll={reset} />}
+          {current?.subs && <SubNav section={current} sub={sub} />}
+          {current ? (
+            <current.C key={`${current.id}-${resetCount}`} record={record} sub={sub?.id} />
+          ) : (
+            <Home data={data} onResetAll={reset} />
+          )}
           {current && (
             <nav className="pager">
               {prev ? (
-                <a href={`#${prev.id}`} className="pager-btn">
-                  <small>← poprzedni</small>
-                  <span>{prev.icon} {prev.title}</span>
+                <a href={`#${prev.hash}`} className="pager-btn">
+                  <small>{prev?.s === current ? '← wcześniej w tym dziale' : '← poprzedni dział'}</small>
+                  <span>{pageLabel(prev)}</span>
                 </a>
               ) : <span />}
               {next && (
-                <a href={`#${next.id}`} className="pager-btn next">
-                  <small>następny →</small>
-                  <span>{next.icon} {next.title}</span>
+                <a href={`#${next.hash}`} className="pager-btn next">
+                  <small>{next.s === current ? 'dalej w tym dziale →' : 'następny dział →'}</small>
+                  <span>{pageLabel(next)}</span>
                 </a>
               )}
             </nav>
@@ -130,10 +145,10 @@ export default function App() {
         <button onClick={() => setMenuOpen(true)} className={menuOpen ? 'active' : ''}>
           <span>📚</span>Działy
         </button>
-        <a href="#quiz" className={route === 'quiz' ? 'active' : ''}>
+        <a href="#quiz" className={secId === 'quiz' ? 'active' : ''}>
           <span>🏆</span>Sprawdzian
         </a>
-        <a href="#notatki" className={route === 'notatki' ? 'active' : ''}>
+        <a href="#notatki" className={secId === 'notatki' ? 'active' : ''}>
           <span>📒</span>Ściąga
         </a>
       </nav>
@@ -150,7 +165,7 @@ export default function App() {
             <a href="#start" className={`side-link ${route === 'start' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
               <span className="side-icon">🏠</span> Start
             </a>
-            <SectionList route={route} data={data} onPick={() => setMenuOpen(false)} />
+            <SectionList current={current} sub={sub} data={data} onPick={() => setMenuOpen(false)} />
           </div>
         </div>
       )}
@@ -191,21 +206,50 @@ function SectionProgress({ p, onReset }) {
   )
 }
 
-function SectionList({ route, data, onPick }) {
+/** Zakładki podstron: najpierw wyjaśnienia 📖, potem ćwiczenia ✏️. */
+function SubNav({ section, sub }) {
+  return (
+    <nav className="subnav" aria-label={`Części działu ${section.title}`}>
+      {section.subs.map((u) => (
+        <a key={u.id} href={`#${section.id}/${u.id}`} className={`subnav-link ${u.kind} ${u === sub ? 'active' : ''}`}>
+          <span className="subnav-kind">{u.kind === 't' ? '📖 wyjaśnienie' : '✏️ ćwiczenie'}</span>
+          <span>{u.title}</span>
+        </a>
+      ))}
+    </nav>
+  )
+}
+
+function SectionList({ current, sub, data, onPick }) {
   return GROUPS.map((g) => (
     <div key={g.id} className="side-group" style={{ '--g': g.color }}>
       <div className="side-group-title">{g.title}</div>
       {SECTIONS.filter((s) => s.group === g.id).map((s) => (
-        <a
-          key={s.id}
-          href={`#${s.id}`}
-          className={`side-link ${route === s.id ? 'active' : ''}`}
-          onClick={onPick}
-        >
-          <span className="side-icon">{s.icon}</span>
-          <span className="side-label">{s.title}</span>
-          {data[s.id] && <span className="side-badge">{data[s.id].ok}</span>}
-        </a>
+        <div key={s.id}>
+          <a
+            href={`#${s.id}`}
+            className={`side-link ${current === s ? 'active' : ''}`}
+            onClick={onPick}
+          >
+            <span className="side-icon">{s.icon}</span>
+            <span className="side-label">{s.title}</span>
+            {data[s.id] && <span className="side-badge">{data[s.id].ok}</span>}
+          </a>
+          {current === s && s.subs && (
+            <div className="side-subs">
+              {s.subs.map((u) => (
+                <a
+                  key={u.id}
+                  href={`#${s.id}/${u.id}`}
+                  className={`side-sub ${u === sub ? 'active' : ''}`}
+                  onClick={onPick}
+                >
+                  {KIND_ICON[u.kind]} {u.title}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
     </div>
   ))
@@ -235,6 +279,12 @@ function Home({ data, onResetAll }) {
                   <span className="tile-text">
                     <b>{s.title}</b>
                     <small>{s.desc}</small>
+                    {s.subs && (
+                      <small className="tile-subs">
+                        {s.subs.filter((u) => u.kind === 't').length > 0 && `📖 ${s.subs.filter((u) => u.kind === 't').length} `}
+                        ✏️ {s.subs.filter((u) => u.kind === 'c').length}
+                      </small>
+                    )}
                   </span>
                   {p && <span className="tile-progress">✔ {p.ok}/{p.all}</span>}
                 </a>

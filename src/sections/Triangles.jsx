@@ -29,7 +29,7 @@ function newDrill() {
   return { tri, target, right, options }
 }
 
-export default function Triangles({ record }) {
+export default function Triangles({ record, sub = 'piramidy' }) {
   const [covered, setCovered] = useState({})
   // liczby do przykładów – osobno dla każdej piramidy; te same liczby pasują do każdej zakrytej litery
   const [examples, setExamples] = useState(() => Object.fromEntries(TRIANGLES.map((t) => [t.id, SCENARIOS[t.id].values()])))
@@ -51,61 +51,69 @@ export default function Triangles({ record }) {
   return (
     <div className="section">
       <h2>Magiczne trójkąty wzorów</h2>
-      <p className="lead">
-        Kliknij literę, której szukasz – „zakryj” ją palcem. To, co zostaje, mówi jak ją obliczyć: obok
-        siebie = mnożymy, jedno nad drugim = dzielimy.
-      </p>
-      <div className="tri-grid">
-        {TRIANGLES.map((tri) => {
-          const c = covered[tri.id]
-          return (
-            <div key={tri.id} className="card tri-card">
-              <h3>{tri.title}</h3>
-              <Pyramid
-                cells={letters(tri).map((l) => ({ label: l, cls: c === l ? 'covered' : '' }))}
-                onCell={(i) => setCovered((s) => ({ ...s, [tri.id]: letters(tri)[i] }))}
-              />
-              <div className="formula">{c ? tri.formulas[c] : 'Kliknij literę'}</div>
-              <small className="muted">{c ? `${c} – ${NAMES[c][0]} [${NAMES[c][1]}]` : tri.unit}</small>
-              <Example tri={tri} target={c ?? tri.top} values={examples[tri.id]} onReroll={() => reroll(tri.id)} />
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="card game-card">
-        <div className="score">
-          Wynik: <b>{score.ok}</b> / {score.all}
-        </div>
-        <p className="question">
-          Szukasz: <b>{drill.target}</b> ({NAMES[drill.target][0]}). Znasz:{' '}
-          {known.map((k) => `${k} (${NAMES[k][0]})`).join(', ')}. Który wzór wybierzesz?
+      {sub === 'piramidy' && (
+        <>
+        <p className="lead">
+          Kliknij literę, której szukasz – „zakryj” ją palcem. To, co zostaje, mówi jak ją obliczyć: obok
+          siebie = mnożymy, jedno nad drugim = dzielimy.
         </p>
-        <div className="answers two">
-          {drill.options.map((f) => (
-            <AnswerBtn key={f} id={f} answer={answer} correct={drill.right} choose={choose}>
-              <span className="formula-inline">{f}</span>
-            </AnswerBtn>
-          ))}
+        <div className="tri-grid">
+          {TRIANGLES.map((tri) => {
+            const c = covered[tri.id]
+            return (
+              <div key={tri.id} className="card tri-card">
+                <h3>{tri.title}</h3>
+                <Pyramid
+                  cells={letters(tri).map((l) => ({ label: l, cls: c === l ? 'covered' : '' }))}
+                  onCell={(i) => setCovered((s) => ({ ...s, [tri.id]: letters(tri)[i] }))}
+                />
+                <div className="formula">{c ? tri.formulas[c] : 'Kliknij literę'}</div>
+                <small className="muted">{c ? `${c} – ${NAMES[c][0]} [${NAMES[c][1]}]` : tri.unit}</small>
+                <Example tri={tri} target={c ?? tri.top} values={examples[tri.id]} onReroll={() => reroll(tri.id)} />
+              </div>
+            )
+          })}
         </div>
-        {answer && (
-          <div className={answer === drill.right ? 'feedback ok' : 'feedback bad'}>
-            {answer === drill.right ? 'Dobrze! ' : `Poprawny wzór: ${drill.right}. `}
-            {drill.target === drill.tri.top
-              ? `${drill.target} jest na górze trójkąta – zakryj je, a zostaje dół: litery obok siebie, więc mnożymy.`
-              : `${drill.target} jest na dole – zakryj je, a zostaje ${drill.tri.top} nad pozostałymi literami, więc dzielimy ${drill.tri.top} przez nie.`}
-            <button
-              className="btn primary"
-              onClick={() => {
-                setDrill(newDrill())
-                setAnswer(null)
-              }}
-            >
-              Następne →
-            </button>
+
+        </>
+      )}
+      {sub === 'cwiczenie' && (
+        <>
+        <div className="card game-card">
+          <div className="score">
+            Wynik: <b>{score.ok}</b> / {score.all}
           </div>
-        )}
-      </div>
+          <p className="question">
+            Szukasz: <b>{drill.target}</b> ({NAMES[drill.target][0]}). Znasz:{' '}
+            {known.map((k) => `${k} (${NAMES[k][0]})`).join(', ')}. Który wzór wybierzesz?
+          </p>
+          <div className="answers two">
+            {drill.options.map((f) => (
+              <AnswerBtn key={f} id={f} answer={answer} correct={drill.right} choose={choose}>
+                <span className="formula-inline">{f}</span>
+              </AnswerBtn>
+            ))}
+          </div>
+          {answer && (
+            <div className={answer === drill.right ? 'feedback ok' : 'feedback bad'}>
+              {answer === drill.right ? 'Dobrze! ' : `Poprawny wzór: ${drill.right}. `}
+              {drill.target === drill.tri.top
+                ? `${drill.target} jest na górze trójkąta – zakryj je, a zostaje dół: litery obok siebie, więc mnożymy.`
+                : `${drill.target} jest na dole – zakryj je, a zostaje ${drill.tri.top} nad pozostałymi literami, więc dzielimy ${drill.tri.top} przez nie.`}
+              <button
+                className="btn primary"
+                onClick={() => {
+                  setDrill(newDrill())
+                  setAnswer(null)
+                }}
+              >
+                Następne →
+              </button>
+            </div>
+          )}
+        </div>
+        </>
+      )}
     </div>
   )
 }
