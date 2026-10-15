@@ -1,5 +1,5 @@
 // Strony o piramidach wzorów: każda piramida osobno i karta ze wszystkimi wzorami.
-import { Callout, Lead, Panel, Section } from '@/components/app/kit.jsx'
+import { Callout, Panel, Section } from '@/components/app/kit.jsx'
 import PyramidGuide, { FormulaSheet } from '../components/PyramidGuide.jsx'
 
 const IDS = { u: 'E', i: 'q', p: 'P', w: 'W' }
@@ -8,10 +8,6 @@ export default function Pyramids({ sub = 'u' }) {
   if (sub === 'karta') {
     return (
       <Section>
-        <Lead>
-          Wszystkie wzory z czterech piramid w jednym miejscu: literami, słowami i w jednostkach. „:” to dzielenie, „·” to
-          mnożenie.
-        </Lead>
         <Panel>
           <FormulaSheet />
         </Panel>

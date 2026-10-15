@@ -194,7 +194,7 @@ export const LESSONS = [
     desc: 'Piramidy z pamięci, luki we wzorach, wzory z klocków, jednostki.',
     steps: [
       t('budowa', 'Jak zbudowana jest piramida?', FormulaTrainer, { sub: 'budowa' }),
-      t('karta', 'Wszystkie wzory – literami, słowami, w jednostkach', Pyramids, { sub: 'karta' }),
+      t('karta', 'Wszystkie wzory', Pyramids, { sub: 'karta' }),
       c('piramida', 'Ułóż piramidę', FormulaTrainer, { sub: 'piramida' }),
       c('luki', 'Uzupełnij wzór', FormulaDrills, { sub: 'luki' }),
       c('wzor', 'Ułóż wzór z klocków', FormulaTrainer, { sub: 'wzor' }),

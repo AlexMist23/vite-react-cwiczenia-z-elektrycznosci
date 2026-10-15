@@ -210,11 +210,16 @@ export function FormulaSheet() {
             </div>
             <div>
               <b>{tri.title}</b>
-              <div className="text-sm text-muted-foreground">
-                {letters(tri)
-                  .map((l) => `${l} – ${NAMES[l][0]} [${UNIT[l][0]} – ${UNIT[l][1]}]`)
-                  .join(', ')}
-              </div>
+              <ul className="text-sm text-muted-foreground">
+                {letters(tri).map((l) => (
+                  <li key={l}>
+                    <b className="font-formula text-foreground italic">{l}</b> – {NAMES[l][0]}{' '}
+                    <span className="whitespace-nowrap">
+                      [{UNIT[l][0]} – {UNIT[l][1]}]
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <div className="grid gap-1.5">

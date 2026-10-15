@@ -147,7 +147,7 @@ export const NOTES = {
     </Note>
   ),
   pyramids: () => (
-    <Note title="Piramidy – wszystkie wzory (literami, słowami, w jednostkach)" wide>
+    <Note title="Piramidy – wszystkie wzory" wide>
       <FormulaSheet />
     </Note>
   ),
