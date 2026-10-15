@@ -2,6 +2,7 @@
 import { BookOpen } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Expr, Formula, Lead, Section } from '@/components/app/kit.jsx'
+import { FormulaSheet } from '../components/PyramidGuide.jsx'
 import { cn } from '@/lib/utils'
 
 function Note({ title, wide, children }) {
@@ -143,6 +144,11 @@ export const NOTES = {
       <p className="text-sm">
         Z wzoru na pracę: <b>I = W / (U · t)</b>.
       </p>
+    </Note>
+  ),
+  pyramids: () => (
+    <Note title="Piramidy – wszystkie wzory (literami, słowami, w jednostkach)" wide>
+      <FormulaSheet />
     </Note>
   ),
   prefixes: () => (

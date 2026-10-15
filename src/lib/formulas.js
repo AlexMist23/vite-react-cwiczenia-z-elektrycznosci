@@ -102,3 +102,33 @@ export function samePyramid(cells, tri) {
   const b = [...tri.bottom].sort().join()
   return a === b
 }
+
+/** Wielkości słowami (do zapisu wzoru wyrazami) i ich jednostki: [symbol, nazwa]. */
+export const WORDS = { E: 'energia', W: 'praca', U: 'napięcie', q: 'ładunek', I: 'natężenie', t: 'czas', P: 'moc' }
+export const UNIT = {
+  E: ['J', 'dżul'],
+  W: ['J', 'dżul'],
+  U: ['V', 'wolt'],
+  q: ['C', 'kulomb'],
+  I: ['A', 'amper'],
+  t: ['s', 'sekunda'],
+  P: ['W', 'wat'],
+}
+
+/** Zamienia litery we wzorze według mapy, „/” na „:” (tak liczymy na kartce). */
+function rewrite(formula, map) {
+  const [left, right] = formula.split('=').map((s) => s.trim())
+  const tokens = [left, '=', ...tokenize(right)]
+  return tokens
+    .map((t) => (t === '/' ? ':' : (map[t] ?? t)))
+    .join(' ')
+    .replace(/\( /g, '(')
+    .replace(/ \)/g, ')')
+}
+
+/** 'U = E / q' → 'napięcie = energia : ładunek'. */
+export const inWords = (formula) => rewrite(formula, WORDS)
+/** 'U = E / q' → 'V = J : C'. */
+export const inUnits = (formula) => rewrite(formula, Object.fromEntries(Object.entries(UNIT).map(([k, [s]]) => [k, s])))
+/** 'U = E / q' → 'wolt = dżul : kulomb'. */
+export const inUnitNames = (formula) => rewrite(formula, Object.fromEntries(Object.entries(UNIT).map(([k, [, n]]) => [k, n])))

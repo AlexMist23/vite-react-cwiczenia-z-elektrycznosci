@@ -30,6 +30,7 @@ import FormulaTrainer from '../sections/FormulaTrainer.jsx'
 import Media from '../sections/Media.jsx'
 import Notes from '../sections/Notes.jsx'
 import Problems from '../sections/Problems.jsx'
+import Pyramids from '../sections/Pyramids.jsx'
 import Quantities from '../sections/Quantities.jsx'
 import Quiz from '../sections/Quiz.jsx'
 import Summary from '../sections/Summary.jsx'
@@ -151,7 +152,8 @@ export const LESSONS = [
     steps: [
       t('napiecie', 'Napięcie elektryczne', Quantities, { sub: 'napiecie' }),
       t('natezenie', 'Natężenie prądu', Quantities, { sub: 'natezenie' }),
-      t('piramidy', 'Piramidy wzorów', Triangles, { sub: 'piramidy', only: ['E', 'q'] }),
+      t('piramida-u', 'Piramida napięcia', Pyramids, { sub: 'u' }),
+      t('piramida-i', 'Piramida natężenia', Pyramids, { sub: 'i' }),
       c('wzory-c', 'Który wzór?', Triangles, { sub: 'cwiczenie', only: ['E', 'q'] }),
       c('zadania', 'Obliczenia', Problems, { topics: ['Napięcie', 'Natężenie'] }),
       sum(['voltage', 'current']),
@@ -165,7 +167,8 @@ export const LESSONS = [
     desc: 'W = U · I · t, P = U · I i rachunek za prąd w kWh.',
     steps: [
       t('praca', 'Praca i moc', Quantities, { sub: 'praca' }),
-      t('piramidy', 'Piramidy wzorów', Triangles, { sub: 'piramidy', only: ['P', 'W'] }),
+      t('piramida-p', 'Piramida mocy', Pyramids, { sub: 'p' }),
+      t('piramida-w', 'Piramida pracy', Pyramids, { sub: 'w' }),
       c('wzory-c', 'Który wzór?', Triangles, { sub: 'cwiczenie', only: ['P', 'W'] }),
       c('zadania', 'Obliczenia', Problems, { topics: ['Moc', 'Praca'] }),
       sum(['work']),
@@ -191,6 +194,7 @@ export const LESSONS = [
     desc: 'Piramidy z pamięci, luki we wzorach, wzory z klocków, jednostki.',
     steps: [
       t('budowa', 'Jak zbudowana jest piramida?', FormulaTrainer, { sub: 'budowa' }),
+      t('karta', 'Wszystkie wzory – literami, słowami, w jednostkach', Pyramids, { sub: 'karta' }),
       c('piramida', 'Ułóż piramidę', FormulaTrainer, { sub: 'piramida' }),
       c('luki', 'Uzupełnij wzór', FormulaDrills, { sub: 'luki' }),
       c('wzor', 'Ułóż wzór z klocków', FormulaTrainer, { sub: 'wzor' }),
@@ -258,8 +262,10 @@ const REDIRECTS = {
   zagadki: 'obwod/zarowka',
   'zagadki/zarowka': 'obwod/zarowka',
   'zagadki/woda': 'obwod/woda-c',
-  wzory: 'napiecie/piramidy',
-  'wzory/piramidy': 'napiecie/piramidy',
+  wzory: 'napiecie/piramida-u',
+  'wzory/piramidy': 'napiecie/piramida-u',
+  'napiecie/piramidy': 'napiecie/piramida-u',
+  'praca/piramidy': 'praca/piramida-p',
   'wzory/cwiczenie': 'napiecie/wzory-c',
   'wzor-obliczenie': 'rachunki/wzor-obliczenie',
   zadania: 'rachunki/zadania',

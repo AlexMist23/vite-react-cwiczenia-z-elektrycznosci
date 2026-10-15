@@ -63,3 +63,20 @@ describe('układanie wzorów', () => {
     expect(samePyramid(['U', 'W', 'I', 't'], W)).toBe(false)
   })
 })
+
+describe('wzory słowami i w jednostkach', async () => {
+  const { inUnitNames, inUnits, inWords } = await import('./formulas.js')
+  it('napięcie', () => {
+    expect(inWords('U = E / q')).toBe('napięcie = energia : ładunek')
+    expect(inUnits('U = E / q')).toBe('V = J : C')
+    expect(inUnitNames('U = E / q')).toBe('wolt = dżul : kulomb')
+  })
+  it('praca z nawiasem', () => {
+    expect(inWords('I = W / (U · t)')).toBe('natężenie = praca : (napięcie · czas)')
+    expect(inUnits('I = W / (U · t)')).toBe('A = J : (V · s)')
+  })
+  it('moc: litera W jako wat tylko w jednostkach', () => {
+    expect(inUnits('P = U · I')).toBe('W = V · A')
+    expect(inUnitNames('W = U · I · t')).toBe('dżul = wolt · amper · sekunda')
+  })
+})
