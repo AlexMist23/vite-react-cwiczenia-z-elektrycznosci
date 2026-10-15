@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ArrowRight, Droplets, MoveHorizontal, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Answers, Callout, Feedback, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Callout, Feedback, FlowLegend, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
@@ -103,8 +103,28 @@ const DESCRIPTIONS = {
   D: 'Świeci tylko, gdy wyłącznik jest otwarty',
 }
 
+// Droga prądu w każdym obwodzie: ścieżki rysowane od bieguna „+” (u góry baterii) w stronę „−”.
+// short – w obwodzie nie ma odbiornika, czyli zwarcie.
+const LOOP = 'M40,110 V30 H300 V190 H40 Z'
+const BYPASS = 'M40,110 V30 H110 V95 H230 V30 H300 V190 H40 Z'
+const FLOWS = {
+  series: (c) => ({ paths: c ? [LOOP] : [] }),
+  'switch-shorts-bulb': (c) => ({ paths: [c ? BYPASS : LOOP], short: c }),
+  'wire-shorts-bulb': (c) => ({ paths: c ? [BYPASS] : [], short: c }),
+  'switch-parallel-wire': (c) => ({ paths: c ? [LOOP, 'M300,60 H370 V160 H300'] : [LOOP] }),
+  'open-loop': () => ({ paths: [] }),
+  'book-middle-wire': (c) => ({
+    paths: c ? ['M40,110 V30 H210 V190 H40 Z', 'M210,30 H300 V190 H210'] : ['M40,110 V30 H210 V190 H40 Z'],
+  }),
+  'book-bulb-parallel-switch': (c) => ({ paths: [c ? LOOP : 'M40,110 V30 H170 V190 H40 Z'], short: c }),
+  'series-bottom-switch': (c) => ({ paths: c ? [LOOP] : [] }),
+  'book-bulb-shorted-top': (c) => ({ paths: c ? ['M40,140 V30 H300 V190 H40 Z'] : [], short: c }),
+}
+
+/** showGlow – po odpowiedzi: żarówka świeci (albo nie) i widać, którędy płynie prąd. */
 function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const lit = showGlow && topo.shines(closed)
+  const flow = showGlow ? FLOWS[topo.id](closed) : { paths: [] }
   const bat = topo.bat ?? { x: 40, y: 110, rot: 90 } // „+” u góry, jak w podręczniku
   const bulb = topo.bulb ?? { x: 170, y: 30, rot: 0 }
   return (
@@ -120,7 +140,19 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
         {topo.wires.map((d) => (
           <path key={d} d={d} className="wire" />
         ))}
+        {/* prąd (umowny, od „+”) i elektrony (w przeciwną stronę) – jadą po przewodach */}
+        {flow.paths.map((d) => (
+          <path key={`i${d}`} d={d} className="flow-current" />
+        ))}
+        {flow.paths.map((d) => (
+          <path key={`e${d}`} d={d} className="flow-electrons" />
+        ))}
       </CutWires>
+      {flow.short && (
+        <text x="170" y="214" textAnchor="middle" className="label danger">
+          ZWARCIE – prąd omija żarówkę
+        </text>
+      )}
       {topo.dots?.map(([x, y]) => (
         <circle key={`${x}-${y}`} cx={x} cy={y} r="4.5" fill="var(--wire)" />
       ))}
@@ -169,6 +201,7 @@ function BulbGame({ record }) {
   return (
     <Panel title="Który opis pasuje do tego obwodu?" score={<Score ok={score.ok} all={score.all} />}>
       <PuzzleCircuit topo={topo} closed={closed} onToggle={() => answer && setClosed((c) => !c)} showGlow={!!answer} />
+      {answer && <FlowLegend />}
       {answer && (
         <p className="text-center text-sm text-muted-foreground">
           Teraz możesz klikać wyłącznik i sprawdzić, kiedy żarówka świeci (wyłącznik:{' '}
@@ -288,6 +321,7 @@ function DemoCircuit({ topoId, caption }) {
   return (
     <Panel title="Pokaz" contentClassName="gap-2">
       <PuzzleCircuit topo={topo} closed={closed} onToggle={() => setClosed((c) => !c)} showGlow />
+      <FlowLegend />
       <p className="text-center text-sm text-muted-foreground">
         Kliknij wyłącznik. Teraz jest <b className="text-foreground">{closed ? 'zamknięty' : 'otwarty'}</b> –{' '}
         {caption(closed, topo.shines(closed))}
