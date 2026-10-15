@@ -101,22 +101,33 @@ function newPyramidTask(pool, prev) {
 function PyramidDrill({ pool, onResult }) {
   const [task, setTask] = useState(() => newPyramidTask(pool))
   const [cells, setCells] = useState(() => letters(task.tri).map(() => ''))
+  const [sel, setSel] = useState(0) // wybrane pole: 0 – góra piramidy, potem pola dołu
   const [state, setState] = useState(null) // null | 'ok' | 'bad' | 'shown'
   const [tries, setTries] = useState(0)
   const finished = state === 'ok' || state === 'shown'
   const used = cells.filter(Boolean)
 
+  // litera trafia do wybranego pola (zastępuje to, co tam było), a wybór przechodzi do następnego pustego
   const put = (l) => {
     if (finished) return
-    const i = cells.indexOf('')
-    if (i < 0) return
-    setCells((c) => c.map((x, k) => (k === i ? l : x)))
+    const nextCells = cells.map((x, k) => (k === sel ? l : x))
+    setCells(nextCells)
+    const n = nextCells.length
+    const empty = Array.from({ length: n }, (_, k) => (sel + 1 + k) % n).find((k) => !nextCells[k])
+    if (empty !== undefined) setSel(empty)
     setState(null)
   }
-  const clear = (i) => {
+  // kliknięcie pola wybiera je; kliknięcie wybranego, wypełnionego pola zdejmuje literę
+  const onCell = (i) => {
     if (finished) return
-    setCells((c) => c.map((x, k) => (k === i ? '' : x)))
-    setState(null)
+    if (i !== sel) {
+      setSel(i)
+      return
+    }
+    if (cells[i]) {
+      setCells((c) => c.map((x, k) => (k === i ? '' : x)))
+      setState(null)
+    }
   }
   const check = () => {
     const ok = samePyramid(cells, task.tri)
@@ -133,11 +144,13 @@ function PyramidDrill({ pool, onResult }) {
     const t = newPyramidTask(pool, task)
     setTask(t)
     setCells(letters(t.tri).map(() => ''))
+    setSel(0)
     setState(null)
     setTries(0)
   }
 
   const cls = state === 'ok' ? 'right' : state === 'bad' ? 'wrong' : ''
+  const cellCls = (l, i) => [l ? `filled ${cls}` : '', !finished && i === sel ? 'selected' : ''].join(' ')
 
   return (
     <>
@@ -145,10 +158,11 @@ function PyramidDrill({ pool, onResult }) {
         Ułóż piramidę dla wzoru <Formula>{task.given}</Formula>
       </Question>
       <p className="text-muted-foreground">
-        Klikaj litery – wypełniają piramidę od góry. Kliknij literę w piramidzie, żeby ją zdjąć.
+        Wybrane pole jest obrysowane – na początku to góra piramidy. Kliknij dowolne pole, żeby je wybrać (możesz zacząć
+        od dołu), a potem kliknij literę. Kliknij wybrane pole jeszcze raz, żeby zdjąć z niego literę.
       </p>
       <div className="flex flex-wrap items-center gap-4.5 [&_.triangle]:max-w-60">
-        <Pyramid cells={cells.map((l) => ({ label: l, cls: l ? `filled ${cls}` : '' }))} onCell={clear} />
+        <Pyramid cells={cells.map((l, i) => ({ label: l, cls: cellCls(l, i) }))} onCell={onCell} />
         <div className="flex flex-wrap gap-2">
           {task.pool.map((l) => (
             <TileBtn key={l} letter onClick={() => put(l)} disabled={finished || used.includes(l)}>

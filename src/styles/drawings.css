@@ -61,6 +61,12 @@
 .tri-cell.empty .tri-letter { fill: var(--muted-foreground); opacity: 0.5; }
 .tri-cell.filled.right .tri-hit { fill: var(--success-soft); }
 .tri-cell.filled.wrong .tri-hit { fill: var(--destructive-soft); }
+/* pole wybrane do wpisania litery (układanie piramidy) */
+.tri-cell.selected .tri-hit {
+  fill: color-mix(in srgb, var(--primary) 14%, transparent);
+  stroke: var(--primary); stroke-width: 2.5; stroke-dasharray: 5 4;
+}
+.tri-cell.selected .tri-letter { fill: var(--primary); opacity: 1; }
 .hint-pyramid .tri-cell { cursor: default; }
 .pyr-option .triangle { max-width: 130px; display: block; margin: 0 auto; }
 .pyr-option .tri-cell { pointer-events: none; }
