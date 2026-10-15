@@ -16,6 +16,13 @@ Interaktywna aplikacja (Vite + React) do nauki o prądzie elektrycznym. Cała tr
 - **Sprawdzian** – quiz z oceną wg progów procentowych z lekcji.
 - **Ściąga** – notatki z zeszytu, uporządkowane i poprawione (np. 50 mA = 0,05 A).
 
+## Wygląd i kod
+- **Tailwind CSS v4** + **shadcn/ui** (komponenty w `src/components/ui/`, dodawane przez `npx shadcn@latest add …`).
+- Ikony: **lucide-react** – bez emoji w interfejsie.
+- Wspólne klocki ćwiczeń (odpowiedzi, informacja zwrotna, wzory, liczniki): `src/components/app/kit.jsx`.
+- Układ strony (pasek boczny, nagłówek, strona startowa): `src/layout/`; lista działów: `src/data/sections.js`.
+- Kolory motywu: `src/index.css`; style rysunków SVG (obwody, ładunki, piramidy): `src/styles/drawings.css`.
+
 ## Uruchomienie
 ```bash
 npm install

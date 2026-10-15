@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Expr, Feedback, GivenSought, Lead, NumberInput, Panel, Question, Score, Section, StepTitle } from '@/components/app/kit.jsx'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
 import PyramidChoice from '../components/PyramidChoice.jsx'
 import PyramidPicker, { poolFor } from '../components/PyramidPicker.jsx'
@@ -77,13 +80,12 @@ export default function FormulaToCalc({ record }) {
   const substituted = substitute(formula, values)
 
   return (
-    <div className="section">
-      <h2>Wzór → obliczenie</h2>
-      <p className="lead">
+    <Section>
+      <Lead>
         <b>Krok 1:</b> dobierz piramidę, która pasuje do zadania. <b>Krok 2:</b> ułóż z klocków wzór na szukaną
         wielkość. <b>Krok 3:</b> podstaw liczby i wpisz wynik – sprawdzimy go. Punkt dostajesz, gdy wszystko
         zrobisz dobrze za pierwszym razem. (Po wybraniu jednej piramidy krok 1 jest pomijany.)
-      </p>
+      </Lead>
       <PyramidPicker
         value={pyr}
         onChange={(id) => {
@@ -91,38 +93,31 @@ export default function FormulaToCalc({ record }) {
           next(id)
         }}
       />
-      <div className="card game-card">
-        <div className="score">
-          Wynik: <b>{score.ok}</b> / {score.all}
-        </div>
-        <p className="question">{task.text}</p>
-        <div className="steps-cols data-box">
-          <div>
-            <div className="steps-h">Dane:</div>
-            {known.map((k) => (
-              <div key={k} className="formula-inline">
-                {k} = {f(values[k])} {UNITS[k]}
-              </div>
-            ))}
-          </div>
-          <div>
-            <div className="steps-h">Szukane:</div>
-            <div className="formula-inline">
-              {target} = ? <span className="muted">({NAMES[target][0]})</span>
-            </div>
-          </div>
-        </div>
+      <Panel score={<Score ok={score.ok} all={score.all} />}>
+        <Question>{task.text}</Question>
+        <GivenSought
+          given={known.map((k) => (
+            <Expr key={k} className="block">
+              {k} = {f(values[k])} {UNITS[k]}
+            </Expr>
+          ))}
+          sought={
+            <Expr className="block">
+              {target} = ? <span className="text-muted-foreground">({NAMES[target][0]})</span>
+            </Expr>
+          }
+        />
 
         {choosePyr && (
           <>
-            <h3 className="step-title">Krok 1: która piramida pasuje do zadania?</h3>
+            <StepTitle>Krok 1: która piramida pasuje do zadania?</StepTitle>
             <PyramidChoice key={task.key} correct={tri} needed={[target, ...known]} onDone={setPyrOk} />
           </>
         )}
 
         {stepFormula && (
           <>
-            <h3 className="step-title">Krok {n + 1}: wzór</h3>
+            <StepTitle>Krok {n + 1}: wzór</StepTitle>
             <FormulaBuilder
               key={task.key}
               target={target}
@@ -135,13 +130,13 @@ export default function FormulaToCalc({ record }) {
 
         {step2 && (
           <>
-            <h3 className="step-title">Krok {n + 2}: obliczenie</h3>
-            <p className="formula-inline">
+            <StepTitle>Krok {n + 2}: obliczenie</StepTitle>
+            <Expr>
               {target} = {substituted} = ?
-            </p>
-            <form className="num-form" onSubmit={check}>
-              <input
-                inputMode="decimal"
+            </Expr>
+            <form className="flex flex-wrap items-center gap-2" onSubmit={check}>
+              <NumberInput
+                unit={unit}
                 value={value}
                 autoFocus
                 onChange={(e) => {
@@ -152,38 +147,38 @@ export default function FormulaToCalc({ record }) {
                 disabled={finished}
                 aria-label="Wynik"
               />
-              <span className="unit">{unit}</span>
               {!finished && (
-                <button className="btn primary" type="submit">
+                <Button size="lg" type="submit">
                   Sprawdź wynik
-                </button>
+                </Button>
               )}
               {!finished && tries > 0 && (
-                <button className="btn" type="button" onClick={reveal}>
+                <Button size="lg" variant="outline" type="button" onClick={reveal}>
                   Pokaż wynik
-                </button>
+                </Button>
               )}
             </form>
-            {state === 'nan' && <div className="feedback bad">Wpisz liczbę, np. 0,5 albo 120.</div>}
+            {state === 'nan' && <Feedback tone="bad">Wpisz liczbę, np. 0,5 albo 120.</Feedback>}
             {state === 'bad' && (
-              <div className="feedback bad">Wynik się nie zgadza. Sprawdź mnożenie i dzielenie – spróbuj jeszcze raz.</div>
+              <Feedback tone="bad">Wynik się nie zgadza. Sprawdź mnożenie i dzielenie – spróbuj jeszcze raz.</Feedback>
             )}
             {finished && (
-              <div className={state === 'ok' ? 'feedback ok' : 'feedback info'}>
+              <Feedback tone={state === 'ok' ? 'ok' : 'info'}>
                 <div>
                   {state === 'ok' ? 'Brawo! ' : ''}
-                  <span className="formula-inline">
+                  <Expr>
                     {target} = {substituted} = <b>{f(answer)} {unit}</b>
-                  </span>
+                  </Expr>
                 </div>
-                <button className="btn primary" onClick={() => next()}>
-                  Następne zadanie →
-                </button>
-              </div>
+                <Button onClick={() => next()}>
+                  Następne zadanie
+                  <ArrowRight data-icon="inline-end" />
+                </Button>
+              </Feedback>
             )}
           </>
         )}
-      </div>
-    </div>
+      </Panel>
+    </Section>
   )
 }

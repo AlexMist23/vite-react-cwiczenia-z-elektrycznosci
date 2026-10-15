@@ -21,7 +21,7 @@ export default function AppHeader({ section, sub }) {
           {section ? (
             <>
               <BreadcrumbItem className="hidden lg:inline-flex">
-                <span className="text-(--sec)">{groupOf(section).title}</span>
+                <span className="text-sec">{groupOf(section).title}</span>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden lg:block" />
               <BreadcrumbItem className="min-w-0">

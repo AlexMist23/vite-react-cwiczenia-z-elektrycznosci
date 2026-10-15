@@ -34,11 +34,12 @@
     --color-warn-soft: var(--warn-soft);
     --color-info: var(--electron);
     --color-info-soft: var(--info-soft);
-    --color-current: var(--current);
+    --color-current-flow: var(--current);
     --color-electron: var(--electron);
     --color-volt: var(--volt);
     --color-primary-soft: var(--primary-soft);
     --color-sec: var(--sec);
+    --color-g: var(--g);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);

@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
+import { Answers, BookRef, Feedback, Lead, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { SYMBOLS, SymbolIcon } from '../components/Symbols.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
-import BookRef from '../components/BookRef.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
 const TYPES = Object.keys(SYMBOLS)
@@ -28,77 +31,79 @@ export default function SymbolGame({ record, sub = 'sciaga' }) {
   }
 
   return (
-    <div className="section">
-      <h2>Symbole elementów obwodu</h2>
+    <Section>
       <BookRef pages="32" topics="Symbole elementów w obwodach elektrycznych" />
-      <p className="lead">
-        Schemat obwodu rysujemy za pomocą umownych symboli. Rozpoznaj je wszystkie!
-      </p>
+      <Lead>Schemat obwodu rysujemy za pomocą umownych symboli. Rozpoznaj je wszystkie!</Lead>
 
       {sub === 'rozpoznaj' && (
-        <>
-        <div className="card game-card">
-          <div className="score">
-            Wynik: <b>{score.ok}</b> / {score.all}
-          </div>
+        <Panel
+          title={
+            task.reverse ? (
+              <>
+                Który symbol oznacza: <span className="text-sec">{SYMBOLS[task.type].name.toLowerCase()}</span>?
+              </>
+            ) : (
+              'Co oznacza ten symbol?'
+            )
+          }
+          score={<Score ok={score.ok} all={score.all} />}
+        >
           {task.reverse ? (
-            <>
-              <p className="question">
-                Który symbol oznacza: <b>{SYMBOLS[task.type].name.toLowerCase()}</b>?
-              </p>
-              <div className="answers four">
-                {task.options.map((t) => (
-                  <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
-                    <SymbolIcon type={t} size={110} />
-                  </AnswerBtn>
-                ))}
-              </div>
-            </>
+            <Answers cols="four">
+              {task.options.map((t) => (
+                <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose} className="justify-center">
+                  <SymbolIcon type={t} size={110} />
+                </AnswerBtn>
+              ))}
+            </Answers>
           ) : (
             <>
-              <p className="question">Co oznacza ten symbol?</p>
-              <div className="symbol-big">
+              <div className="flex justify-center p-2">
                 <SymbolIcon type={task.type} size={220} />
               </div>
-              <div className="answers two">
+              <Answers cols="two">
                 {task.options.map((t) => (
                   <AnswerBtn key={t} id={t} answer={answer} correct={task.type} choose={choose}>
                     {SYMBOLS[t].name}
                   </AnswerBtn>
                 ))}
-              </div>
+              </Answers>
             </>
           )}
           {answer && (
-            <div className={answer === task.type ? 'feedback ok' : 'feedback bad'}>
-              {answer === task.type ? 'Dobrze! ' : `To jest: ${SYMBOLS[task.type].name}. `}
-              {SYMBOLS[task.type].hint}
-              <button
-                className="btn primary"
+            <Feedback tone={answer === task.type ? 'ok' : 'bad'}>
+              <div>
+                <Verdict ok={answer === task.type}>
+                  {answer === task.type ? 'Dobrze!' : `To jest: ${SYMBOLS[task.type].name}.`}
+                </Verdict>{' '}
+                {SYMBOLS[task.type].hint}
+              </div>
+              <Button
                 onClick={() => {
                   setTask(newTask(task.type))
                   setAnswer(null)
                 }}
               >
-                Następne →
-              </button>
-            </div>
+                Następne
+                <ArrowRight data-icon="inline-end" />
+              </Button>
+            </Feedback>
           )}
-        </div>
-
-        </>
+        </Panel>
       )}
       {sub === 'sciaga' && (
-        <div className="symbol-grid">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3">
           {TYPES.map((t) => (
-            <div key={t} className="card symbol-tile">
-              <SymbolIcon type={t} size={120} />
-              <b>{SYMBOLS[t].name}</b>
-              <small>{SYMBOLS[t].hint}</small>
-            </div>
+            <Card key={t}>
+              <CardContent className="flex flex-col items-center gap-1 text-center">
+                <SymbolIcon type={t} size={120} />
+                <CardTitle className="font-semibold">{SYMBOLS[t].name}</CardTitle>
+                <CardDescription>{SYMBOLS[t].hint}</CardDescription>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
-    </div>
+    </Section>
   )
 }

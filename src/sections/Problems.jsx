@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Lead, Section } from '@/components/app/kit.jsx'
 import NumberTask from '../components/NumberTask.jsx'
 import { clean, fmt, pick } from '../lib/physics.js'
 
@@ -228,20 +230,26 @@ export default function Problems({ record }) {
   const gen = () => pick(PROBLEMS.filter((p) => topic === 'Wszystkie' || p.topic === topic)).make()
 
   return (
-    <div className="section">
-      <h2>Zadania obliczeniowe</h2>
-      <p className="lead">
-        Rozwiązuj jak w zeszycie: wypisz <b>dane</b> i <b>szukane</b>, zamień jednostki, dobierz wzór i
-        policz. Liczby dziesiętne możesz wpisywać z przecinkiem (np. 0,15).
-      </p>
-      <div className="seg wrap">
+    <Section>
+      <Lead>
+        Rozwiązuj jak w zeszycie: wypisz <b>dane</b> i <b>szukane</b>, zamień jednostki, dobierz wzór i policz. Liczby
+        dziesiętne możesz wpisywać z przecinkiem (np. 0,15).
+      </Lead>
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        value={topic}
+        onValueChange={(v) => v && setTopic(v)}
+        aria-label="Temat zadań"
+        className="flex-wrap"
+      >
         {TOPICS.map((t) => (
-          <button key={t} className={topic === t ? 'active' : ''} onClick={() => setTopic(t)}>
+          <ToggleGroupItem key={t} value={t} className="px-3.5">
             {t}
-          </button>
+          </ToggleGroupItem>
         ))}
-      </div>
+      </ToggleGroup>
       <NumberTask key={topic} generate={gen} onResult={(ok) => record('zadania', ok)} />
-    </div>
+    </Section>
   )
 }

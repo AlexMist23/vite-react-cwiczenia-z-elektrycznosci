@@ -29,11 +29,11 @@ export default function SectionHeader({ section, progress, onReset }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-start gap-3">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--sec)/12 text-(--sec)">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-sec/12 text-sec">
           <section.icon className="size-6" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-xs font-semibold tracking-wide text-(--sec) uppercase">{groupOf(section).title}</div>
+          <div className="text-xs font-semibold tracking-wide text-sec uppercase">{groupOf(section).title}</div>
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{section.title}</h1>
         </div>
         <DropdownMenu>
@@ -54,7 +54,7 @@ export default function SectionHeader({ section, progress, onReset }) {
       </div>
 
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
-        <Progress value={pct} className="h-2 max-w-xs" indicatorClassName="bg-(--sec)" />
+        <Progress value={pct} className="h-2 max-w-xs" indicatorClassName="bg-sec" />
         <span className="shrink-0">
           {progress ? (
             <>

@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import { Delete } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Expr, Feedback, TileBtn } from './app/kit.jsx'
 import { evaluate, rhs, sameFormula } from '../lib/formulas.js'
 
 /**
@@ -38,50 +42,57 @@ export default function FormulaBuilder({ target, vars, formula, onDone }) {
   }
 
   return (
-    <div className="builder">
-      <div className={`builder-display ${state === 'ok' ? 'ok' : ''} ${state === 'bad' || state === 'syntax' ? 'bad' : ''}`}>
-        <span className="formula-inline">
-          <b>{target}</b> = {tokens.length ? tokens.join(' ') : <span className="muted">…</span>}
-        </span>
+    <div className="flex flex-col gap-2.5">
+      <div
+        className={cn(
+          'flex min-h-14 items-center rounded-xl border-2 border-dashed bg-secondary px-4 py-2',
+          state === 'ok' && 'border-solid border-success bg-success-soft',
+          (state === 'bad' || state === 'syntax') && 'border-solid border-destructive bg-destructive-soft',
+        )}
+      >
+        <Expr className="text-2xl italic">
+          <b>{target}</b> = {tokens.length ? tokens.join(' ') : <span className="text-muted-foreground">…</span>}
+        </Expr>
       </div>
       {!finished && (
         <>
-          <div className="builder-tiles">
+          <div className="flex flex-wrap gap-2">
             {tiles.map((v) => (
-              <button key={v} className="tile-btn letter" onClick={() => add(v)}>
+              <TileBtn key={v} letter onClick={() => add(v)}>
                 {v}
-              </button>
+              </TileBtn>
             ))}
             {['·', '/', '(', ')'].map((op) => (
-              <button key={op} className="tile-btn op" onClick={() => add(op)} aria-label={op === '·' ? 'razy' : op === '/' ? 'dzielone przez' : op}>
+              <TileBtn key={op} className="font-bold" onClick={() => add(op)} aria-label={op === '·' ? 'razy' : op === '/' ? 'dzielone przez' : op}>
                 {op}
-              </button>
+              </TileBtn>
             ))}
-            <button className="tile-btn" onClick={() => { setTokens((s) => s.slice(0, -1)); setState(null) }} aria-label="Cofnij">
-              ⌫
-            </button>
+            <TileBtn onClick={() => { setTokens((s) => s.slice(0, -1)); setState(null) }} aria-label="Cofnij">
+              <Delete className="size-6" />
+            </TileBtn>
           </div>
-          <div className="btn-row">
-            <button className="btn primary" onClick={check} disabled={!tokens.length}>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={check} disabled={!tokens.length}>
               Sprawdź wzór
-            </button>
-            <button className="btn" onClick={() => { setTokens([]); setState(null) }}>
+            </Button>
+            <Button variant="outline" onClick={() => { setTokens([]); setState(null) }}>
               Wyczyść
-            </button>
+            </Button>
             {tries > 0 && (
-              <button className="btn" onClick={reveal}>
+              <Button variant="outline" onClick={reveal}>
                 Pokaż wzór
-              </button>
+              </Button>
             )}
           </div>
         </>
       )}
       {state === 'syntax' && (
-        <div className="feedback bad">Ten zapis jest niekompletny – między literami musi stać „·” albo „/”, a nawiasy muszą się zamykać.</div>
+        <Feedback tone="bad">Ten zapis jest niekompletny – między literami musi stać „·” albo „/”, a nawiasy muszą się zamykać.</Feedback>
       )}
-      {state === 'bad' && <div className="feedback bad">To nie jest dobry wzór. Pomyśl o trójkącie: zakryj {target} i zobacz, co zostaje.</div>}
-      {state === 'ok' && <div className="feedback ok">Dobrze! {formula}</div>}
-      {state === 'shown' && <div className="feedback info">Poprawny wzór: {formula}</div>}
+      {state === 'bad' && <Feedback tone="bad">To nie jest dobry wzór. Pomyśl o trójkącie: zakryj {target} i zobacz, co zostaje.</Feedback>}
+      {state === 'ok' && <Feedback tone="ok">Dobrze! {formula}</Feedback>}
+      {state === 'shown' && <Feedback tone="info">Poprawny wzór: {formula}</Feedback>}
     </div>
   )
 }
+

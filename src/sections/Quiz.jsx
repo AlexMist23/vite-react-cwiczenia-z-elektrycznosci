@@ -1,4 +1,11 @@
 import { useState } from 'react'
+import { ArrowRight, Dumbbell, Lightbulb, RotateCcw, Smile } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Answers, Chip, Feedback, Lead, Panel, Question, Section, Verdict } from '@/components/app/kit.jsx'
+import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { QUIZ } from '../data/quiz.js'
 import { HINTS } from '../data/quizHints.js'
@@ -18,16 +25,27 @@ function build(n, easy) {
 
 const LEVELS = {
   easy: {
-    label: '🙂 Łatwa',
+    label: 'Łatwa',
+    icon: Smile,
     desc: 'Po 3 odpowiedzi do wyboru. W każdym pytaniu możesz zajrzeć do wskazówki, a po złej odpowiedzi masz drugą szansę. Pełny punkt za odpowiedź bez pomocy, pół punktu – ze wskazówką albo za drugim razem.',
   },
   hard: {
-    label: '💪 Trudna',
+    label: 'Trudna',
+    icon: Dumbbell,
     desc: 'Po 4 odpowiedzi, bez wskazówek, jedna próba – jak na prawdziwym sprawdzianie.',
   },
 }
 
 const fmtPts = (x) => String(x).replace('.', ',')
+
+const GRADE_BG = {
+  6: 'bg-success',
+  5: 'bg-success',
+  4: 'bg-electron',
+  3: 'bg-warn',
+  2: 'bg-current-flow',
+  1: 'bg-destructive',
+}
 
 export default function Quiz({ record }) {
   const [level, setLevel] = useState('easy')
@@ -50,28 +68,33 @@ export default function Quiz({ record }) {
 
   if (!qs) {
     return (
-      <div className="section">
-        <h2>Sprawdzian – quiz końcowy</h2>
-        <p className="lead">
+      <Section>
+        <Lead>
           Pytania z całego działu: elektryzowanie, obwody, kierunek prądu, ośrodki, skutki, wzory, jednostki i rachunki.
           Na końcu dostaniesz wynik i ocenę.
-        </p>
-        <div className="card">
-          <h3>Wybierz wersję</h3>
-          <div className="seg">
+        </Lead>
+        <Panel title="Wybierz wersję">
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={level}
+            onValueChange={(v) => v && setLevel(v)}
+            aria-label="Wersja sprawdzianu"
+          >
             {Object.entries(LEVELS).map(([k, l]) => (
-              <button key={k} className={level === k ? 'active' : ''} onClick={() => setLevel(k)}>
+              <ToggleGroupItem key={k} value={k} className="px-4">
+                <l.icon data-icon="inline-start" />
                 {l.label}
-              </button>
+              </ToggleGroupItem>
             ))}
+          </ToggleGroup>
+          <p className="max-w-2xl text-sm text-muted-foreground">{LEVELS[level].desc}</p>
+          <div className="flex flex-wrap gap-2">
+            <Button size="lg" onClick={() => start(10)}>Krótki (10 pytań)</Button>
+            <Button size="lg" variant="outline" onClick={() => start(20)}>Długi (20 pytań)</Button>
           </div>
-          <p className="small level-desc">{LEVELS[level].desc}</p>
-          <div className="btn-row">
-            <button className="btn primary" onClick={() => start(10)}>Krótki (10 pytań)</button>
-            <button className="btn primary" onClick={() => start(20)}>Długi (20 pytań)</button>
-          </div>
-        </div>
-      </div>
+        </Panel>
+      </Section>
     )
   }
 
@@ -80,42 +103,43 @@ export default function Quiz({ record }) {
     const pct = Math.round((ok / qs.length) * 100)
     const g = gradeFor(pct)
     return (
-      <div className="section">
-        <h2>Wynik</h2>
-        <div className="card result">
-          <div className={`grade-badge g${g.grade}`}>{g.grade}</div>
+      <Section>
+        <Panel title="Wynik" contentClassName="flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
+          <div className={cn('grid size-22.5 shrink-0 place-items-center rounded-full text-5xl font-extrabold text-white', GRADE_BG[g.grade])}>
+            {g.grade}
+          </div>
           <div>
-            <div className="result-pct">{pct}%</div>
+            <div className="text-4xl font-extrabold tabular-nums">{pct}%</div>
             <div>
               {fmtPts(ok)} pkt z {qs.length} – ocena <b>{g.name}</b> ({easy ? 'wersja łatwa' : 'wersja trudna'})
             </div>
           </div>
-        </div>
+        </Panel>
         {points.some((pt) => pt < 1) && (
-          <div className="card">
-            <h3>Do powtórki</h3>
-            <ul className="review">
+          <Panel title="Do powtórki">
+            <ol className="grid list-decimal gap-3 pl-5">
               {qs.map((q, k) =>
                 points[k] === 1 ? null : (
                   <li key={k}>
-                    <div>{q.q}</div>
+                    <div className="font-medium">{q.q}</div>
                     {answers[k] === q.right ? (
-                      <div className="muted small">Dobrze, ale z pomocą (½ pkt).</div>
+                      <div className="text-sm text-muted-foreground">Dobrze, ale z pomocą (½ pkt).</div>
                     ) : (
-                      <div className="bad-text">Twoja odpowiedź: {answers[k]}</div>
+                      <div className="text-destructive">Twoja odpowiedź: {answers[k]}</div>
                     )}
-                    <div className="ok-text">Poprawna: {q.right}</div>
-                    {q.why && <div className="muted small">{q.why}</div>}
+                    <div className="text-success">Poprawna: {q.right}</div>
+                    {q.why && <div className="text-sm text-muted-foreground">{q.why}</div>}
                   </li>
                 ),
               )}
-            </ul>
-          </div>
+            </ol>
+          </Panel>
         )}
-        <button className="btn primary" onClick={() => setQs(null)}>
+        <Button size="lg" className="w-fit" onClick={() => setQs(null)}>
+          <RotateCcw data-icon="inline-start" />
           Spróbuj jeszcze raz
-        </button>
-      </div>
+        </Button>
+      </Section>
     )
   }
 
@@ -148,26 +172,29 @@ export default function Quiz({ record }) {
   }
 
   return (
-    <div className="section">
-      <h2>Sprawdzian {easy ? '(wersja łatwa)' : '(wersja trudna)'}</h2>
-      <div className="progress-bar">
-        <div style={{ width: `${(i / qs.length) * 100}%` }} />
-      </div>
-      <div className="card game-card">
-        <div className="score">
-          Pytanie {i + 1} / {qs.length} · {q.topic}
+    <Section>
+      <Panel
+        title={`Sprawdzian ${easy ? '(wersja łatwa)' : '(wersja trudna)'}`}
+        score={<Badge variant="secondary">{q.topic}</Badge>}
+      >
+        <div className="flex items-center gap-3">
+          <Progress value={(i / qs.length) * 100} className="h-2" />
+          <span className="shrink-0 text-sm text-muted-foreground tabular-nums">
+            Pytanie {i + 1} / {qs.length}
+          </span>
         </div>
-        <p className="question">{q.q}</p>
+        <Question>{q.q}</Question>
         {easy &&
           !answer &&
           (hint ? (
-            <div className="feedback info">💡 {q.hint}</div>
+            <Feedback tone="info">{q.hint}</Feedback>
           ) : (
-            <button className="chip hint-chip" onClick={() => setHint(true)}>
-              💡 Pokaż wskazówkę (za dobrą odpowiedź dostaniesz wtedy ½ pkt)
-            </button>
+            <Chip className="w-fit" onClick={() => setHint(true)}>
+              <Lightbulb />
+              Pokaż wskazówkę (za dobrą odpowiedź dostaniesz wtedy ½ pkt)
+            </Chip>
           ))}
-        <div className="answers one">
+        <Answers>
           {q.options.map((o) => (
             <AnswerBtn
               key={o}
@@ -179,22 +206,27 @@ export default function Quiz({ record }) {
               {o}
             </AnswerBtn>
           ))}
-        </div>
+        </Answers>
         {wrongFirst && !answer && (
-          <div className="feedback bad">
+          <Feedback tone="bad">
             Nie tym razem – spróbuj jeszcze raz.{!hint && ' Możesz też zajrzeć do wskazówki.'}
-          </div>
+          </Feedback>
         )}
         {answer && (
-          <div className={answer === q.right ? 'feedback ok' : 'feedback bad'}>
-            {answer === q.right ? (points[i] === 1 ? 'Dobrze! ' : 'Dobrze (½ pkt). ') : 'Źle. '}
-            {q.why}
-            <button className="btn primary" onClick={nextQ}>
-              {i + 1 < qs.length ? 'Dalej →' : 'Zobacz wynik'}
-            </button>
-          </div>
+          <Feedback tone={answer === q.right ? 'ok' : 'bad'}>
+            <div>
+              <Verdict ok={answer === q.right}>
+                {answer === q.right ? (points[i] === 1 ? 'Dobrze!' : 'Dobrze (½ pkt).') : 'Źle.'}
+              </Verdict>{' '}
+              {q.why}
+            </div>
+            <Button onClick={nextQ}>
+              {i + 1 < qs.length ? 'Dalej' : 'Zobacz wynik'}
+              <ArrowRight data-icon="inline-end" />
+            </Button>
+          </Feedback>
         )}
-      </div>
-    </div>
+      </Panel>
+    </Section>
   )
 }

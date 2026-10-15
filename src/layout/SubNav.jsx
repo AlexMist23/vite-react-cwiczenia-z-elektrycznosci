@@ -13,7 +13,7 @@ export default function SubNav({ section, sub }) {
         {section.subs.map((u) => {
           const Kind = KINDS[u.kind].icon
           return (
-            <TabsTrigger key={u.id} value={u.id} asChild className="flex-none px-2.5 py-1.5 data-active:text-(--sec) after:bg-(--sec)!">
+            <TabsTrigger key={u.id} value={u.id} asChild className="flex-none px-2.5 py-1.5 data-active:text-sec after:bg-sec!">
               <a href={`#${section.id}/${u.id}`} title={KINDS[u.kind].label}>
                 <Kind data-icon="inline-start" />
                 {u.title}

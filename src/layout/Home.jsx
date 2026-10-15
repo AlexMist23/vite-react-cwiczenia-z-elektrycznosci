@@ -36,7 +36,7 @@ export default function Home({ data, last, onResetAll }) {
 
       {cont?.section && (
         <Card style={{ '--g': groupOf(cont.section).color }} className="flex-row items-center gap-4 px-4 md:px-5">
-          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-(--g)/12 text-(--g)">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-g/12 text-g">
             <cont.section.icon className="size-6" />
           </span>
           <div className="flex min-w-0 flex-1 flex-col gap-1.5">
@@ -46,7 +46,7 @@ export default function Home({ data, last, onResetAll }) {
               {cont.sub && <span className="font-normal text-muted-foreground"> · {cont.sub.title}</span>}
             </span>
             {data[cont.section.id] && (
-              <Progress value={pct(data[cont.section.id])} className="h-1.5 max-w-60" indicatorClassName="bg-(--g)" />
+              <Progress value={pct(data[cont.section.id])} className="h-1.5 max-w-60" indicatorClassName="bg-g" />
             )}
           </div>
           <Button asChild size="lg">
@@ -61,7 +61,7 @@ export default function Home({ data, last, onResetAll }) {
       {GROUPS.map((g) => (
         <section key={g.id} style={{ '--g': g.color }} className="flex flex-col gap-3">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <span className="size-2.5 rounded-full bg-(--g)" />
+            <span className="size-2.5 rounded-full bg-g" />
             {g.title}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -103,9 +103,9 @@ function SectionTile({ s, p }) {
   const practice = s.subs?.filter((u) => u.kind === 'c').length ?? 0
   return (
     <a href={`#${s.id}`} className="group rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
-      <Card className="h-full gap-3 transition-[box-shadow,translate] group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-(--g)/50">
+      <Card className="h-full gap-3 transition-[box-shadow,translate] group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-g/50">
         <CardHeader className="grid-cols-[auto_1fr] gap-x-3">
-          <span className="row-span-2 flex size-11 items-center justify-center rounded-xl bg-(--g)/12 text-(--g)">
+          <span className="row-span-2 flex size-11 items-center justify-center rounded-xl bg-g/12 text-g">
             <s.icon className="size-5.5" />
           </span>
           <CardTitle className="font-semibold">{s.title}</CardTitle>
@@ -127,7 +127,7 @@ function SectionTile({ s, p }) {
             </div>
           )}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Progress value={pct(p)} className="h-1.5" indicatorClassName="bg-(--g)" />
+            <Progress value={pct(p)} className="h-1.5" indicatorClassName="bg-g" />
             <span className="shrink-0 tabular-nums">{p ? `${p.ok}/${p.all}` : '—'}</span>
           </div>
         </CardContent>

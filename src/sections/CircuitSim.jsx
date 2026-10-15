@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Check, Power, RefreshCw, RotateCcw, TriangleAlert } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Slider } from '@/components/ui/slider'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { BookRef, Callout, Chip, FlowLegend, Lead, Panel, Readout, Section } from '@/components/app/kit.jsx'
+import { cn } from '@/lib/utils'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
-import BookRef from '../components/BookRef.jsx'
 import { fmt } from '../lib/physics.js'
 
 const CELL_V = 1.5
@@ -149,18 +154,17 @@ export default function CircuitSim({ record }) {
   const showI = view !== 'electrons'
 
   return (
-    <div className="section">
-      <h2>Symulator obwodu elektrycznego</h2>
+    <Section>
       <BookRef pages="29–31" topics="Obwód prądu elektrycznego, zwarcie" />
-      <p className="lead">
-        Zbuduj prosty obwód: źródło napięcia, przewody, wyłącznik i żarówki. Kliknij wyłącznik,
-        żeby zamknąć obwód. Obserwuj, w którą stronę płynie <b className="c-current">prąd</b>, a w którą
-        poruszają się <b className="c-electron">elektrony</b>.
-      </p>
+      <Lead>
+        Zbuduj prosty obwód: źródło napięcia, przewody, wyłącznik i żarówki. Kliknij wyłącznik, żeby zamknąć obwód.
+        Obserwuj, w którą stronę płynie <b className="text-current-flow">prąd</b>, a w którą poruszają się{' '}
+        <b className="text-electron">elektrony</b>.
+      </Lead>
 
-      <div className="sim-layout">
-        <div className="card sim-card">
-          <svg viewBox="0 0 600 410" className="circuit" role="img" aria-label="Schemat obwodu">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,1fr)]">
+        <Panel className="self-start">
+          <svg viewBox="0 0 600 410" className="drawing" role="img" aria-label="Schemat obwodu">
             <CutWires
               id="sim-wires"
               holes={[[268, 48, 64, 24], [528, 140, 24, 80], [48, 152, 24, 56], ...bulbXs.map((cx) => [cx - 16, 288, 32, 24])]}
@@ -256,94 +260,121 @@ export default function CircuitSim({ record }) {
               </text>
             )}
           </svg>
+          <FlowLegend />
+        </Panel>
 
-          <div className="legend">
-            <span><i className="lg-current" /> kierunek prądu (umowny): od „+” do „−”</span>
-            <span><i className="lg-electron" /> elektrony: od „−” do „+”</span>
-          </div>
-        </div>
-
-        <div className="sim-side">
-          <div className="card controls">
-            <label>
-              Napięcie źródła: <b>{fmt(U)} V</b> ({cells} × 1,5 V)
-              <input type="range" min="1" max="4" value={cells} onChange={(e) => setCells(+e.target.value)} />
+        <div className="flex flex-col gap-4">
+          <Panel contentClassName="gap-5">
+            <label className="flex flex-col gap-2.5 text-[0.95rem]">
+              <span>
+                Napięcie źródła: <b>{fmt(U)} V</b> ({cells} × 1,5 V)
+              </span>
+              <Slider min={1} max={4} step={1} value={[cells]} onValueChange={([v]) => setCells(v)} />
             </label>
-            <label>
-              Liczba żarówek (połączonych szeregowo): <b>{bulbs}</b>
-              <input type="range" min="1" max="3" value={bulbs} onChange={(e) => setBulbs(+e.target.value)} />
+            <label className="flex flex-col gap-2.5 text-[0.95rem]">
+              <span>
+                Liczba żarówek (połączonych szeregowo): <b>{bulbs}</b>
+              </span>
+              <Slider min={1} max={3} step={1} value={[bulbs]} onValueChange={([v]) => setBulbs(v)} />
             </label>
-            <div className="btn-row">
-              <button className={closed ? 'btn on' : 'btn'} onClick={() => setClosed((c) => !c)}>
+            <div className="flex flex-wrap gap-2">
+              <Button variant={closed ? 'success' : 'outline'} onClick={() => setClosed((c) => !c)}>
+                <Power data-icon="inline-start" />
                 {closed ? 'Otwórz wyłącznik' : 'Zamknij wyłącznik'}
-              </button>
-              <button className="btn" onClick={() => setFlipped((f) => !f)}>
+              </Button>
+              <Button variant="outline" onClick={() => setFlipped((f) => !f)}>
+                <RefreshCw data-icon="inline-start" />
                 Odwróć baterię
-              </button>
-              <button className={short ? 'btn danger on' : 'btn danger'} onClick={() => setShort((s) => !s)}>
+              </Button>
+              <Button
+                variant="destructive"
+                className={cn(short && 'bg-destructive text-white hover:bg-destructive/85')}
+                onClick={() => setShort((s) => !s)}
+              >
+                <TriangleAlert data-icon="inline-start" />
                 {short ? 'Usuń zwarcie' : 'Zrób zwarcie'}
-              </button>
+              </Button>
             </div>
-            <div className="seg" role="radiogroup" aria-label="Co pokazać">
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              value={view}
+              onValueChange={(v) => v && setView(v)}
+              aria-label="Co pokazać"
+              className="w-full"
+            >
               {[
                 ['current', 'Prąd'],
                 ['electrons', 'Elektrony'],
                 ['both', 'Oba'],
               ].map(([k, t]) => (
-                <button key={k} className={view === k ? 'active' : ''} onClick={() => setView(k)}>
+                <ToggleGroupItem key={k} value={k} className="flex-1">
                   {t}
-                </button>
+                </ToggleGroupItem>
               ))}
-            </div>
-          </div>
+            </ToggleGroup>
+          </Panel>
 
-          <div className="card readout">
-            <div><span>U</span><b>{fmt(U)} V</b><small>napięcie</small></div>
-            <div><span>I</span><b>{fmt(I, 3)} A</b><small>{fmt(I * 1000, 1)} mA</small></div>
-            <div><span>P = U·I</span><b>{fmt(P, 2)} W</b><small>moc</small></div>
-            <div><span>t</span><b>{fmt(meter.t, 1)} s</b><small>czas pracy</small></div>
-            <div><span>q = I·t</span><b>{fmt(meter.q, 2)} C</b><small>ładunek</small></div>
-            <div><span>W = U·I·t</span><b>{fmt(U * meter.q, 1)} J</b><small>praca prądu</small></div>
-            <div className="readout-foot">
-              <span>Tempo czasu:</span>
-              {[1, 10, 60].map((k) => (
-                <button key={k} className={speedup === k ? 'chip active' : 'chip'} onClick={() => setSpeedup(k)}>
-                  ×{k}
-                </button>
-              ))}
-              <button className="chip" onClick={() => setMeter({ t: 0, q: 0 })}>
-                zeruj
-              </button>
+          <Panel>
+            <div className="grid grid-cols-2 gap-2.5">
+              <Readout label="U" value={`${fmt(U)} V`} note="napięcie" />
+              <Readout label="I" value={`${fmt(I, 3)} A`} note={`${fmt(I * 1000, 1)} mA`} />
+              <Readout label="P = U·I" value={`${fmt(P, 2)} W`} note="moc" />
+              <Readout label="t" value={`${fmt(meter.t, 1)} s`} note="czas pracy" />
+              <Readout label="q = I·t" value={`${fmt(meter.q, 2)} C`} note="ładunek" />
+              <Readout label="W = U·I·t" value={`${fmt(U * meter.q, 1)} J`} note="praca prądu" />
             </div>
-          </div>
+            <div className="flex flex-wrap items-center gap-1.5 text-sm">
+              <span className="mr-1">Tempo czasu:</span>
+              {[1, 10, 60].map((k) => (
+                <Chip key={k} active={speedup === k} onClick={() => setSpeedup(k)}>
+                  ×{k}
+                </Chip>
+              ))}
+              <Chip onClick={() => setMeter({ t: 0, q: 0 })}>
+                <RotateCcw />
+                zeruj
+              </Chip>
+            </div>
+          </Panel>
         </div>
       </div>
 
       {short && closed && (
-        <div className="callout danger">
-          <b>Zwarcie!</b> Przewód połączył bieguny źródła z pominięciem żarówek. Opór jest bardzo mały,
-          więc natężenie prądu rośnie do {fmt(I, 1)} A. Przewody i bateria mocno się nagrzewają – w
-          prawdziwym obwodzie grozi to pożarem. Dlatego w domu stosujemy bezpieczniki.
-        </div>
+        <Callout tone="danger" title="Zwarcie!">
+          <p>
+            Przewód połączył bieguny źródła z pominięciem żarówek. Opór jest bardzo mały, więc natężenie prądu rośnie do{' '}
+            {fmt(I, 1)} A. Przewody i bateria mocno się nagrzewają – w prawdziwym obwodzie grozi to pożarem. Dlatego w
+            domu stosujemy bezpieczniki.
+          </p>
+        </Callout>
       )}
 
-      <div className="card">
-        <h3>Wyzwania</h3>
-        <ol className="challenges">
+      <Panel title="Wyzwania">
+        <ol className="grid gap-2">
           {CHALLENGES.map((c, i) => (
-            <li key={i} className={done.has(i) ? 'done' : ''}>
-              <span className="tick">{done.has(i) ? '✔' : i + 1}</span> {c.text}
+            <li key={i} className={cn('flex items-start gap-2.5', done.has(i) && 'text-muted-foreground line-through')}>
+              <span
+                className={cn(
+                  'grid size-6.5 shrink-0 place-items-center rounded-full bg-secondary text-sm font-bold text-muted-foreground',
+                  done.has(i) && 'bg-success text-white',
+                )}
+              >
+                {done.has(i) ? <Check className="size-4" /> : i + 1}
+              </span>
+              {c.text}
             </li>
           ))}
         </ol>
-      </div>
+      </Panel>
 
-      <div className="callout info">
-        <b>Czy wiesz, że…</b> elektrony w przewodzie poruszają się bardzo wolno (ułamki milimetra na
-        sekundę), ale żarówka zapala się natychmiast? Elektrony są w całym przewodzie od początku –
-        po zamknięciu obwodu wszystkie ruszają jednocześnie. W symulacji widać je też przy otwartym
-        obwodzie (stoją w miejscu).
-      </div>
-    </div>
+      <Callout tone="info" title="Czy wiesz, że…">
+        <p>
+          …elektrony w przewodzie poruszają się bardzo wolno (ułamki milimetra na sekundę), ale żarówka zapala się
+          natychmiast? Elektrony są w całym przewodzie od początku – po zamknięciu obwodu wszystkie ruszają
+          jednocześnie. W symulacji widać je też przy otwartym obwodzie (stoją w miejscu).
+        </p>
+      </Callout>
+    </Section>
   )
 }

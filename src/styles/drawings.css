@@ -1,1 +1,93 @@
-/* Rysunki SVG (obwody, ładunki, ośrodki, trójkąty wzorów) – stylowane CSS-em, bo to wnętrza <svg>. */
+/* Rysunki SVG (obwody, ładunki, ośrodki, trójkąty wzorów) – stylowane CSS-em, bo to wnętrza <svg>.
+   Cała reszta wyglądu to klasy Tailwind i komponenty shadcn/ui. */
+
+.drawing { display: block; width: 100%; height: auto; }
+
+/* ---------- obwody ---------- */
+.wire { fill: none; stroke: var(--wire); stroke-width: 4; stroke-linejoin: round; }
+.wire-short { stroke: var(--destructive); }
+.dot-junction { fill: var(--destructive); }
+.sym { stroke: var(--wire); stroke-width: 3; fill: none; color: var(--wire); }
+.sym text { stroke: none; fill: var(--foreground); }
+.sym-letter { font-size: 17px; font-weight: 700; }
+.sym-plus { stroke: #e03131; stroke-width: 3.5; stroke-linecap: round; }
+.sym-minus { stroke: #1c7ed6; stroke-width: 3.5; stroke-linecap: round; }
+.el-bg { fill: transparent; stroke: none; } /* tylko pole do klikania; przewody wycina maska */
+.clickable { cursor: pointer; }
+.clickable:hover .sym { stroke: var(--primary); }
+.label { fill: var(--foreground); font-size: 16px; font-weight: 700; }
+.label.small { font-size: 11px; font-weight: 500; fill: var(--muted-foreground); }
+.label.muted { fill: var(--muted-foreground); font-weight: 500; }
+.label.danger { fill: var(--destructive); }
+.glow { fill: var(--glow); filter: blur(8px); transition: opacity 0.3s, r 0.3s; }
+
+.electron circle { fill: var(--electron); }
+.electron text { fill: #fff; font-size: 11px; font-weight: 800; }
+.electron.idle { opacity: 0.5; }
+.arrow-current { fill: var(--current); }
+.arrow-neutral { fill: #868e96; }
+
+/* ---------- ośrodki ---------- */
+.chamber-bg { fill: var(--secondary); }
+.chamber.liquid .chamber-bg { fill: color-mix(in srgb, var(--electron) 14%, var(--secondary)); }
+.chamber.gas .chamber-bg { fill: color-mix(in srgb, #be4bdb 12%, var(--secondary)); }
+.lattice { fill: color-mix(in srgb, var(--muted-foreground) 35%, transparent); }
+.electrode.plus { fill: var(--current); }
+.electrode.minus { fill: var(--electron); }
+.electrode-label { fill: #fff; font-weight: 800; font-size: 14px; }
+.mover circle { stroke: none; }
+.mover text { font-size: 11px; font-weight: 800; fill: #fff; }
+.mover.e circle { fill: var(--electron); }
+.mover.neg circle { fill: #7048e8; }
+.mover.pos circle { fill: var(--current); }
+.mover.to-left { animation: to-left 5.5s linear infinite; }
+.mover.to-right { animation: to-right 8s linear infinite; }
+.chamber.liquid .mover.to-left { animation-duration: 8s; }
+@keyframes to-left { from { transform: translateX(290px); } to { transform: translateX(10px); } }
+@keyframes to-right { from { transform: translateX(10px); } to { transform: translateX(290px); } }
+@media (prefers-reduced-motion: reduce) { .mover { animation-duration: 40s !important; } }
+
+/* ---------- trójkąty (piramidy) wzorów ---------- */
+.triangle { width: 100%; max-width: 220px; }
+.tri-shape { fill: var(--primary-soft); stroke: var(--primary); stroke-width: 3; stroke-linejoin: round; }
+.tri-line { stroke: var(--primary); stroke-width: 3; }
+.tri-cell { cursor: pointer; }
+.tri-hit { fill: transparent; }
+.tri-cell:hover .tri-hit { fill: color-mix(in srgb, var(--primary) 18%, transparent); }
+.tri-letter { font-size: 32px; font-weight: 800; fill: var(--foreground); font-style: italic; font-family: var(--font-formula); }
+.tri-cell.covered .tri-hit { fill: var(--primary); }
+.tri-cell.covered .tri-letter { fill: #fff; }
+.tri-cell.empty .tri-letter { fill: var(--muted-foreground); opacity: 0.5; }
+.tri-cell.filled.right .tri-hit { fill: var(--success-soft); }
+.tri-cell.filled.wrong .tri-hit { fill: var(--destructive-soft); }
+.hint-pyramid .tri-cell { cursor: default; }
+.pyr-option .triangle { max-width: 130px; display: block; margin: 0 auto; }
+.pyr-option .tri-cell { pointer-events: none; }
+
+/* ---------- elektryzowanie ---------- */
+.sweater-body { fill: color-mix(in srgb, #e64980 22%, var(--secondary)); stroke: color-mix(in srgb, #e64980 55%, var(--secondary)); stroke-width: 2; stroke-linejoin: round; }
+.sweater-rib { fill: none; stroke: color-mix(in srgb, #e64980 55%, var(--secondary)); stroke-width: 2; stroke-linecap: round; }
+.balloon { fill: color-mix(in srgb, #40c057 30%, var(--secondary)); }
+.balloon-knot { fill: color-mix(in srgb, #40c057 45%, var(--secondary)); stroke: color-mix(in srgb, #40c057 60%, var(--secondary)); stroke-width: 1.5; }
+.chg circle { stroke: none; }
+.chg text { fill: #fff; font-size: 13px; font-weight: 800; }
+.chg.pos circle { fill: var(--current); }
+.chg.neg circle { fill: var(--electron); }
+.chg.extra circle { stroke: var(--volt); stroke-width: 2.5; }
+.chg-hole { fill: none; stroke: var(--electron); stroke-width: 2; stroke-dasharray: 3 3; }
+.fly { animation: fly 0.7s ease-in-out forwards; }
+@keyframes fly { to { transform: translate(var(--dx), var(--dy)); } }
+.body-neg { fill: var(--electron); }
+.body-pos { fill: var(--current); }
+.big-sign { fill: #fff; font-size: 36px; font-weight: 800; }
+.bar { fill: color-mix(in srgb, var(--muted-foreground) 30%, var(--secondary)); stroke: var(--wire); stroke-width: 2; }
+.ind { font-size: 15px; font-weight: 800; }
+.ind.pos { fill: var(--current); }
+.ind.neg { fill: var(--electron); }
+
+/* na telefonie rysunki są małe – większe podpisy */
+@media (max-width: 640px) {
+  .label { font-size: 22px; }
+  .label.small { font-size: 16px; }
+  .sym-letter { font-size: 20px; }
+}

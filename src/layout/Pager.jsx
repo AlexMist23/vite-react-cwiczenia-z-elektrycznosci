@@ -30,11 +30,11 @@ function PagerLink({ href, hint, label, next = false }) {
     <a
       href={href}
       className={cn(
-        'group flex items-center gap-2 rounded-xl border bg-card p-3 shadow-xs transition-colors hover:border-(--sec) md:p-4',
+        'group flex items-center gap-2 rounded-xl border bg-card p-3 shadow-xs transition-colors hover:border-sec md:p-4',
         next && 'col-start-2 flex-row-reverse text-right',
       )}
     >
-      <Icon className="size-5 shrink-0 text-muted-foreground group-hover:text-(--sec)" />
+      <Icon className="size-5 shrink-0 text-muted-foreground group-hover:text-sec" />
       <span className="flex min-w-0 flex-col">
         <small className="text-xs text-muted-foreground">{hint}</small>
         <span className="truncate font-medium">{label}</span>

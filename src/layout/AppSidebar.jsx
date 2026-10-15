@@ -45,13 +45,13 @@ export default function AppSidebar({ section, sub, data }) {
       <SidebarContent>
         {GROUPS.map((g) => (
           <SidebarGroup key={g.id} style={{ '--g': g.color }}>
-            <SidebarGroupLabel className="text-(--g)">{g.title}</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-g">{g.title}</SidebarGroupLabel>
             <SidebarMenu>
               {SECTIONS.filter((s) => s.group === g.id).map((s) => (
                 <SidebarMenuItem key={s.id}>
                   <SidebarMenuButton asChild isActive={section === s} tooltip={s.title}>
                     <a href={`#${s.id}`} onClick={close}>
-                      <s.icon className="text-(--g)" />
+                      <s.icon className="text-g" />
                       <span>{s.title}</span>
                     </a>
                   </SidebarMenuButton>

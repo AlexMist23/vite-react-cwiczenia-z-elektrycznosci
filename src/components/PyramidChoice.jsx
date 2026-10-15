@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Feedback } from './app/kit.jsx'
+import { cn } from '@/lib/utils'
 import Pyramid from './Pyramid.jsx'
 import { NAMES, TRIANGLES, letters } from '../lib/formulas.js'
 
@@ -25,12 +27,17 @@ export default function PyramidChoice({ correct, needed, onDone }) {
   const missing = last && last !== correct ? needed.filter((l) => !letters(last).includes(l)) : []
 
   return (
-    <div className="pyr-choice">
-      <div className="pyr-options">
+    <div className="flex flex-col gap-2.5">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         {TRIANGLES.map((tri) => (
           <button
             key={tri.id}
-            className={`pyr-option ${wrong.includes(tri.id) ? 'wrong' : ''} ${done && tri === correct ? 'right' : ''}`}
+            type="button"
+            className={cn(
+              'pyr-option rounded-xl border-2 bg-card p-2 transition-colors enabled:hover:border-sec enabled:hover:bg-primary-soft',
+              wrong.includes(tri.id) && 'border-destructive bg-destructive-soft opacity-60',
+              done && tri === correct && 'border-success bg-success-soft',
+            )}
             onClick={() => choose(tri)}
             disabled={done || wrong.includes(tri.id)}
             aria-label={`Piramida z literami ${letters(tri).join(', ')}`}
@@ -40,16 +47,18 @@ export default function PyramidChoice({ correct, needed, onDone }) {
         ))}
       </div>
       {last && last !== correct && !done && (
-        <div className="feedback bad">
+        <Feedback tone="bad">
           W tej piramidzie nie ma: {missing.map((l) => `${l} (${NAMES[l][0]})`).join(', ')}. Szukaj piramidy, w której
           są wszystkie wielkości z zadania: {needed.join(', ')}.
-        </div>
+        </Feedback>
       )}
       {done && (
-        <div className="feedback ok">
-          {wrong.length === 0 ? 'Dobrze! ' : 'Teraz dobrze. '}W tej piramidzie są wszystkie wielkości z zadania:{' '}
-          {needed.join(', ')}.
-        </div>
+        <Feedback tone="ok">
+          <div>
+            {wrong.length === 0 ? 'Dobrze! ' : 'Teraz dobrze. '}W tej piramidzie są wszystkie wielkości z zadania:{' '}
+            {needed.join(', ')}.
+          </div>
+        </Feedback>
       )}
     </div>
   )

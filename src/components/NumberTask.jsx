@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Expr, Feedback, GivenSought, NumberInput, Panel, Question, Score } from './app/kit.jsx'
 import { fmt, isClose, parseNum } from '../lib/physics.js'
 
 /**
@@ -49,14 +52,11 @@ export default function NumberTask({ generate, onResult }) {
   const finished = state === 'ok' || state === 'shown'
 
   return (
-    <div className="card game-card">
-      <div className="score">
-        Wynik: <b>{score.ok}</b> / {score.all}
-      </div>
-      <p className="question">{task.q}</p>
-      <form className="num-form" onSubmit={check}>
-        <input
-          inputMode="decimal"
+    <Panel score={<Score ok={score.ok} all={score.all} />}>
+      <Question>{task.q}</Question>
+      <form className="flex flex-wrap items-center gap-2" onSubmit={check}>
+        <NumberInput
+          unit={task.unit}
           value={value}
           onChange={(e) => {
             setValue(e.target.value)
@@ -66,59 +66,52 @@ export default function NumberTask({ generate, onResult }) {
           disabled={finished}
           aria-label="Odpowiedź"
         />
-        <span className="unit">{task.unit}</span>
         {!finished && (
-          <button className="btn primary" type="submit">
+          <Button size="lg" type="submit">
             Sprawdź
-          </button>
+          </Button>
         )}
         {!finished && (
-          <button className="btn" type="button" onClick={reveal}>
+          <Button size="lg" variant="outline" type="button" onClick={reveal}>
             Pokaż rozwiązanie
-          </button>
+          </Button>
         )}
       </form>
-      {state === 'nan' && <div className="feedback bad">Wpisz liczbę, np. 0,05 albo 3600.</div>}
+      {state === 'nan' && <Feedback tone="bad">Wpisz liczbę, np. 0,05 albo 3600.</Feedback>}
       {state === 'bad' && (
-        <div className="feedback bad">
-          Jeszcze nie. Sprawdź jednostki i przecinek – spróbuj ponownie albo zobacz rozwiązanie.
-        </div>
+        <Feedback tone="bad">Jeszcze nie. Sprawdź jednostki i przecinek – spróbuj ponownie albo zobacz rozwiązanie.</Feedback>
       )}
       {finished && (
-        <div className={state === 'ok' ? 'feedback ok' : 'feedback info'}>
+        <Feedback tone={state === 'ok' ? 'ok' : 'info'}>
           <div>
             {state === 'ok' ? 'Brawo! ' : ''}Odpowiedź: <b>{fmt(task.answer)} {task.unit}</b>
           </div>
-          {task.steps ? <Steps steps={task.steps} /> : <div className="explain">{task.explain}</div>}
-          <button className="btn primary" onClick={next}>
-            Następne →
-          </button>
-        </div>
+          {task.steps ? <Steps steps={task.steps} /> : <div>{task.explain}</div>}
+          <Button onClick={next}>
+            Następne
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
-    </div>
+    </Panel>
   )
 }
 
 function Steps({ steps }) {
   return (
-    <div className="steps">
-      <div className="steps-cols">
-        <div>
-          <div className="steps-h">Dane:</div>
-          {steps.dane.map((d) => (
-            <div key={d}>{d}</div>
-          ))}
-        </div>
-        <div>
-          <div className="steps-h">Szukane:</div>
-          <div>{steps.szukane}</div>
-        </div>
-      </div>
-      <div className="steps-h">Rozwiązanie:</div>
+    <div className="grid w-full gap-1.5 rounded-lg bg-card p-3">
+      <GivenSought
+        className="bg-transparent p-0"
+        given={steps.dane.map((d) => (
+          <div key={d}>{d}</div>
+        ))}
+        sought={<div>{steps.szukane}</div>}
+      />
+      <div className="font-bold text-primary">Rozwiązanie:</div>
       {steps.obliczenia.map((l) => (
-        <div key={l} className="formula-inline">
+        <Expr key={l} className="block">
           {l}
-        </div>
+        </Expr>
       ))}
       {steps.odp && (
         <div>

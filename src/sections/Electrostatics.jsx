@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
+import { ArrowRight, Ban, Check, Circle, Magnet, Minus, MoveHorizontal, Plus, RotateCcw, Waves, X, Zap } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Answers, BookRef, Feedback, Panel, Question, Readout, ScoreDots, Section, Verdict } from '@/components/app/kit.jsx'
+import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
-import BookRef from '../components/BookRef.jsx'
 import PeriodicTable from '../components/PeriodicTable.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
@@ -66,13 +69,12 @@ function RubDemo() {
   const to = flying !== null ? BALLOON_EXTRA[flying] : null
 
   return (
-    <div className="card">
-      <h3>Balon i wełniany sweter</h3>
-      <p className="small muted">
-        Para <b className="c-current">+</b><b className="c-electron">−</b> to ładunki, które się równoważą
+    <Panel title="Balon i wełniany sweter">
+      <p className="text-sm text-muted-foreground">
+        Para <b className="text-current-flow">+</b><b className="text-electron">−</b> to ładunki, które się równoważą
         (proton i elektron). Pocieraj i patrz, które ładunki się przemieszczają.
       </p>
-      <svg viewBox="0 0 520 232" className="circuit medium-circuit">
+      <svg viewBox="0 0 520 232" className="drawing mx-auto max-w-140">
         <Sweater />
         <text x="120" y="224" textAnchor="middle" className="label small">wełniany sweter</text>
         {SWEATER_PAIRS.map(([x, y], i) => (
@@ -110,19 +112,22 @@ function RubDemo() {
           </g>
         )}
       </svg>
-      <div className="btn-row">
-        <button className="btn primary" disabled={moved >= MAX_MOVED} onClick={rub}>
+      <div className="flex flex-wrap gap-2">
+        <Button disabled={moved >= MAX_MOVED} onClick={rub}>
           Potrzyj balon swetrem
-        </button>
-        <button className="btn" onClick={() => { setMoved(0); setFlying(null) }}>Od nowa</button>
+        </Button>
+        <Button variant="outline" onClick={() => { setMoved(0); setFlying(null) }}>
+          <RotateCcw data-icon="inline-start" />
+          Od nowa
+        </Button>
       </div>
-      <div className="readout three">
-        <div><span>ładunek swetra</span><b>{sign(sw)}</b></div>
-        <div><span>ładunek balonu</span><b>{sign(bl)}</b></div>
-        <div><span>razem</span><b>{sign(sw + bl)}</b></div>
+      <div className="grid grid-cols-3 gap-2.5">
+        <Readout label="ładunek swetra" value={sign(sw)} />
+        <Readout label="ładunek balonu" value={sign(bl)} />
+        <Readout label="razem" value={sign(sw + bl)} />
       </div>
       {moved > 0 && (
-        <div className="small rub-explain">
+        <div className="flex flex-col gap-2 text-sm">
           <p>
             Przechodzą tylko <b>elektrony</b> – ze swetra na balon. Protony siedzą w jądrach atomów i się nie
             ruszają. Guma balonu mocniej „trzyma” elektrony niż wełna, dlatego płyną właśnie w tę stronę.
@@ -138,13 +143,13 @@ function RubDemo() {
             rzeczywiście chętnie pozbyłby się nadmiaru – i robi to, gdy dotkniemy go ręką lub metalem (mówimy,
             że się <b>rozładowuje</b>).
           </p>
-          <p className="muted">
+          <p className="text-muted-foreground">
             Balon jest izolatorem, więc dodatkowe elektrony zostają tam, gdzie go potarto – nie rozpływają się
             po całym balonie.
           </p>
         </div>
       )}
-    </div>
+    </Panel>
   )
 }
 
@@ -185,36 +190,48 @@ function ForceGame({ record }) {
         ? `Oba ciała mają ładunek ${t.a.q > 0 ? 'dodatni' : 'ujemny'}, a ładunki tego samego znaku się odpychają.`
         : 'Jedno ciało jest naładowane dodatnio, a drugie ujemnie – ładunki przeciwnych znaków się przyciągają.'
   return (
-    <div className="card game-card">
-      <p className="question">
-        Zbliżamy: <b>{t.a.name}</b> i <b>{t.b.name}</b>. Co się stanie?
-      </p>
-      <div className="answers two">
+    <Panel>
+      <Question>
+        Zbliżamy: <b className="text-sec">{t.a.name}</b> i <b className="text-sec">{t.b.name}</b>. Co się stanie?
+      </Question>
+      <Answers cols="two">
         {['przyciągają', 'odpychają'].map((x) => (
           <AnswerBtn key={x} id={x} answer={answer} correct={t.correct} choose={choose}>
-            {x === 'przyciągają' ? '🧲 Przyciągają się' : '↔️ Odpychają się'}
+            {x === 'przyciągają' ? <Magnet className="size-5 text-sec" /> : <MoveHorizontal className="size-5 text-sec" />}
+            {x === 'przyciągają' ? 'Przyciągają się' : 'Odpychają się'}
           </AnswerBtn>
         ))}
-      </div>
+      </Answers>
       {answer && (
-        <div className={answer === t.correct ? 'feedback ok' : 'feedback bad'}>
+        <Feedback tone={answer === t.correct ? 'ok' : 'bad'}>
           <div>
-            <b>{answer === t.correct ? 'Dobrze! ' : 'Nie. '}</b>
-            {why}
+            <Verdict ok={answer === t.correct}>{answer === t.correct ? 'Dobrze!' : 'Nie.'}</Verdict> {why}
           </div>
-          <ul className="force-sides">
-            {[t.a, t.b].map((x) => (
-              <li key={x.name}>
-                <b>{x.q > 0 ? '➕' : x.q < 0 ? '➖' : '⚪'} {x.name[0].toUpperCase() + x.name.slice(1)}</b>: {x.why}.
-              </li>
-            ))}
+          <ul className="flex flex-col gap-1.5">
+            {[t.a, t.b].map((x) => {
+              const Sign = x.q > 0 ? Plus : x.q < 0 ? Minus : Circle
+              return (
+                <li key={x.name} className="flex gap-2">
+                  <Sign
+                    className={cn(
+                      'mt-1 size-4 shrink-0',
+                      x.q > 0 ? 'text-current-flow' : x.q < 0 ? 'text-electron' : 'text-muted-foreground',
+                    )}
+                  />
+                  <span>
+                    <b>{x.name[0].toUpperCase() + x.name.slice(1)}</b>: {x.why}.
+                  </span>
+                </li>
+              )
+            })}
           </ul>
-          <button className="btn primary" onClick={() => { setT(forceTask()); setAnswer(null) }}>
-            Następne →
-          </button>
-        </div>
+          <Button onClick={() => { setT(forceTask()); setAnswer(null) }}>
+            Następne
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
-    </div>
+    </Panel>
   )
 }
 
@@ -243,8 +260,23 @@ const MATERIALS = [
   { name: 'powietrze (suche)', kind: 'i', els: ['N', 'O', 'Ar'], why: 'Powietrze to głównie azot i tlen (i trochę argonu) – niemetale w postaci gazu. Izolator; przewodzi dopiero przy ogromnym napięciu (błyskawica).' },
 ]
 
-const KIND_LABEL = { p: '⚡ przewodnik', s: '〰️ półprzewodnik', i: '🚫 izolator' }
+const KIND_ICON = { p: Zap, s: Waves, i: Ban }
 const KIND_WORD = { p: 'przewodnik', s: 'półprzewodnik', i: 'izolator' }
+
+function KindLabel({ k }) {
+  const Icon = KIND_ICON[k]
+  return (
+    <>
+      <Icon className="size-4.5 shrink-0 text-sec" />
+      {KIND_WORD[k]}
+    </>
+  )
+}
+
+/** Symbol pierwiastka w żółtej plakietce. */
+function ElChip({ e }) {
+  return <span className="inline-block min-w-7.5 rounded-md bg-volt px-1.5 text-center text-sm font-extrabold text-foreground">{e}</span>
+}
 const ROUND = 10
 
 // w każdej rundzie jest jeden półprzewodnik, reszta losowo
@@ -279,96 +311,91 @@ function Conductors({ record }) {
   const highlight = summary ? (focus ? focus.els : [...new Set(items.flatMap((x) => x.els))]) : p ? m.els : []
 
   return (
-    <div className="card">
-      <h3>Przewodnik, półprzewodnik czy izolator?</h3>
-      <p className="small muted">
+    <Panel title="Przewodnik, półprzewodnik czy izolator?">
+      <p className="text-sm text-muted-foreground">
         Przewodnik – ładunki mogą się w nim przemieszczać (w metalach są elektrony swobodne). Izolator – ładunki
         praktycznie nie mogą się przemieszczać. Półprzewodnik – przewodzi słabo. Po odpowiedzi zobaczysz w układzie
         okresowym, z jakich pierwiastków jest zbudowany materiał.
       </p>
 
-      <div className="carousel-dots" aria-label="Postęp rundy">
-        {items.map((x, i) => {
-          const a = picked[x.name]
-          return (
-            <span
-              key={x.name}
-              className={`dot ${a ? (a === x.kind ? 'ok' : 'bad') : ''} ${!summary && i === idx ? 'cur' : ''}`}
-            />
-          )
-        })}
-      </div>
+      <ScoreDots items={items.map((x) => picked[x.name] && (picked[x.name] === x.kind ? 'ok' : 'bad'))} cur={summary ? -1 : idx} />
 
       {!summary ? (
-        <div className="carousel-card">
-          <div className="carousel-count">
+        <div className="flex flex-col gap-3">
+          <div className="text-sm text-muted-foreground">
             Materiał {idx + 1} z {items.length}
           </div>
-          <div className="carousel-name">{m.name}</div>
-          <div className="answers three">
+          <div className="text-2xl font-bold text-sec">{m.name}</div>
+          <Answers cols="three">
             {['p', 's', 'i'].map((k) => (
               <AnswerBtn key={k} id={k} answer={p} correct={m.kind} choose={choose}>
-                {KIND_LABEL[k]}
+                <KindLabel k={k} />
               </AnswerBtn>
             ))}
-          </div>
+          </Answers>
           {p && (
-            <div className={p === m.kind ? 'feedback ok' : 'feedback bad'}>
+            <Feedback tone={p === m.kind ? 'ok' : 'bad'}>
               <div>
-                <b>{p === m.kind ? '✔ Dobrze. ' : `✘ To ${KIND_WORD[m.kind]}. `}</b>
-                {m.why}
+                <Verdict ok={p === m.kind}>{p === m.kind ? 'Dobrze.' : `To ${KIND_WORD[m.kind]}.`}</Verdict> {m.why}
               </div>
-              <div className="els-line">
-                Zbudowany z:{' '}
+              <div className="flex flex-wrap items-center gap-1.5">
+                Zbudowany z:
                 {m.els.map((e) => (
-                  <span key={e} className="el-chip">{e}</span>
+                  <ElChip key={e} e={e} />
                 ))}
               </div>
-              <button
-                className="btn primary"
-                onClick={() => (idx + 1 < items.length ? setIdx(idx + 1) : setSummary(true))}
-              >
-                {idx + 1 < items.length ? 'Następny materiał →' : 'Pokaż podsumowanie →'}
-              </button>
-            </div>
+              <Button onClick={() => (idx + 1 < items.length ? setIdx(idx + 1) : setSummary(true))}>
+                {idx + 1 < items.length ? 'Następny materiał' : 'Pokaż podsumowanie'}
+                <ArrowRight data-icon="inline-end" />
+              </Button>
+            </Feedback>
           )}
         </div>
       ) : (
-        <div className="carousel-card">
-          <div className="carousel-count">
-            Podsumowanie rundy: <b>{good}</b> / {items.length} dobrze. Kliknij materiał, żeby zobaczyć jego
-            pierwiastki.
+        <div className="flex flex-col gap-3">
+          <div className="text-sm text-muted-foreground">
+            Podsumowanie rundy: <b className="text-foreground">{good}</b> / {items.length} dobrze. Kliknij materiał, żeby
+            zobaczyć jego pierwiastki.
           </div>
-          <div className="summary-list">
+          <div className="grid gap-1.5">
             {items.map((x) => {
               const ok = picked[x.name] === x.kind
               return (
                 <button
                   key={x.name}
-                  className={`summary-row ${ok ? 'ok' : 'bad'} ${focus === x ? 'sel' : ''}`}
+                  type="button"
+                  className={cn(
+                    'grid grid-cols-1 items-center gap-0.5 rounded-lg border-2 bg-card px-3 py-2 text-left sm:grid-cols-[1.3fr_1fr_1.2fr] sm:gap-2',
+                    ok ? 'border-success/50' : 'border-destructive/50 bg-destructive-soft',
+                    focus === x && 'outline-3 outline-volt',
+                  )}
                   onClick={() => setFocus(focus === x ? null : x)}
                 >
-                  <span>
-                    {ok ? '✔' : '✘'} <b>{x.name}</b>
+                  <span className="flex items-center gap-1.5">
+                    {ok ? <Check className="size-4 text-success" /> : <X className="size-4 text-destructive" />}
+                    <b>{x.name}</b>
                   </span>
-                  <span className="muted">{KIND_LABEL[x.kind]}</span>
-                  <span>
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <KindLabel k={x.kind} />
+                  </span>
+                  <span className="flex flex-wrap gap-1">
                     {x.els.map((e) => (
-                      <span key={e} className="el-chip">{e}</span>
+                      <ElChip key={e} e={e} />
                     ))}
                   </span>
                 </button>
               )
             })}
           </div>
-          <button className="btn primary" onClick={restart}>
-            Nowa runda →
-          </button>
+          <Button className="w-fit" onClick={restart}>
+            Nowa runda
+            <ArrowRight data-icon="inline-end" />
+          </Button>
         </div>
       )}
 
       <PeriodicTable highlight={highlight} />
-    </div>
+    </Panel>
   )
 }
 
@@ -401,12 +428,11 @@ function Induction({ record }) {
   const endA = answer ? (neg ? '+' : '−') : ''
   const endB = answer ? (neg ? '−' : '+') : ''
   return (
-    <div className="card game-card">
-      <h3>Indukcja elektrostatyczna</h3>
-      <p className="question">
+    <Panel title="Indukcja elektrostatyczna">
+      <Question>
         Do końca A obojętnej metalowej sztabki zbliżamy {t.body.name} (nie dotykamy). {question}
-      </p>
-      <svg viewBox="0 0 520 130" className="circuit medium-circuit">
+      </Question>
+      <svg viewBox="0 0 520 130" className="drawing mx-auto max-w-140">
         <circle cx="70" cy="65" r="50" className={neg ? 'body-neg' : 'body-pos'} />
         <text x="70" y="74" textAnchor="middle" className="big-sign">{neg ? '−' : '+'}</text>
         <rect x="160" y="40" width="320" height="50" rx="6" className="bar" />
@@ -419,45 +445,47 @@ function Induction({ record }) {
           </g>
         ))}
       </svg>
-      <div className="answers two">
+      <Answers cols="two">
         {options.map(([id, label]) => (
           <AnswerBtn key={id} id={id} answer={answer} correct={correct} choose={choose}>{label}</AnswerBtn>
         ))}
-      </div>
+      </Answers>
       {answer && (
-        <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
-          {answer === correct ? 'Dobrze! ' : 'Nie. '}
-          {neg
-            ? 'Ujemny balonik odpycha elektrony swobodne na drugi koniec (B). Koniec A ma ich za mało, więc jest dodatni, a koniec B – ujemny.'
-            : 'Dodatnia pałeczka przyciąga elektrony swobodne do końca A, więc A jest ujemny, a B (gdzie brakuje elektronów) – dodatni.'}{' '}
-          Po odsunięciu ciała elektrony wracają i sztabka znów jest obojętna na całej długości.
-          <button className="btn primary" onClick={() => { setT(inductionTask()); setAnswer(null) }}>
-            Następne →
-          </button>
-        </div>
+        <Feedback tone={answer === correct ? 'ok' : 'bad'}>
+          <div>
+            <Verdict ok={answer === correct}>{answer === correct ? 'Dobrze!' : 'Nie.'}</Verdict>{' '}
+            {neg
+              ? 'Ujemny balonik odpycha elektrony swobodne na drugi koniec (B). Koniec A ma ich za mało, więc jest dodatni, a koniec B – ujemny.'
+              : 'Dodatnia pałeczka przyciąga elektrony swobodne do końca A, więc A jest ujemny, a B (gdzie brakuje elektronów) – dodatni.'}{' '}
+            Po odsunięciu ciała elektrony wracają i sztabka znów jest obojętna na całej długości.
+          </div>
+          <Button onClick={() => { setT(inductionTask()); setAnswer(null) }}>
+            Następne
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
-    </div>
+    </Panel>
   )
 }
 
 export default function Electrostatics({ record, sub = 'teoria' }) {
   return (
-    <div className="section">
-      <h2>Elektryzowanie ciał i ładunki</h2>
+    <Section>
       <BookRef pages="16–28" topics="Elektryzowanie ciał · Ładunki elektryczne · Indukcja elektrostatyczna" />
       {sub === 'teoria' && (
         <>
-        <div className="rule-box">
-          <div>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</div>
-          <div>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</div>
-          <div><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</div>
-        </div>
-        <RubDemo />
+          <Panel contentClassName="gap-2">
+            <p>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</p>
+            <p>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</p>
+            <p><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</p>
+          </Panel>
+          <RubDemo />
         </>
       )}
       {sub === 'przyciaganie' && <ForceGame record={record} />}
       {sub === 'przewodniki' && <Conductors record={record} />}
       {sub === 'indukcja' && <Induction record={record} />}
-    </div>
+    </Section>
   )
 }

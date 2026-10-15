@@ -1,26 +1,54 @@
 // Ściąga: notatki z zeszytu, uporządkowane i poprawione.
+import { BookOpen } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Expr, Formula, Lead, Section } from '@/components/app/kit.jsx'
+import { cn } from '@/lib/utils'
+
+function FixTag() {
+  return <Badge className="bg-warn text-foreground uppercase">Poprawka</Badge>
+}
 
 function Fix({ children }) {
   return (
-    <div className="fix">
-      <span className="fix-tag">Poprawka</span> {children}
+    <div className="rounded-lg bg-warn-soft px-2.5 py-2 text-sm">
+      <FixTag /> {children}
     </div>
+  )
+}
+
+function Note({ title, wide, children }) {
+  return (
+    <Card className={cn(wide && 'md:col-span-2')}>
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-start gap-2 text-[0.95rem] [&_ul]:flex [&_ul]:list-disc [&_ul]:flex-col [&_ul]:gap-1 [&_ul]:pl-5">
+        {children}
+      </CardContent>
+    </Card>
+  )
+}
+
+function Pages({ children }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+      <BookOpen className="size-3.5" />
+      {children}
+    </span>
   )
 }
 
 export default function Notes() {
   return (
-    <div className="section notes">
-      <h2>Ściąga z lekcji</h2>
-      <p className="lead">
-        Najważniejsze informacje z notatek. Miejsca oznaczone jako <span className="fix-tag">Poprawka</span>{' '}
-        uzupełniają lub prostują zapis z zeszytu.
-      </p>
+    <Section>
+      <Lead>
+        Najważniejsze informacje z notatek. Miejsca oznaczone jako <FixTag /> uzupełniają lub prostują zapis z zeszytu.
+      </Lead>
 
-      <div className="notes-grid">
-        <section className="card note">
-          <h3>Elektryzowanie ciał</h3>
-          <p className="small muted">📖 Podręcznik s. 16–28</p>
+      <div className="grid gap-3.5 md:grid-cols-2">
+        <Note title="Elektryzowanie ciał">
+          <Pages>Podręcznik s. 16–28</Pages>
           <ul>
             <li>Ładunki: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się odpychają, różnoimienne przyciągają.</li>
             <li>Atom: jądro (protony +, neutrony 0) i elektrony −.</li>
@@ -30,10 +58,9 @@ export default function Notes() {
             <li><b>Przewodniki</b> (metale – elektrony swobodne) i <b>izolatory</b> (szkło, porcelana, guma, tworzywa).</li>
             <li><b>Indukcja</b>: zbliżone naelektryzowane ciało przesuwa ładunki w ciele obojętnym (w przewodniku elektrony swobodne, w izolatorze ładunki w cząsteczkach), dlatego przyciąga też ciała obojętne, np. skrawki papieru.</li>
           </ul>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Obwód elektryczny</h3>
+        <Note title="Obwód elektryczny">
           <p>
             <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych.
           </p>
@@ -51,12 +78,11 @@ export default function Notes() {
           </p>
           <p>
             <b>Prąd jak woda</b>: bateria ↔ pompa, napięcie ↔ różnica poziomów wody, przewody ↔ rury,
-            żarówka ↔ koło wodne. <span className="small muted">📖 s. 29–34</span>
+            żarówka ↔ koło wodne. <Pages>s. 29–34</Pages>
           </p>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Skutki przepływu prądu</h3>
+        <Note title="Skutki przepływu prądu">
           <ul>
             <li><b>cieplny</b> – grzejnik, czajnik, żelazko</li>
             <li><b>świetlny</b> – żarówka, latarka</li>
@@ -65,76 +91,70 @@ export default function Notes() {
             <li><b>dźwiękowy</b> – głośnik, dzwonek</li>
             <li><b>magnetyczny</b> – elektromagnes</li>
           </ul>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Kierunek prądu i ruch elektronów</h3>
-          <p className="c-current">
+        <Note title="Kierunek prądu i ruch elektronów">
+          <p className="text-current-flow">
             <b>Kierunek prądu (umowny):</b> od bieguna <b>„+”</b> do <b>„−”</b> (w obwodzie zewnętrznym).
           </p>
-          <p className="c-electron">
+          <p className="text-electron">
             <b>Elektrony</b> poruszają się odwrotnie: od <b>„−”</b> do <b>„+”</b>.
           </p>
-          <p className="small muted">
+          <p className="text-sm text-muted-foreground">
             Symbol ogniwa: dłuższa cienka kreska = „+”, krótsza gruba = „−”.
           </p>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Prąd w ciałach stałych, cieczach i gazach</h3>
+        <Note title="Prąd w ciałach stałych, cieczach i gazach">
           <ul>
             <li><b>Ciała stałe (metale)</b> – uporządkowany ruch <b>elektronów</b>.</li>
             <li><b>Ciecze (elektrolity)</b> – uporządkowany ruch <b>jonów</b> (dodatnich i ujemnych).</li>
             <li><b>Gazy</b> – ruch <b>jonów oraz elektronów</b>.</li>
           </ul>
           <Fix>W zeszycie przy cieczach i gazach jest „jamów/jomów” – chodzi o <b>jony</b>.</Fix>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Napięcie elektryczne</h3>
+        <Note title="Napięcie elektryczne">
           <p>
             Iloraz energii potrzebnej do przeniesienia ładunku z jednego miejsca obwodu do drugiego i
             wartości tego ładunku.
           </p>
-          <div className="formula big">U = E / q</div>
-          <p className="small">
+          <Formula big>U = E / q</Formula>
+          <p className="text-sm">
             U – napięcie [V, wolt], E – energia [J, dżul], q – ładunek [C, kulomb]
           </p>
-          <div className="formula">1 V = 1 J / 1 C</div>
-        </section>
+          <Formula>1 V = 1 J / 1 C</Formula>
+        </Note>
 
-        <section className="card note">
-          <h3>Natężenie prądu</h3>
+        <Note title="Natężenie prądu">
           <p>
             Iloraz ładunku przepływającego przez przewodnik i czasu jego przepływu („szybkość przepływu
             ładunku”).
           </p>
-          <div className="formula big">I = q / t</div>
-          <p className="small">I – natężenie [A, amper], q – ładunek [C], t – czas [s]</p>
-          <div className="formula">1 A = 1 C / 1 s</div>
-          <div className="formula">1 Ah = 1 A · 3600 s = 3600 C</div>
-        </section>
+          <Formula big>I = q / t</Formula>
+          <p className="text-sm">I – natężenie [A, amper], q – ładunek [C], t – czas [s]</p>
+          <Formula>1 A = 1 C / 1 s</Formula>
+          <Formula>1 Ah = 1 A · 3600 s = 3600 C</Formula>
+        </Note>
 
-        <section className="card note">
-          <h3>Praca i moc prądu</h3>
-          <div className="formula big">W = U · I · t</div>
-          <p className="small">W – praca [J], U – napięcie [V], I – natężenie [A], t – czas [s]</p>
-          <div className="formula">1 J = 1 V · 1 A · 1 s</div>
-          <p className="small">
+        <Note title="Praca i moc prądu">
+          <Formula big>W = U · I · t</Formula>
+          <p className="text-sm">W – praca [J], U – napięcie [V], I – natężenie [A], t – czas [s]</p>
+          <Formula>1 J = 1 V · 1 A · 1 s</Formula>
+          <p className="text-sm">
             Skąd ten wzór? Z napięcia: E = U · q (energia to praca prądu, więc E = W), a ładunek q = I · t.
             Razem: <b>W = U · q = U · I · t</b>.
           </p>
-          <div className="formula big">P = U · I</div>
-          <p className="small">P – moc [W, wat]</p>
-          <div className="formula">1 W = 1 V · 1 A</div>
-          <div className="formula">1 kWh = 1000 W · 3600 s = 3 600 000 J = 3,6 MJ</div>
+          <Formula big>P = U · I</Formula>
+          <p className="text-sm">P – moc [W, wat]</p>
+          <Formula>1 W = 1 V · 1 A</Formula>
+          <Formula>1 kWh = 1000 W · 3600 s = 3 600 000 J = 3,6 MJ</Formula>
           <Fix>
             W zeszycie zapisano „I = W / U·T” – czas oznaczamy małą literą <b>t</b>: I = W / (U · t).
           </Fix>
-        </section>
+        </Note>
 
-        <section className="card note">
-          <h3>Przedrostki</h3>
+        <Note title="Przedrostki">
           <ul>
             <li><b>µ</b> mikro = 0,000001</li>
             <li><b>m</b> mili = 0,001</li>
@@ -142,19 +162,20 @@ export default function Notes() {
             <li><b>M</b> mega = 1 000 000</li>
             <li><b>G</b> giga = 1 000 000 000</li>
           </ul>
-        </section>
+        </Note>
 
-        <section className="card note wide">
-          <h3>Zadania z zeszytu – rozwiązane poprawnie</h3>
-          <div className="worked">
+        <Note title="Zadania z zeszytu – rozwiązane poprawnie" wide>
+          <div className="grid w-full gap-3.5 sm:grid-cols-2">
             <div>
               <b>1.</b> Dane: U = 12 V, q = 20 C. Szukane: E.
-              <div className="formula-inline">E = U · q = 12 V · 20 C = 240 J</div>
+              <Expr className="block">E = U · q = 12 V · 20 C = 240 J</Expr>
             </div>
-            <div>
-              <b>2.</b> Dane: t = 3 s, I = 50 mA. Szukane: q.
-              <div className="formula-inline">I = 50 mA = 0,05 A</div>
-              <div className="formula-inline">q = I · t = 0,05 A · 3 s = 0,15 C</div>
+            <div className="flex flex-col gap-1">
+              <div>
+                <b>2.</b> Dane: t = 3 s, I = 50 mA. Szukane: q.
+              </div>
+              <Expr className="block">I = 50 mA = 0,05 A</Expr>
+              <Expr className="block">q = I · t = 0,05 A · 3 s = 0,15 C</Expr>
               <Fix>
                 W zeszycie: 50 mA = 0,005 A – to błąd. 50 mA = <b>0,05 A</b>. Wynik 0,15 C jest poprawny
                 właśnie dla 0,05 A (0,005 A dałoby 0,015 C).
@@ -162,15 +183,15 @@ export default function Notes() {
             </div>
             <div>
               <b>3.</b> Żarówka 21 W, napięcie 12 V. Szukane: I.
-              <div className="formula-inline">I = P / U = 21 W : 12 V = 1,75 A</div>
+              <Expr className="block">I = P / U = 21 W : 12 V = 1,75 A</Expr>
             </div>
             <div>
               <b>4a.</b> I = 5 A, t = 1 h = 3600 s. Szukane: q.
-              <div className="formula-inline">q = I · t = 5 A · 3600 s = 18 000 C</div>
+              <Expr className="block">q = I · t = 5 A · 3600 s = 18 000 C</Expr>
             </div>
           </div>
-        </section>
+        </Note>
       </div>
-    </div>
+    </Section>
   )
 }

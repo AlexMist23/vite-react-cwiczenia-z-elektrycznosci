@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Answers, BookRef, Callout, Feedback, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
-import BookRef from '../components/BookRef.jsx'
 import { shuffle } from '../lib/physics.js'
 
 // Animacja nośników ładunku między elektrodami: „+” po lewej, „−” po prawej.
@@ -21,7 +23,7 @@ function Chamber({ kind }) {
     }
   })
   return (
-    <svg viewBox="0 0 300 150" className={`chamber ${kind}`}>
+    <svg viewBox="0 0 300 150" className={`drawing chamber ${kind} rounded-lg`}>
       <rect x="0" y="0" width="300" height="150" className="chamber-bg" />
       {kind === 'solid' &&
         Array.from({ length: 40 }, (_, i) => (
@@ -112,61 +114,56 @@ export default function Media({ record, sub = 'nosniki' }) {
   }
 
   return (
-    <div className="section">
-      <h2>Prąd w ciałach stałych, cieczach i gazach</h2>
+    <Section>
       <BookRef pages="23, 29, 35" topics="Elektrony swobodne, jony" />
       {sub === 'nosniki' && (
         <>
-        <div className="callout info">
-          <b>Prąd elektryczny</b> to uporządkowany ruch <b>ładunków elektrycznych</b>. W metalach są to
-          elektrony (ładunki ujemne), ale w cieczach i gazach płyną też <b>jony dodatnie</b> – dlatego
-          mówimy ogólnie o ładunkach, a nie tylko o ujemnych.
-        </div>
+          <Callout tone="info">
+            <p>
+              <b>Prąd elektryczny</b> to uporządkowany ruch <b>ładunków elektrycznych</b>. W metalach są to elektrony
+              (ładunki ujemne), ale w cieczach i gazach płyną też <b>jony dodatnie</b> – dlatego mówimy ogólnie o
+              ładunkach, a nie tylko o ujemnych.
+            </p>
+          </Callout>
 
-        <div className="media-grid">
-          {MEDIA.map((m) => (
-            <div key={m.kind} className="card media-card">
-              <h3>{m.title}</h3>
-              <Chamber kind={m.kind} />
-              <p>
-                <b>Nośniki ładunku:</b> {m.carriers}
-              </p>
-              <p className="small">{m.text}</p>
-              <p className="small muted">Przykłady: {m.examples}</p>
-            </div>
-          ))}
-        </div>
-
+          <div className="grid gap-3.5 md:grid-cols-3">
+            {MEDIA.map((m) => (
+              <Panel key={m.kind} title={m.title} contentClassName="gap-2.5">
+                <Chamber kind={m.kind} />
+                <p>
+                  <b>Nośniki ładunku:</b> {m.carriers}
+                </p>
+                <p className="text-sm">{m.text}</p>
+                <p className="text-sm text-muted-foreground">Przykłady: {m.examples}</p>
+              </Panel>
+            ))}
+          </div>
         </>
       )}
       {sub === 'cwiczenie' && (
-        <>
-        <div className="card game-card">
-          <div className="score">
-            Wynik: <b>{score.ok}</b> / {score.all}
-          </div>
-          <p className="question">
-            Co przenosi ładunek? <b>{name}</b>
-          </p>
-          <div className="answers three">
+        <Panel score={<Score ok={score.ok} all={score.all} />} title="Co przenosi ładunek?">
+          <Question className="text-2xl font-bold text-sec">{name}</Question>
+          <Answers cols="three">
             {Object.entries(LABEL).map(([k, t]) => (
               <AnswerBtn key={k} id={k} answer={answer} correct={correct} choose={choose}>
                 {t}
               </AnswerBtn>
             ))}
-          </div>
+          </Answers>
           {answer && (
-            <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
-              {answer === correct ? 'Dobrze! ' : 'Nie tym razem. '}
-              {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}. {why}
-              <button className="btn primary" onClick={next}>
-                Następne →
-              </button>
-            </div>
+            <Feedback tone={answer === correct ? 'ok' : 'bad'}>
+              <div>
+                <Verdict ok={answer === correct}>{answer === correct ? 'Dobrze!' : 'Nie tym razem.'}</Verdict>{' '}
+                {MEDIA.find((m) => m.kind === correct).title}: {MEDIA.find((m) => m.kind === correct).carriers}. {why}
+              </div>
+              <Button onClick={next}>
+                Następne
+                <ArrowRight data-icon="inline-end" />
+              </Button>
+            </Feedback>
           )}
-        </div>
-        </>
+        </Panel>
       )}
-    </div>
+    </Section>
   )
 }

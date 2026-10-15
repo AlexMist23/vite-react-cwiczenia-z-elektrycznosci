@@ -1,6 +1,10 @@
 import { useState } from 'react'
+import { ArrowRight, Droplets, MoveHorizontal, RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Answers, BookRef, Feedback, Lead, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
-import BookRef from '../components/BookRef.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, shuffle } from '../lib/physics.js'
 
@@ -104,7 +108,7 @@ function PuzzleCircuit({ topo, closed, onToggle, showGlow }) {
   const bat = topo.bat ?? { x: 40, y: 110, rot: 90 } // „+” u góry, jak w podręczniku
   const bulb = topo.bulb ?? { x: 170, y: 30, rot: 0 }
   return (
-    <svg viewBox="0 0 410 220" className="circuit small-circuit">
+    <svg viewBox="0 0 410 220" className="drawing mx-auto max-w-115">
       <CutWires
         id={`puzzle-wires-${topo.id}`}
         holes={[
@@ -163,36 +167,36 @@ function BulbGame({ record }) {
   }
 
   return (
-    <div className="card game-card">
-      <div className="score">
-        Wynik: <b>{score.ok}</b> / {score.all}
-      </div>
-      <h3>Czy żarówka świeci?</h3>
-      <p className="question">Który opis pasuje do tego obwodu?</p>
+    <Panel title="Czy żarówka świeci?" score={<Score ok={score.ok} all={score.all} />}>
+      <Question>Który opis pasuje do tego obwodu?</Question>
       <PuzzleCircuit topo={topo} closed={closed} onToggle={() => answer && setClosed((c) => !c)} showGlow={!!answer} />
       {answer && (
-        <p className="small muted center">
+        <p className="text-center text-sm text-muted-foreground">
           Teraz możesz klikać wyłącznik i sprawdzić, kiedy żarówka świeci (wyłącznik:{' '}
           {closed ? 'zamknięty' : 'otwarty'}).
         </p>
       )}
-      <div className="answers two">
+      <Answers cols="two">
         {Object.entries(DESCRIPTIONS).map(([k, d]) => (
           <AnswerBtn key={k} id={k} answer={answer} correct={topo.answer} choose={choose}>
-            <b>{k}.</b> {d}
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-secondary text-sm font-bold">{k}</span>
+            {d}
           </AnswerBtn>
         ))}
-      </div>
+      </Answers>
       {answer && (
-        <div className={answer === topo.answer ? 'feedback ok' : 'feedback bad'}>
-          {answer === topo.answer ? 'Dobrze! ' : `Poprawnie: ${topo.answer}. `}
-          {topo.why}
-          <button className="btn primary" onClick={next}>
-            Następny obwód →
-          </button>
-        </div>
+        <Feedback tone={answer === topo.answer ? 'ok' : 'bad'}>
+          <div>
+            <Verdict ok={answer === topo.answer}>{answer === topo.answer ? 'Dobrze!' : `Poprawnie: ${topo.answer}.`}</Verdict>{' '}
+            {topo.why}
+          </div>
+          <Button onClick={next}>
+            Następny obwód
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
-    </div>
+    </Panel>
   )
 }
 
@@ -214,34 +218,47 @@ function WaterAnalogy({ record }) {
   const complete = Object.keys(sel).length === ANALOGY.length
 
   return (
-    <div className="card">
-      <h3>Prąd elektryczny jest jak prąd wody</h3>
-      <p className="small muted">Dopasuj elementy obwodu wodnego do elementów obwodu elektrycznego.</p>
-      <div className="analogy">
+    <Panel title="Prąd elektryczny jest jak prąd wody">
+      <p className="text-sm text-muted-foreground">Dopasuj elementy obwodu wodnego do elementów obwodu elektrycznego.</p>
+      <div className="grid gap-2">
         {ANALOGY.map(([w, e]) => (
           <div
             key={w}
-            className={`analogy-row ${checked ? (sel[w] === e ? 'ok' : 'bad') : ''}`}
+            className={cn(
+              'grid grid-cols-1 items-center gap-2 rounded-lg border-2 px-2.5 py-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-2.5',
+              checked && (sel[w] === e ? 'border-success bg-success-soft' : 'border-destructive bg-destructive-soft'),
+            )}
           >
-            <span>💧 {w}</span>
-            <span className="arrow">↔</span>
-            <select
-              value={sel[w] ?? ''}
+            <span className="flex items-center gap-2">
+              <Droplets className="size-4 shrink-0 text-electron" />
+              {w}
+            </span>
+            <MoveHorizontal className="hidden size-4 text-muted-foreground sm:block" />
+            <Select
+              value={sel[w]}
               disabled={checked}
-              onChange={(ev) => setSel((s) => ({ ...s, [w]: ev.target.value }))}
+              onValueChange={(v) => setSel((s) => ({ ...s, [w]: v }))}
             >
-              <option value="" disabled>wybierz…</option>
-              {options.map((o) => (
-                <option key={o} value={o}>⚡ {o}</option>
-              ))}
-            </select>
-            {checked && sel[w] !== e && <span className="ok-text small">→ {e}</span>}
+              <SelectTrigger className="w-full bg-card">
+                <SelectValue placeholder="wybierz…" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {options.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {checked && sel[w] !== e && <span className="text-sm text-success sm:col-start-3">→ {e}</span>}
           </div>
         ))}
       </div>
       {!checked ? (
-        <button
-          className="btn primary"
+        <Button
+          className="w-fit"
           disabled={!complete}
           onClick={() => {
             setChecked(true)
@@ -249,30 +266,34 @@ function WaterAnalogy({ record }) {
           }}
         >
           Sprawdź
-        </button>
+        </Button>
       ) : (
-        <div className="feedback info">
-          Wynik: {good} / {ANALOGY.length}. Bateria „podnosi” elektrony na wyższy poziom energii tak jak pompa
-          wodę, a napięcie odpowiada różnicy poziomów wody.
-          <button className="btn" onClick={() => { setSel({}); setChecked(false) }}>Jeszcze raz</button>
-        </div>
+        <Feedback tone="info">
+          <div>
+            Wynik: <b>{good}</b> / {ANALOGY.length}. Bateria „podnosi” elektrony na wyższy poziom energii tak jak
+            pompa wodę, a napięcie odpowiada różnicy poziomów wody.
+          </div>
+          <Button variant="outline" onClick={() => { setSel({}); setChecked(false) }}>
+            <RotateCcw data-icon="inline-start" />
+            Jeszcze raz
+          </Button>
+        </Feedback>
       )}
-    </div>
+    </Panel>
   )
 }
 
 export default function CircuitPuzzles({ record, sub = 'zarowka' }) {
   return (
-    <div className="section">
-      <h2>Zagadki obwodowe</h2>
+    <Section>
       <BookRef pages="29–34" topics="Obwód prądu elektrycznego" />
-      <p className="lead">
+      <Lead>
         Prąd płynie tylko w obwodzie <b>zamkniętym</b>. Jeśli końce żarówki połączy zwykły przewód,
         prawie cały prąd popłynie tym przewodem (prawie nie stawia oporu), a żarówka zgaśnie. Gdy w obwodzie
         nie zostaje żaden odbiornik, mamy <b>zwarcie</b>.
-      </p>
+      </Lead>
       {sub === 'zarowka' && <BulbGame record={record} />}
       {sub === 'woda' && <WaterAnalogy record={record} />}
-    </div>
+    </Section>
   )
 }

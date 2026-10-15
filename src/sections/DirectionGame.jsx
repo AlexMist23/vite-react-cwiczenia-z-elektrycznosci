@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { ArrowRight, RefreshCw, RotateCcw, RotateCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Answers, BookRef, Feedback, FlowLegend, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, rand } from '../lib/physics.js'
 import AnswerBtn from '../components/AnswerBtn.jsx'
-import BookRef from '../components/BookRef.jsx'
 
 // Prostokątny obwód; boki w kolejności obiegu zgodnego z ruchem wskazówek zegara.
 const SIDES = [
@@ -86,7 +88,7 @@ function Flow({ currentCW, elements }) {
   )
 }
 
-const dirWord = (cw) => (cw ? 'zgodnie z ruchem wskazówek zegara ↻' : 'przeciwnie do ruchu wskazówek zegara ↺')
+const dirWord = (cw) => (cw ? 'zgodnie z ruchem wskazówek zegara' : 'przeciwnie do ruchu wskazówek zegara')
 
 function Arrows({ cw, className, skipSides }) {
   return ARROW_SPOTS.filter((_, i) => !skipSides.includes(Math.floor(i / 2))).map(([x, y, a], i) => (
@@ -110,7 +112,7 @@ function CircuitView({ task, answer }) {
   const side = (i) => SIDES[i]
   const b = side(task.batterySide)
   return (
-    <svg viewBox="0 0 400 280" className="circuit small-circuit">
+    <svg viewBox="0 0 400 280" className="drawing mx-auto max-w-115">
       <CutWires
         id="direction-wires"
         holes={[
@@ -154,22 +156,19 @@ function DirectionDemo() {
   const [flip, setFlip] = useState(false)
   const task = { batterySide: 3, bulbSide: 0, switchSide: 1, flip, currentCW: flip, kind: 'current' }
   return (
-    <div className="card">
-      <h3>Zobacz, jak to płynie</h3>
+    <Panel title="Zobacz, jak to płynie">
       <CircuitView task={task} answer="pokaz" />
-      <div className="legend">
-        <span><i className="lg-current" /> kierunek prądu (umowny): od „+” do „−”</span>
-        <span><i className="lg-electron" /> elektrony: od „−” do „+”</span>
-      </div>
-      <p className="small">
+      <FlowLegend />
+      <p className="text-sm">
         Bateria jest po lewej, jej „+” jest teraz {flip ? 'u góry' : 'na dole'}. Prąd wypływa z „+”, więc płynie{' '}
-        <b className="c-current">{dirWord(task.currentCW)}</b>. Elektrony płyną odwrotnie –{' '}
-        <b className="c-electron">{dirWord(!task.currentCW)}</b>.
+        <b className="text-current-flow">{dirWord(task.currentCW)}</b>. Elektrony płyną odwrotnie –{' '}
+        <b className="text-electron">{dirWord(!task.currentCW)}</b>.
       </p>
-      <button className="btn primary" onClick={() => setFlip((x) => !x)}>
-        🔄 Odwróć baterię
-      </button>
-    </div>
+      <Button className="w-fit" onClick={() => setFlip((x) => !x)}>
+        <RefreshCw data-icon="inline-start" />
+        Odwróć baterię
+      </Button>
+    </Panel>
   )
 }
 
@@ -200,45 +199,31 @@ export default function DirectionGame({ record, sub = 'zasada' }) {
   }
 
   return (
-    <div className="section">
-      <h2>Kierunek prądu i ruch elektronów</h2>
+    <Section>
       <BookRef pages="31–32" topics="Kierunek przepływu prądu a kierunek ruchu elektronów" />
       {sub === 'zasada' && (
         <>
-        <div className="rule-box">
-          <div className="c-current">
-            <b>Kierunek prądu (umowny)</b>: w obwodzie zewnętrznym od bieguna <b>dodatniego (+)</b> do{' '}
-            <b>ujemnego (−)</b>.
-          </div>
-          <div className="c-electron">
-            <b>Elektrony</b> mają ładunek ujemny, więc poruszają się odwrotnie: od <b>„−”</b> do{' '}
-            <b>„+”</b>.
-          </div>
-          <div className="muted small">
-            Pamiętaj: na symbolu ogniwa dłuższa, cienka kreska to „+”, krótsza i gruba to „−”.
-          </div>
-        </div>
-
+          <Panel contentClassName="gap-2">
+            <p className="text-current-flow">
+              <b>Kierunek prądu (umowny)</b>: w obwodzie zewnętrznym od bieguna <b>dodatniego (+)</b> do{' '}
+              <b>ujemnego (−)</b>.
+            </p>
+            <p className="text-electron">
+              <b>Elektrony</b> mają ładunek ujemny, więc poruszają się odwrotnie: od <b>„−”</b> do <b>„+”</b>.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Pamiętaj: na symbolu ogniwa dłuższa, cienka kreska to „+”, krótsza i gruba to „−”.
+            </p>
+          </Panel>
           <DirectionDemo />
         </>
       )}
       {sub === 'cwiczenie' && (
-        <>
-        <div className="card game-card">
-          <div className="score">
-            Wynik: <b>{score.ok}</b> / {score.all}
-          </div>
-          <p className="question">{Q[task.kind]}</p>
-
+        <Panel title={Q[task.kind]} score={<Score ok={score.ok} all={score.all} />}>
           <CircuitView task={task} answer={answer} />
-          {answer && (
-            <div className="legend">
-              <span><i className="lg-current" /> kierunek prądu (umowny): od „+” do „−”</span>
-              <span><i className="lg-electron" /> elektrony: od „−” do „+”</span>
-            </div>
-          )}
+          {answer && <FlowLegend />}
 
-          <div className="answers two">
+          <Answers cols="two">
             {task.kind === 'which' ? (
               <>
                 <AnswerBtn id="current" {...{ answer, correct, choose }}>Kierunek prądu</AnswerBtn>
@@ -247,43 +232,45 @@ export default function DirectionGame({ record, sub = 'zasada' }) {
             ) : (
               <>
                 <AnswerBtn id="cw" {...{ answer, correct, choose }}>
-                  <span className="big-icon">↻</span> zgodnie z ruchem wskazówek zegara
+                  <RotateCw className="size-6 shrink-0 text-sec" /> zgodnie z ruchem wskazówek zegara
                 </AnswerBtn>
                 <AnswerBtn id="ccw" {...{ answer, correct, choose }}>
-                  <span className="big-icon">↺</span> przeciwnie do ruchu wskazówek zegara
+                  <RotateCcw className="size-6 shrink-0 text-sec" /> przeciwnie do ruchu wskazówek zegara
                 </AnswerBtn>
               </>
             )}
-          </div>
+          </Answers>
 
           {answer && (
-            <div className={answer === correct ? 'feedback ok' : 'feedback bad'}>
-              {answer === correct ? 'Dobrze! ' : 'Niestety nie. '}
-              {task.kind === 'which'
-                ? `Strzałki wychodzą z bieguna ${task.shownCW === task.currentCW ? '„+”' : '„−”'}, więc pokazują ${
-                    correct === 'current' ? 'kierunek prądu' : 'ruch elektronów'
-                  }.`
-                : task.kind === 'current'
-                  ? 'Prąd wypływa z bieguna dodatniego (dłuższa kreska) i wraca do ujemnego.'
-                  : 'Elektrony wypływają z bieguna ujemnego (krótsza, gruba kreska) i płyną do dodatniego.'}
-              <ul className="force-sides">
-                <li className="c-current">
+            <Feedback tone={answer === correct ? 'ok' : 'bad'}>
+              <div>
+                <Verdict ok={answer === correct}>{answer === correct ? 'Dobrze!' : 'Niestety nie.'}</Verdict>{' '}
+                {task.kind === 'which'
+                  ? `Strzałki wychodzą z bieguna ${task.shownCW === task.currentCW ? '„+”' : '„−”'}, więc pokazują ${
+                      correct === 'current' ? 'kierunek prądu' : 'ruch elektronów'
+                    }.`
+                  : task.kind === 'current'
+                    ? 'Prąd wypływa z bieguna dodatniego (dłuższa kreska) i wraca do ujemnego.'
+                    : 'Elektrony wypływają z bieguna ujemnego (krótsza, gruba kreska) i płyną do dodatniego.'}
+              </div>
+              <ul className="flex list-disc flex-col gap-1 pl-5">
+                <li className="text-current-flow">
                   <b>Prąd</b> płynie od bieguna „+” (dłuższa, cienka kreska) przez żarówkę i wyłącznik do bieguna „−” –
                   tutaj {dirWord(task.currentCW)}. To kierunek <b>umowny</b>, ustalony, zanim odkryto elektrony.
                 </li>
-                <li className="c-electron">
+                <li className="text-electron">
                   <b>Elektrony</b> mają ładunek ujemny, więc odpycha je „−” i przyciąga „+”: płyną od bieguna „−” (krótsza,
                   gruba kreska) do „+” – tutaj {dirWord(electronsCW)}, czyli odwrotnie niż prąd.
                 </li>
               </ul>
-              <button className="btn primary" onClick={next}>
-                Następne →
-              </button>
-            </div>
+              <Button onClick={next}>
+                Następne
+                <ArrowRight data-icon="inline-end" />
+              </Button>
+            </Feedback>
           )}
-        </div>
-        </>
+        </Panel>
       )}
-    </div>
+    </Section>
   )
 }

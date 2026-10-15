@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Answers, Feedback, Formula, Lead, Panel, Question, Score, Section, StepTitle, TileBtn, Verdict } from '@/components/app/kit.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
 import Pyramid from '../components/Pyramid.jsx'
@@ -20,6 +23,8 @@ const WHY_SYMBOL = {
   P: 'P od angielskiego „power” – moc.',
 }
 
+const TITLES = { piramida: 'Ułóż piramidę', wzor: 'Ułóż wzór', symbole: 'Symbol i jednostka' }
+
 export default function FormulaTrainer({ record, sub = 'piramida' }) {
   const mode = sub
   const [pyr, setPyr] = useState('all')
@@ -31,22 +36,18 @@ export default function FormulaTrainer({ record, sub = 'piramida' }) {
   }
 
   return (
-    <div className="section">
-      <h2>Trening wzorów i piramid</h2>
-      <p className="lead">
-        Najpierw naucz się piramid na pamięć, potem przekształcaj wzory bez podglądania. Na górze piramidy
-        jest to, co powstaje z mnożenia (E, q, P, W), na dole – to, co mnożymy.
-      </p>
+    <Section>
+      <Lead>
+        Najpierw naucz się piramid na pamięć, potem przekształcaj wzory bez podglądania. Na górze piramidy jest to, co
+        powstaje z mnożenia (E, q, P, W), na dole – to, co mnożymy.
+      </Lead>
       <PyramidPicker value={pyr} onChange={setPyr} />
-      <div className="card game-card">
-        <div className="score">
-          Wynik: <b>{score.ok}</b> / {score.all}
-        </div>
+      <Panel score={<Score ok={score.ok} all={score.all} />} title={TITLES[mode]}>
         {mode === 'piramida' && <PyramidDrill key={pyr} pool={pool} onResult={result} />}
         {mode === 'wzor' && <BuildDrill key={pyr} pool={pool} onResult={result} />}
         {mode === 'symbole' && <SymbolDrill key={pyr} pool={pool} onResult={result} />}
-      </div>
-    </div>
+      </Panel>
+    </Section>
   )
 }
 
@@ -102,47 +103,48 @@ function PyramidDrill({ pool, onResult }) {
 
   return (
     <>
-      <p className="question">
-        Ułóż piramidę dla wzoru <span className="formula">{task.given}</span>
-      </p>
-      <p className="muted">
+      <Question>
+        Ułóż piramidę dla wzoru <Formula>{task.given}</Formula>
+      </Question>
+      <p className="text-muted-foreground">
         Klikaj litery – wypełniają piramidę od góry. Kliknij literę w piramidzie, żeby ją zdjąć.
       </p>
-      <div className="pyramid-play">
+      <div className="flex flex-wrap items-center gap-4.5 [&_.triangle]:max-w-60">
         <Pyramid cells={cells.map((l) => ({ label: l, cls: l ? `filled ${cls}` : '' }))} onCell={clear} />
-        <div className="builder-tiles">
+        <div className="flex flex-wrap gap-2">
           {task.pool.map((l) => (
-            <button key={l} className="tile-btn letter" onClick={() => put(l)} disabled={finished || used.includes(l)}>
+            <TileBtn key={l} letter onClick={() => put(l)} disabled={finished || used.includes(l)}>
               {l}
-            </button>
+            </TileBtn>
           ))}
         </div>
       </div>
       {!finished && (
-        <div className="btn-row">
-          <button className="btn primary" onClick={check} disabled={cells.includes('')}>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={check} disabled={cells.includes('')}>
             Sprawdź
-          </button>
-          <button className="btn" onClick={reveal}>
+          </Button>
+          <Button variant="outline" onClick={reveal}>
             Pokaż piramidę
-          </button>
+          </Button>
         </div>
       )}
       {state === 'bad' && (
-        <div className="feedback bad">
+        <Feedback tone="bad">
           Coś nie pasuje. Na górze stoi wielkość, która jest iloczynem pozostałych (np. P = U · I → P na górze).
-        </div>
+        </Feedback>
       )}
       {finished && (
-        <div className={state === 'ok' ? 'feedback ok' : 'feedback info'}>
+        <Feedback tone={state === 'ok' ? 'ok' : 'info'}>
           <div>
             {state === 'ok' ? 'Brawo! ' : ''}
             {task.tri.title}: {Object.values(task.tri.formulas).join(',  ')}
           </div>
-          <button className="btn primary" onClick={next}>
-            Następne →
-          </button>
-        </div>
+          <Button onClick={next}>
+            Następne
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
     </>
   )
@@ -176,17 +178,17 @@ function BuildDrill({ pool, onResult }) {
 
   return (
     <>
-      <p className="question">
-        Ułóż wzór na <b>{target}</b> ({NAMES[target][0]}), gdy znasz:{' '}
+      <Question>
+        Ułóż wzór na <b className="text-sec">{target}</b> ({NAMES[target][0]}), gdy znasz:{' '}
         {known.map((k) => `${k} (${NAMES[k][0]})`).join(', ')}.
-      </p>
+      </Question>
       {choosePyr ? (
         <>
-          <h3 className="step-title">Krok 1: która piramida pasuje?</h3>
+          <StepTitle>Krok 1: która piramida pasuje?</StepTitle>
           <PyramidChoice key={task.key} correct={tri} needed={[target, ...known]} onDone={setPyrOk} />
         </>
       ) : hint ? (
-        <div className="hint-pyramid">
+        <div className="hint-pyramid [&_.triangle]:max-w-37.5">
           <Pyramid cells={letters(tri).map((l) => ({ label: l, cls: l === target ? 'covered' : '' }))} />
         </div>
       ) : (
@@ -194,7 +196,7 @@ function BuildDrill({ pool, onResult }) {
       )}
       {(!choosePyr || pyrOk !== null) && (
         <>
-          {choosePyr && <h3 className="step-title">Krok 2: ułóż wzór</h3>}
+          {choosePyr && <StepTitle>Krok 2: ułóż wzór</StepTitle>}
           <FormulaBuilder
             key={task.key}
             target={target}
@@ -208,9 +210,10 @@ function BuildDrill({ pool, onResult }) {
         </>
       )}
       {done && (
-        <button className="btn primary" onClick={next}>
-          Następne →
-        </button>
+        <Button className="w-fit" onClick={next}>
+          Następne
+          <ArrowRight data-icon="inline-end" />
+        </Button>
       )}
     </>
   )
@@ -225,7 +228,7 @@ function newSymbolTask(pool) {
   const why = `${sym} – ${name}, jednostka: ${unit}. ${WHY_SYMBOL[sym]}`
   if (kind === 'name') {
     const opts = shuffle([...new Set(ALL_LETTERS.map((l) => NAMES[l][0]))].filter((n) => n !== name)).slice(0, 3)
-    return { q: <>Co oznacza symbol <span className="formula">{sym}</span>?</>, right: name, options: shuffle([name, ...opts]), why }
+    return { q: <>Co oznacza symbol <Formula>{sym}</Formula>?</>, right: name, options: shuffle([name, ...opts]), why }
   }
   if (kind === 'unit') {
     const opts = shuffle([...new Set(ALL_LETTERS.map((l) => NAMES[l][1]))].filter((u) => u !== unit)).slice(0, 3)
@@ -246,28 +249,30 @@ function SymbolDrill({ pool, onResult }) {
   }
   return (
     <>
-      <p className="question">{task.q}</p>
-      <div className="answers two">
+      <Question>{task.q}</Question>
+      <Answers cols="two">
         {task.options.map((o) => (
           <AnswerBtn key={o} id={o} answer={answer} correct={task.right} choose={choose}>
             {o}
           </AnswerBtn>
         ))}
-      </div>
+      </Answers>
       {answer && (
-        <div className={answer === task.right ? 'feedback ok' : 'feedback bad'}>
-          {answer === task.right ? 'Dobrze! ' : `Poprawnie: ${task.right}. `}
-          {task.why}
-          <button
-            className="btn primary"
+        <Feedback tone={answer === task.right ? 'ok' : 'bad'}>
+          <div>
+            <Verdict ok={answer === task.right}>{answer === task.right ? 'Dobrze!' : `Poprawnie: ${task.right}.`}</Verdict>{' '}
+            {task.why}
+          </div>
+          <Button
             onClick={() => {
               setTask(newSymbolTask(pool))
               setAnswer(null)
             }}
           >
-            Następne →
-          </button>
-        </div>
+            Następne
+            <ArrowRight data-icon="inline-end" />
+          </Button>
+        </Feedback>
       )}
     </>
   )

@@ -1,4 +1,15 @@
 import { useEffect, useState } from 'react'
+import { Ban, Lightbulb, Waves, Zap } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+
+// kolory rodzajów pierwiastków (jak w szkolnym układzie okresowym)
+const TONE = {
+  m: 'bg-orange-100 text-orange-900',
+  s: 'bg-green-100 text-green-900',
+  n: 'bg-indigo-100 text-indigo-900',
+  x: 'bg-orange-100 text-orange-900',
+}
 
 // Uproszczony układ okresowy: [symbol, nazwa, okres, grupa, rodzaj]
 // rodzaj: m – metal, s – półmetal, n – niemetal, x – rodzina (lantanowce, aktynowce)
@@ -30,25 +41,25 @@ const KINDS = {
   m: {
     one: 'metal',
     label: 'metale',
-    verdict: '⚡ przewodnik',
+    verdict: 'przewodnik', icon: Zap,
     why: 'Atom metalu ma na zewnętrznej powłoce mało elektronów (zwykle 1–3) i jądro trzyma je słabo. W kawałku metalu te elektrony odrywają się od atomów i tworzą „chmurę” elektronów swobodnych, które mogą płynąć – dlatego metale przewodzą prąd.',
   },
   s: {
     one: 'półmetal',
     label: 'półmetale',
-    verdict: '〰️ półprzewodnik',
+    verdict: 'półprzewodnik', icon: Waves,
     why: 'Półmetale leżą na granicy metali i niemetali. Elektronów swobodnych mają bardzo mało, więc przewodzą słabo – większość z nich (bor, krzem, german, tellur) to półprzewodniki. Przewodzą lepiej, gdy się je podgrzeje albo doda do nich odrobinę innego pierwiastka (domieszka). Dzięki temu można sterować przepływem prądu – z krzemu robi się procesory, diody i ogniwa słoneczne.',
   },
   n: {
     one: 'niemetal',
     label: 'niemetale',
-    verdict: '🚫 izolator',
+    verdict: 'izolator', icon: Ban,
     why: 'Atom niemetalu ma zewnętrzną powłokę prawie pełną i mocno trzyma swoje elektrony. Nie ma elektronów swobodnych, więc niemetale (np. siarka, fosfor, tlen, azot) nie przewodzą prądu – są izolatorami.',
   },
   x: {
     one: 'metale',
     label: 'metale',
-    verdict: '⚡ przewodnik',
+    verdict: 'przewodnik', icon: Zap,
     why: 'To cała rodzina pierwiastków (w pełnym układzie okresowym zapisana osobno pod tabelą). Wszystkie są metalami, więc przewodzą prąd.',
   },
 }
@@ -92,24 +103,34 @@ export default function PeriodicTable({ highlight = [] }) {
   }, [key])
   const el = sel && ELEMENTS.find((e) => e[0] === sel)
   const lit = new Set(highlight)
+  const Verdict = el && KINDS[el[4]].icon
   return (
-    <div className="pt-wrap">
-      <h4>Dlaczego przewodzi, a dlaczego nie? Układ okresowy</h4>
-      <p className="small muted">
+    <div className="flex flex-col gap-3">
+      <Separator className="my-1" />
+      <h4 className="font-semibold">Dlaczego przewodzi, a dlaczego nie? Układ okresowy</h4>
+      <p className="text-sm text-muted-foreground">
         Kliknij pierwiastek. Kolor mówi, czy jest metalem, półmetalem czy niemetalem – a to decyduje, czy
         przewodzi prąd.
       </p>
-      <div className="pt-legend">
-        <span className="pt-key m">metale – przewodniki</span>
-        <span className="pt-key s">półmetale – półprzewodniki</span>
-        <span className="pt-key n">niemetale – izolatory</span>
+      <div className="flex flex-wrap gap-2 text-sm font-semibold">
+        <span className={cn('rounded-full px-2.5 py-0.5', TONE.m)}>metale – przewodniki</span>
+        <span className={cn('rounded-full px-2.5 py-0.5', TONE.s)}>półmetale – półprzewodniki</span>
+        <span className={cn('rounded-full px-2.5 py-0.5', TONE.n)}>niemetale – izolatory</span>
       </div>
-      <div className="pt-scroll">
-        <div className="pt-grid">
+      <div className="overflow-x-auto p-1.5">
+        <div className="grid min-w-140 grid-cols-[repeat(18,minmax(28px,1fr))] grid-rows-[repeat(7,34px)] gap-0.75">
           {ELEMENTS.map(([sym, , period, group, kind]) => (
             <button
               key={sym}
-              className={`pt-cell ${kind === 'x' ? 'm x' : kind} ${sel === sym ? 'sel' : ''} ${lit.size ? (lit.has(sym) ? 'lit' : 'dim') : ''}`}
+              type="button"
+              className={cn(
+                'rounded-md p-0 text-[0.82rem] font-bold transition-transform hover:scale-110',
+                TONE[kind],
+                kind === 'x' && 'text-[0.6rem]',
+                sel === sym && 'outline-3 outline-offset-1 outline-foreground',
+                lit.size > 0 && !lit.has(sym) && 'opacity-30',
+                lit.has(sym) && 'z-1 scale-108 shadow-[0_0_0_3px_var(--volt),0_0_12px_var(--volt)]',
+              )}
               style={{ gridRow: period, gridColumn: group }}
               onClick={() => setSel(sym)}
               aria-label={sym}
@@ -120,20 +141,29 @@ export default function PeriodicTable({ highlight = [] }) {
         </div>
       </div>
       {el ? (
-        <div className={`pt-info ${el[4] === 'x' ? 'm' : el[4]}`}>
-          <div className="pt-info-head">
-            <b className="pt-big">{el[0]}</b>
-            <span>
-              <b>{el[1]}</b> – {KINDS[el[4]].one}
-              <br />
-              <b>{KINDS[el[4]].verdict}</b>
+        <div className={cn('flex flex-col gap-2 rounded-xl px-3.5 py-3', TONE[el[4]])}>
+          <div className="flex items-center gap-3.5">
+            <b className="min-w-14 text-center font-formula text-3xl">{el[0]}</b>
+            <span className="flex flex-col">
+              <span>
+                <b>{el[1]}</b> – {KINDS[el[4]].one}
+              </span>
+              <b className="flex items-center gap-1.5">
+                <Verdict className="size-4" />
+                {KINDS[el[4]].verdict}
+              </b>
             </span>
           </div>
-          {FACTS[el[0]] && <p className="pt-fact">💡 {FACTS[el[0]]}</p>}
-          <p>{KINDS[el[4]].why}</p>
+          {FACTS[el[0]] && (
+            <p className="flex gap-2 font-semibold text-foreground">
+              <Lightbulb className="mt-1 size-4 shrink-0" />
+              {FACTS[el[0]]}
+            </p>
+          )}
+          <p className="text-foreground">{KINDS[el[4]].why}</p>
         </div>
       ) : (
-        <div className="pt-info">
+        <div className="rounded-xl bg-secondary px-3.5 py-3">
           <p>
             <b>Metale</b> (lewa i środkowa część tabeli) mają elektrony swobodne – przewodzą. <b>Niemetale</b>{' '}
             (prawy górny róg) mocno trzymają elektrony – nie przewodzą. <b>Półmetale</b> leżą na „schodkach”
@@ -141,7 +171,7 @@ export default function PeriodicTable({ highlight = [] }) {
           </p>
         </div>
       )}
-      <p className="small muted pt-note">
+      <p className="text-sm text-muted-foreground">
         Uwaga: szkło, plastik, guma, drewno czy papier to nie pierwiastki, tylko związki chemiczne. Ich elektrony
         są „zajęte” w wiązaniach między atomami, więc nie ma elektronów swobodnych – to izolatory. Woda z solą
         przewodzi z innego powodu: płyną w niej jony.
