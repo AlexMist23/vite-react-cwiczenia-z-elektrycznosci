@@ -1,12 +1,12 @@
 // Sprawdzian „brakująca wielkość”: bez treści zadań – tylko dane z jednostkami i jedna szukana.
 // Uczeń wybiera piramidy, z których są zadania, i czy piramida jest widoczna.
 import { useState } from 'react'
-import { ArrowRight, Check, Eye, EyeOff, RotateCcw, X } from 'lucide-react'
+import { ArrowRight, Check, Eye, EyeOff, FileText, ListOrdered, RotateCcw, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Expr, GradeResult, NumberInput, Panel, Section } from '@/components/app/kit.jsx'
+import { Expr, GradeResult, NumberInput, Panel, Question, Section } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
 import Pyramid from '../components/Pyramid.jsx'
 import { NAMES, TRIANGLES, UNIT, letters } from '../lib/formulas.js'
@@ -53,6 +53,7 @@ function Given({ task, className }) {
 export default function MissingExam({ record }) {
   const [ids, setIds] = useState(TRIANGLES.map((t) => t.id))
   const [show, setShow] = useState('visible')
+  const [text, setText] = useState('none') // 'none' – same dane, 'text' – treść zadania (dane trzeba wypisać samemu)
   const [tasks, setTasks] = useState(null)
   const [i, setI] = useState(0)
   const [answers, setAnswers] = useState([])
@@ -98,6 +99,23 @@ export default function MissingExam({ record }) {
             </ToggleGroupItem>
           </ToggleGroup>
         </Panel>
+        <Panel title="Treść zadania" contentClassName="gap-3">
+          <ToggleGroup type="single" variant="outline" value={text} onValueChange={(v) => v && setText(v)} aria-label="Treść zadania">
+            <ToggleGroupItem value="none" className="px-4">
+              <ListOrdered data-icon="inline-start" />
+              Bez treści – same dane
+            </ToggleGroupItem>
+            <ToggleGroupItem value="text" className="px-4">
+              <FileText data-icon="inline-start" />
+              Z treścią zadania
+            </ToggleGroupItem>
+          </ToggleGroup>
+          <p className="text-sm text-muted-foreground">
+            {text === 'text'
+              ? 'Dostajesz zadanie słowami – dane i szukaną wypisujesz sam, jak na sprawdzianie.'
+              : 'Dostajesz tylko wypisane dane z jednostkami i to, czego szukasz.'}
+          </p>
+        </Panel>
         <div className="flex flex-wrap gap-2">
           <Button size="lg" onClick={() => start(6)}>
             Krótki (6 zadań)
@@ -113,7 +131,7 @@ export default function MissingExam({ record }) {
     )
   }
 
-  if (i >= tasks.length) return <Result tasks={tasks} answers={answers} onAgain={() => setTasks(null)} />
+  if (i >= tasks.length) return <Result tasks={tasks} answers={answers} withText={text === 'text'} onAgain={() => setTasks(null)} />
 
   const task = tasks[i]
   const nan = value.trim() !== '' && Number.isNaN(parseNum(value))
@@ -137,18 +155,22 @@ export default function MissingExam({ record }) {
               <Pyramid cells={letters(task.tri).map((l) => ({ label: l }))} />
             </div>
           )}
-          <div className="flex flex-col gap-3">
-            <div>
-              <div className="mb-1 text-xs font-semibold text-muted-foreground uppercase">Dane</div>
-              <Given task={task} />
+          {text === 'text' ? (
+            <Question className="max-w-2xl flex-1">{SCENARIOS[task.tri.id].text[task.target](task.values)}</Question>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div>
+                <div className="mb-1 text-xs font-semibold text-muted-foreground uppercase">Dane</div>
+                <Given task={task} />
+              </div>
+              <div>
+                <div className="mb-1 text-xs font-semibold text-muted-foreground uppercase">Szukane</div>
+                <Expr className="text-xl">
+                  <i>{task.target}</i> = ?
+                </Expr>
+              </div>
             </div>
-            <div>
-              <div className="mb-1 text-xs font-semibold text-muted-foreground uppercase">Szukane</div>
-              <Expr className="text-xl">
-                <i>{task.target}</i> = ?
-              </Expr>
-            </div>
-          </div>
+          )}
         </div>
         <form
           className="flex flex-wrap items-center gap-2"
@@ -173,7 +195,7 @@ export default function MissingExam({ record }) {
   )
 }
 
-function Result({ tasks, answers, onAgain }) {
+function Result({ tasks, answers, withText, onAgain }) {
   const results = tasks.map((t, k) => correct(t, answers[k] ?? ''))
   const ok = results.filter(Boolean).length
   const pct = Math.round((ok / tasks.length) * 100)
@@ -206,6 +228,7 @@ function Result({ tasks, answers, onAgain }) {
                   </Expr>
                   <span className="text-sm text-muted-foreground">({NAMES[t.target][0]})</span>
                 </div>
+                {withText && <p className="text-sm">{SCENARIOS[t.tri.id].text[t.target](t.values)}</p>}
                 <div className="text-sm">
                   Twoja odpowiedź: <b>{answers[k]?.trim() ? `${answers[k]} ${UNIT[t.target][0]}` : '—'}</b>
                 </div>
