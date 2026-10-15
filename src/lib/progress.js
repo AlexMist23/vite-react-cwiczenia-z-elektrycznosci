@@ -44,3 +44,22 @@ export function useProgress() {
 
   return { data, record, reset, resetSection }
 }
+
+const LAST_KEY = 'prad-ostatnio-v1'
+
+/** Ostatnio otwarta strona (hash bez „#”) – do karty „Kontynuuj naukę”. Zerowanie postępów jej nie kasuje. */
+export function loadLastPage() {
+  try {
+    return localStorage.getItem(LAST_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function saveLastPage(hash) {
+  try {
+    localStorage.setItem(LAST_KEY, hash)
+  } catch {
+    /* brak dostępu do pamięci przeglądarki – trudno */
+  }
+}
