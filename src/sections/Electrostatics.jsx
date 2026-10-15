@@ -523,6 +523,116 @@ function InductionTheory() {
           W obojętnym ciele (także w izolatorze) ładunki się przesuwają: bliżej balonika są ładunki przeciwnego znaku,
           więc przyciąganie wygrywa z odpychaniem. Po odsunięciu ciała ładunki wracają na swoje miejsca.
         </p>
+        <p>
+          W <b>izolatorze</b> (papier) nie ma elektronów swobodnych – elektrony przesuwają się tylko na drugą stronę swoich
+          cząsteczek. Podobnie naelektryzowany balonik odchyla <b>strumień wody</b> z kranu: cząsteczka wody z jednej
+          strony ma przewagę ładunku dodatniego, a z drugiej – ujemnego.
+        </p>
+      </Callout>
+      <Callout tone="info" title="Elektroskop i indukcja">
+        <p>
+          Gdy naelektryzowane ciało tylko <b>zbliżymy</b> do kulki elektroskopu (bez dotykania), wskazówka też się wychyla:
+          ciało dodatnie przyciąga elektrony do kulki, a ujemne odpycha je na wskazówkę. Wskazówka wychyla się{' '}
+          <b>niezależnie od znaku</b> ładunku i opada, gdy odsuniemy ciało.
+        </p>
+        <p>
+          Tak samo działa chmura burzowa: jej spód jest naładowany ujemnie, więc odpycha elektrony w głąb ziemi, a
+          powierzchnia ziemi pod chmurą elektryzuje się <b>dodatnio</b>.
+        </p>
+      </Callout>
+    </>
+  )
+}
+
+/** Elektroskop: listki z ładunkiem tego samego znaku odpychają się – tym bardziej, im większy ładunek. */
+function ElectroscopeDemo() {
+  const [q, setQ] = useState(0) // ładunek elektroskopu w umownych „porcjach”
+  const [last, setLast] = useState(null)
+  const angle = Math.min(Math.abs(q) * 13, 40)
+  const sign = q > 0 ? '+' : '−'
+  const touch = (dq, what) => {
+    setQ((x) => Math.max(-4, Math.min(4, x + dq)))
+    setLast(what)
+  }
+  const msg = {
+    neg: 'Dotknęliśmy kulki ujemnym balonikiem: część jego nadmiarowych elektronów przeszła na elektroskop. Listki mają ładunek ujemny i się odpychają.',
+    pos: 'Dotknęliśmy kulki dodatnią szklaną pałeczką: część elektronów z elektroskopu przeszła na pałeczkę. Listkom brakuje elektronów – mają ładunek dodatni i się odpychają.',
+    hand: 'Dotknęliśmy kulki ręką: ładunek odpłynął przez nasze ciało do ziemi. Elektroskop jest obojętny, listki opadły.',
+  }
+  return (
+    <Panel title="Pokaz: elektroskop" contentClassName="gap-3">
+      <svg viewBox="0 0 300 200" className="drawing mx-auto max-w-80">
+        <rect x="70" y="60" width="160" height="130" rx="8" className="bar" style={{ opacity: 0.35 }} />
+        <circle cx="150" cy="30" r="14" className="bar" />
+        <line x1="150" y1="44" x2="150" y2="120" className="sym" />
+        {[-1, 1].map((d) => (
+          <g key={d} transform={`rotate(${d * angle} 150 120)`} style={{ transition: 'transform 0.5s' }}>
+            <line x1="150" y1="120" x2="150" y2="178" className="sym" strokeWidth="5" />
+            {q !== 0 && (
+              <text x={150 + d * 14} y="165" textAnchor="middle" className={q > 0 ? 'ind pos' : 'ind neg'}>
+                {sign}
+              </text>
+            )}
+          </g>
+        ))}
+        {q !== 0 && (
+          <text x="150" y="35" textAnchor="middle" className={q > 0 ? 'ind pos' : 'ind neg'}>
+            {sign}
+          </text>
+        )}
+      </svg>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={() => touch(-2, 'neg')}>
+          Dotknij ujemnym balonikiem
+        </Button>
+        <Button variant="outline" onClick={() => touch(2, 'pos')}>
+          Dotknij dodatnią pałeczką
+        </Button>
+        <Button variant="outline" onClick={() => touch(-q, 'hand')}>
+          Dotknij ręką
+        </Button>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        {last ? msg[last] : 'Elektroskop jest obojętny – listki wiszą złożone. Dotknij kulki naelektryzowanym ciałem.'}
+      </p>
+    </Panel>
+  )
+}
+
+/** Wyjaśnienie: elektryzowanie przez dotyk, zasada zachowania ładunku i elektroskop. */
+function TouchTheory() {
+  return (
+    <>
+      <Panel contentClassName="gap-3">
+        <p>
+          Ciało można naelektryzować także <b>przez dotyk</b>. Gdy naelektryzowanym ciałem dotkniemy ciała obojętnego,
+          część elektronów przechodzi z jednego na drugie:
+        </p>
+        <ul className="flex list-disc flex-col gap-1 pl-5">
+          <li>
+            z ciała naelektryzowanego <b>ujemnie</b> elektrony przechodzą <b>na</b> ciało obojętne,
+          </li>
+          <li>
+            z ciała obojętnego elektrony przechodzą <b>na</b> ciało naelektryzowane <b>dodatnio</b>.
+          </li>
+        </ul>
+        <p>
+          W obu przypadkach dotknięte ciało ma potem ładunek <b>tego samego znaku</b> co ciało, którym go dotknęliśmy.
+        </p>
+      </Panel>
+      <Callout tone="info" title="Zasada zachowania ładunku">
+        <p>
+          Ładunek nie powstaje ani nie znika. Łączny ładunek (liczony ze znakami + i −) pozostaje bez zmian – elektrony
+          tylko przechodzą z ciała na ciało. Ile ich ubędzie w jednym, tyle przybędzie w drugim.
+        </p>
+      </Callout>
+      <ElectroscopeDemo />
+      <Callout tone="info" title="Do czego służy elektroskop?">
+        <p>
+          Elektroskop pokazuje, czy ciało jest naelektryzowane. Listki (albo wskazówka) mają ładunek tego samego znaku, więc
+          się odpychają – im większy ładunek, tym bardziej się rozchylają. Elektroskop nie pokazuje jednak, czy ładunek jest
+          dodatni, czy ujemny.
+        </p>
       </Callout>
     </>
   )
@@ -542,7 +652,9 @@ function ConductorsTheory() {
           porcelana, suche drewno, powietrze.
         </p>
         <p>
-          <b>Półprzewodnik</b> – przewodzi słabo, ale można sterować tym, jak przewodzi. Przykłady: krzem, german.
+          <b>Półprzewodnik</b> – substancja, która w pewnych warunkach jest przewodnikiem, a w innych izolatorem (np.
+          po oświetleniu albo podgrzaniu zaczyna przewodzić). Przykłady: krzem, german. Na tym działają ksero i drukarka
+          laserowa.
         </p>
       </Panel>
       <Panel>
@@ -574,7 +686,19 @@ export default function Electrostatics({ record, sub = 'ladunki' }) {
   return (
     <Section>
       {sub === 'ladunki' && <Charges />}
-      {sub === 'pocieranie' && <RubDemo />}
+      {sub === 'pocieranie' && (
+        <>
+          <RubDemo />
+          <Callout tone="info" title="Od czego zależy siła elektryczna?">
+            <p>
+              Naelektryzowane ciała przyciągają się lub odpychają tym <b>silniej</b>, im <b>mocniej są naelektryzowane</b>{' '}
+              (im więcej elektronów zyskały lub straciły) i im <b>bliżej</b> siebie się znajdują. Gdy się oddalają, siła
+              maleje.
+            </p>
+          </Callout>
+        </>
+      )}
+      {sub === 'dotyk-t' && <TouchTheory />}
       {sub === 'przyciaganie' && <ForceGame record={record} />}
       {sub === 'przewodniki-t' && <ConductorsTheory />}
       {sub === 'przewodniki' && <Conductors record={record} />}

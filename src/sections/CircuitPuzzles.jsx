@@ -301,8 +301,15 @@ function CircuitTheory() {
     <>
       <Panel contentClassName="gap-3">
         <p>
-          <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych. W metalowych przewodach płyną elektrony,
-          a w cieczach i gazach także jony.
+          <b>Prąd elektryczny w metalu to uporządkowany ruch elektronów swobodnych.</b> Elektrony swobodne poruszają się w
+          metalu zawsze, ale bezładnie – prądem nazywamy dopiero ruch uporządkowany, w jedną stronę. W cieczach i gazach
+          prąd płynie dzięki jonom.
+        </p>
+        <p>
+          Między biegunami baterii jest <b>napięcie elektryczne</b>: gdy połączymy je przewodem, popłynie prąd. Bateria
+          jest więc <b>źródłem napięcia</b>; są nimi też np. prądnice i baterie słoneczne. W <b>ogniwie</b> napięcie
+          powstaje dzięki reakcjom chemicznym, a <b>bateria</b> to kilka ogniw we wspólnej obudowie (bateria 9 V to 6 ogniw
+          po 1,5 V).
         </p>
         <p>Najprostszy obwód elektryczny składa się z:</p>
         <ul className="flex list-disc flex-col gap-1 pl-5">
@@ -317,7 +324,14 @@ function CircuitTheory() {
         caption={(closed) => (closed ? 'obwód jest zamknięty, płynie prąd i żarówka świeci.' : 'obwód jest przerwany, prąd nie płynie.')}
       />
       <Callout tone="info" title="Zapamiętaj">
-        <p>Prąd płynie tylko w obwodzie <b>zamkniętym</b> – takim, w którym ładunki mają drogę od jednego bieguna źródła do drugiego.</p>
+        <p>Prąd płynie tylko w obwodzie <b>zamkniętym</b> – bieguny źródła napięcia muszą być połączone przewodnikiem.</p>
+      </Callout>
+      <Callout tone="warn" title="Dlaczego ptaki mogą siedzieć na przewodach?">
+        <p>
+          Ptak dotyka tylko jednego przewodu, a nie dotyka ziemi – nie zamyka obwodu, więc przez niego nie płynie prąd.
+          Gdyby dotknął jednocześnie przewodu i słupa, zostałby porażony. Z tego samego powodu monter na izolowanym
+          podnośniku może dotykać przewodu, ale nie może dotknąć słupa ani niczego połączonego z ziemią.
+        </p>
       </Callout>
     </>
   )
@@ -332,8 +346,10 @@ function ShortTheory() {
           „na skróty” przewodem, a przez żarówkę – praktycznie nic. Żarówka gaśnie.
         </p>
         <p>
-          Gdy bieguny źródła połączy sam przewód, bez żadnego odbiornika, mamy <b>zwarcie</b>. Natężenie prądu bardzo
-          rośnie, przewody i bateria mocno się nagrzewają.
+          Gdy bieguny źródła połączy sam przewód, bez żadnego odbiornika, mamy <b>zwarcie</b> – prąd płynie
+          „łatwiejszą” drogą. Natężenie prądu bardzo rośnie, przewody i bateria mocno się nagrzewają, a bateria szybko się
+          rozładowuje. Prąd zwarcia płynie zawsze, gdy połączymy przewodnikiem bieguny baterii – nawet jeśli obok jest
+          żarówka.
         </p>
       </Panel>
       <DemoCircuit

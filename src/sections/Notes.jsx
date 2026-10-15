@@ -50,7 +50,9 @@ export const NOTES = {
         <li>Elektryzowanie przez <b>potarcie</b> i przez <b>dotyk</b> – przemieszczają się tylko elektrony. Kto zyskał elektrony – ujemny, kto stracił – dodatni.</li>
         <li><b>1 C</b> ≈ ładunek 6 · 10¹⁸ elektronów; ładunek elementarny e = 1,6 · 10⁻¹⁹ C.</li>
         <li><b>Zasada zachowania ładunku</b>: ładunek nie powstaje ani nie znika.</li>
-        <li><b>Przewodniki</b> (metale – elektrony swobodne) i <b>izolatory</b> (szkło, porcelana, guma, tworzywa).</li>
+        <li><b>Siła elektryczna</b> jest tym większa, im mocniej ciała są naelektryzowane i im bliżej siebie są.</li>
+        <li><b>Przez dotyk</b>: dotknięte ciało dostaje ładunek tego samego znaku. Elektroskop pokazuje, czy ciało jest naelektryzowane (listki się rozchylają).</li>
+        <li><b>Przewodniki</b> (metale – elektrony swobodne) i <b>izolatory</b> (szkło, porcelana, guma, tworzywa). <b>Półprzewodniki</b> (krzem, german) – w jednych warunkach przewodzą, w innych nie.</li>
         <li><b>Indukcja</b>: zbliżone naelektryzowane ciało przesuwa ładunki w ciele obojętnym (w przewodniku elektrony swobodne, w izolatorze ładunki w cząsteczkach), dlatego przyciąga też ciała obojętne, np. skrawki papieru.</li>
       </ul>
     </Note>
@@ -58,7 +60,7 @@ export const NOTES = {
   circuit: () => (
     <Note title="Obwód elektryczny">
       <p>
-        <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych.
+        <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych (w metalu – elektronów swobodnych).
       </p>
       <Fix>
         W zeszycie: „ruch ujemnych ładunków”. W metalach rzeczywiście płyną elektrony (ujemne), ale w

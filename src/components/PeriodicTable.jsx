@@ -22,7 +22,7 @@ const ELEMENTS = [
   ['K', 'potas', 4, 1, 'm'], ['Ca', 'wapń', 4, 2, 'm'], ['Sc', 'skand', 4, 3, 'm'], ['Ti', 'tytan', 4, 4, 'm'],
   ['V', 'wanad', 4, 5, 'm'], ['Cr', 'chrom', 4, 6, 'm'], ['Mn', 'mangan', 4, 7, 'm'], ['Fe', 'żelazo', 4, 8, 'm'],
   ['Co', 'kobalt', 4, 9, 'm'], ['Ni', 'nikiel', 4, 10, 'm'], ['Cu', 'miedź', 4, 11, 'm'], ['Zn', 'cynk', 4, 12, 'm'],
-  ['Ga', 'gal', 4, 13, 'm'], ['Ge', 'german', 4, 14, 's'], ['As', 'arsen', 4, 15, 's'], ['Se', 'selen', 4, 16, 's'],
+  ['Ga', 'gal', 4, 13, 'm'], ['Ge', 'german', 4, 14, 's'], ['As', 'arsen', 4, 15, 's'], ['Se', 'selen', 4, 16, 'n'],
   ['Br', 'brom', 4, 17, 'n'], ['Kr', 'krypton', 4, 18, 'n'],
   ['Rb', 'rubid', 5, 1, 'm'], ['Sr', 'stront', 5, 2, 'm'], ['Y', 'itr', 5, 3, 'm'], ['Zr', 'cyrkon', 5, 4, 'm'],
   ['Nb', 'niob', 5, 5, 'm'], ['Mo', 'molibden', 5, 6, 'm'], ['Tc', 'technet', 5, 7, 'm'], ['Ru', 'ruten', 5, 8, 'm'],
@@ -66,7 +66,7 @@ const KINDS = {
 
 // ciekawostki o wybranych pierwiastkach
 const FACTS = {
-  Se: 'Selen leży tuż obok półmetali i też jest półprzewodnikiem – dawniej robiono z niego fotokomórki, bo przewodzi lepiej, gdy pada na niego światło.',
+  Se: 'Wyjątek wśród niemetali: selen jest półprzewodnikiem – dawniej robiono z niego fotokomórki, bo przewodzi lepiej, gdy pada na niego światło.',
   As: 'Arsen zaliczamy do półmetali, ale przewodzi prawie jak metal. Za to w związku z galem (GaAs) tworzy półprzewodnik używany w diodach LED.',
   Sb: 'Antymon to półmetal, który przewodzi prawie jak metal – nie każdy półmetal jest dobrym półprzewodnikiem.',
   C: 'Wyjątek! Węgiel to niemetal, ale jego odmiana – grafit (rysik ołówka) – ma elektrony swobodne i przewodzi prąd. Inna odmiana węgla, diament, jest izolatorem.',

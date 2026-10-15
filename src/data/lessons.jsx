@@ -72,6 +72,7 @@ export const LESSONS = [
       t('ladunki', 'Ładunki i atom', Electrostatics, { sub: 'ladunki' }),
       t('pocieranie', 'Elektryzowanie przez potarcie', Electrostatics, { sub: 'pocieranie' }),
       c('przyciaganie', 'Przyciągają czy odpychają?', Electrostatics, { sub: 'przyciaganie' }),
+      t('dotyk', 'Elektryzowanie przez dotyk i elektroskop', Electrostatics, { sub: 'dotyk-t' }),
       t('przewodniki-t', 'Przewodniki i izolatory', Electrostatics, { sub: 'przewodniki-t' }),
       c('przewodniki', 'Przewodnik czy izolator?', Electrostatics, { sub: 'przewodniki' }),
       t('indukcja-t', 'Indukcja elektrostatyczna', Electrostatics, { sub: 'indukcja-t' }),

@@ -29,8 +29,8 @@ function PlusMinus({ px, mx, y = 7, rot = 0 }) {
 
 export const SYMBOLS = {
   cell: {
-    name: 'Ogniwo (źródło napięcia)',
-    hint: 'Dłuższa, cienka kreska to biegun dodatni (+), krótsza i grubsza to ujemny (−).',
+    name: 'Ogniwo / bateria (źródło napięcia)',
+    hint: 'W podręczniku ten symbol jest podpisany „bateria”. Dłuższa, cienka kreska to biegun dodatni (+), krótsza i grubsza to ujemny (−).',
     draw: ({ rotate = 0 } = {}) => (
       <>
         {lead(0, 35)}
@@ -42,8 +42,8 @@ export const SYMBOLS = {
     ),
   },
   battery: {
-    name: 'Bateria (kilka ogniw)',
-    hint: 'Kilka ogniw połączonych jedno za drugim.',
+    name: 'Bateria z kilku ogniw',
+    hint: 'Kilka ogniw połączonych jedno za drugim – np. bateria 9 V to 6 ogniw po 1,5 V.',
     draw: ({ rotate = 0 } = {}) => (
       <>
         {lead(0, 24)}
@@ -129,7 +129,7 @@ export const SYMBOLS = {
   },
   junction: {
     name: 'Połączenie przewodów',
-    hint: 'Kropka oznacza, że przewody są ze sobą połączone.',
+    hint: 'Rozgałęzienie – przewody są w tym miejscu połączone (w podręczniku: litera „T”, często rysuje się też kropkę).',
     draw: () => (
       <>
         {lead(0, 80)}
