@@ -16,6 +16,7 @@ import {
   Ruler,
   Sparkles,
   Trophy,
+  Variable,
 } from 'lucide-react'
 import CalcExam from '../sections/CalcExam.jsx'
 import Calculations from '../sections/Calculations.jsx'
@@ -28,6 +29,7 @@ import FormulaDrills from '../sections/FormulaDrills.jsx'
 import FormulaToCalc from '../sections/FormulaToCalc.jsx'
 import FormulaTrainer from '../sections/FormulaTrainer.jsx'
 import Media from '../sections/Media.jsx'
+import MissingExam from '../sections/MissingExam.jsx'
 import Notes from '../sections/Notes.jsx'
 import Problems from '../sections/Problems.jsx'
 import Pyramids from '../sections/Pyramids.jsx'
@@ -224,6 +226,14 @@ export const LESSONS = [
     title: 'Sprawdzian z obliczeń',
     desc: 'Same zadania rachunkowe z wpisywaniem wyniku i oceną.',
     steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian z obliczeń', view: CalcExam, props: {} }],
+  },
+  {
+    id: 'brakujaca',
+    group: 'powtorka',
+    icon: Variable,
+    title: 'Sprawdzian: brakująca wielkość',
+    desc: 'Same dane z jednostkami – oblicz jedną brakującą wielkość z wybranych piramid.',
+    steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian: brakująca wielkość', view: MissingExam, props: {} }],
   },
   {
     id: 'quiz',
