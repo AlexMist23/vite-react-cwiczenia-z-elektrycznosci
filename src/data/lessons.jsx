@@ -3,7 +3,9 @@ import {
   Atom,
   BookOpen,
   Brain,
+  Calculator,
   CircuitBoard,
+  ClipboardCheck,
   FlaskConical,
   Gauge,
   Lightbulb,
@@ -15,11 +17,14 @@ import {
   Sparkles,
   Trophy,
 } from 'lucide-react'
+import CalcExam from '../sections/CalcExam.jsx'
+import Calculations from '../sections/Calculations.jsx'
 import CircuitPuzzles from '../sections/CircuitPuzzles.jsx'
 import CircuitSim from '../sections/CircuitSim.jsx'
 import DirectionGame from '../sections/DirectionGame.jsx'
 import Effects from '../sections/Effects.jsx'
 import Electrostatics from '../sections/Electrostatics.jsx'
+import FormulaDrills from '../sections/FormulaDrills.jsx'
 import FormulaToCalc from '../sections/FormulaToCalc.jsx'
 import FormulaTrainer from '../sections/FormulaTrainer.jsx'
 import Media from '../sections/Media.jsx'
@@ -182,24 +187,47 @@ export const LESSONS = [
     id: 'trening',
     group: 'wzory',
     icon: Brain,
-    title: 'Wzory w praktyce',
-    desc: 'Piramidy z pamięci, wzory z klocków, zadania krok po kroku.',
+    title: 'Wzory na pamięć',
+    desc: 'Piramidy z pamięci, luki we wzorach, wzory z klocków, jednostki.',
     steps: [
       t('budowa', 'Jak zbudowana jest piramida?', FormulaTrainer, { sub: 'budowa' }),
       c('piramida', 'Ułóż piramidę', FormulaTrainer, { sub: 'piramida' }),
-      c('wzor', 'Ułóż wzór', FormulaTrainer, { sub: 'wzor' }),
+      c('luki', 'Uzupełnij wzór', FormulaDrills, { sub: 'luki' }),
+      c('wzor', 'Ułóż wzór z klocków', FormulaTrainer, { sub: 'wzor' }),
       c('symbole', 'Symbol i jednostka', FormulaTrainer, { sub: 'symbole' }),
+      c('jednostki', 'Jaka jednostka wyjdzie?', FormulaDrills, { sub: 'jednostki' }),
+    ],
+  },
+  {
+    id: 'rachunki',
+    group: 'wzory',
+    icon: Calculator,
+    title: 'Rachunki krok po kroku',
+    desc: 'Dane, szukane, wzór, wynik – zadania jak w zeszycie i na sprawdzianie.',
+    steps: [
+      t('metoda', 'Jak rozwiązywać zadania?', Calculations, { sub: 'metoda' }),
+      t('zeszyt-t', 'Zadania z zeszytu – rozwiązane', Calculations, { sub: 'zeszyt' }),
+      c('zeszyt', 'Zadania jak w zeszycie', Problems, { topics: ['Z zeszytu'] }),
       c('wzor-obliczenie', 'Wzór → obliczenie', FormulaToCalc, {}),
+      c('dwa-kroki', 'Zadania na dwa kroki', Problems, { topics: ['Dwa kroki'] }),
       c('zadania', 'Zadania mieszane', Problems, {}),
     ],
+  },
+  {
+    id: 'egzamin',
+    group: 'powtorka',
+    icon: ClipboardCheck,
+    title: 'Sprawdzian z obliczeń',
+    desc: 'Same zadania rachunkowe z wpisywaniem wyniku i oceną.',
+    steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian z obliczeń', view: CalcExam, props: {} }],
   },
   {
     id: 'quiz',
     group: 'powtorka',
     icon: Trophy,
-    title: 'Sprawdzian',
+    title: 'Sprawdzian z teorii',
     desc: 'Quiz z całego działu z oceną jak w szkole.',
-    steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian', view: Quiz, props: {} }],
+    steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian z teorii', view: Quiz, props: {} }],
   },
   {
     id: 'notatki',
@@ -233,8 +261,10 @@ const REDIRECTS = {
   wzory: 'napiecie/piramidy',
   'wzory/piramidy': 'napiecie/piramidy',
   'wzory/cwiczenie': 'napiecie/wzory-c',
-  'wzor-obliczenie': 'trening/wzor-obliczenie',
-  zadania: 'trening/zadania',
+  'wzor-obliczenie': 'rachunki/wzor-obliczenie',
+  zadania: 'rachunki/zadania',
+  'trening/wzor-obliczenie': 'rachunki/wzor-obliczenie',
+  'trening/zadania': 'rachunki/zadania',
 }
 
 /** Zamienia hash na lekcję i krok; nieznany krok → pierwszy krok lekcji. */

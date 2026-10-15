@@ -4,8 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Answers, Chip, Feedback, Lead, Panel, Question, Section, Verdict } from '@/components/app/kit.jsx'
-import { cn } from '@/lib/utils'
+import { Answers, Chip, Feedback, GradeResult, Lead, Panel, Question, Section, Verdict } from '@/components/app/kit.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { QUIZ } from '../data/quiz.js'
 import { HINTS } from '../data/quizHints.js'
@@ -37,15 +36,6 @@ const LEVELS = {
 }
 
 const fmtPts = (x) => String(x).replace('.', ',')
-
-const GRADE_BG = {
-  6: 'bg-success',
-  5: 'bg-success',
-  4: 'bg-electron',
-  3: 'bg-warn',
-  2: 'bg-current-flow',
-  1: 'bg-destructive',
-}
 
 export default function Quiz({ record }) {
   const [level, setLevel] = useState('easy')
@@ -104,16 +94,10 @@ export default function Quiz({ record }) {
     const g = gradeFor(pct)
     return (
       <Section>
-        <Panel title="Wynik" contentClassName="flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-          <div className={cn('grid size-22.5 shrink-0 place-items-center rounded-full text-5xl font-extrabold text-white', GRADE_BG[g.grade])}>
-            {g.grade}
-          </div>
-          <div>
-            <div className="text-4xl font-extrabold tabular-nums">{pct}%</div>
-            <div>
-              {fmtPts(ok)} pkt z {qs.length} – ocena <b>{g.name}</b> ({easy ? 'wersja łatwa' : 'wersja trudna'})
-            </div>
-          </div>
+        <Panel title="Wynik">
+          <GradeResult grade={g} pct={pct}>
+            {fmtPts(ok)} pkt z {qs.length} – ocena <b>{g.name}</b> ({easy ? 'wersja łatwa' : 'wersja trudna'})
+          </GradeResult>
         </Panel>
         {points.some((pt) => pt < 1) && (
           <Panel title="Do powtórki">

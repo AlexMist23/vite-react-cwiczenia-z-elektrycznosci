@@ -274,3 +274,27 @@ export function GivenSought({ given, sought, className }) {
     </div>
   )
 }
+
+const GRADE_BG = {
+  6: 'bg-success',
+  5: 'bg-success',
+  4: 'bg-electron',
+  3: 'bg-warn',
+  2: 'bg-current-flow',
+  1: 'bg-destructive',
+}
+
+/** Wynik sprawdzianu: ocena w kółku, procent i opis. */
+export function GradeResult({ grade, pct, children }) {
+  return (
+    <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
+      <div className={cn('grid size-22.5 shrink-0 place-items-center rounded-full text-5xl font-extrabold text-white', GRADE_BG[grade.grade])}>
+        {grade.grade}
+      </div>
+      <div>
+        <div className="text-4xl font-extrabold tabular-nums">{pct}%</div>
+        <div>{children}</div>
+      </div>
+    </div>
+  )
+}

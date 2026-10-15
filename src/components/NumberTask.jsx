@@ -97,7 +97,7 @@ export default function NumberTask({ generate, onResult }) {
   )
 }
 
-function Steps({ steps }) {
+export function Steps({ steps }) {
   return (
     <div className="grid w-full gap-1.5 rounded-lg bg-card p-3">
       <GivenSought

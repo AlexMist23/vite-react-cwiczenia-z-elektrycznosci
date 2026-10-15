@@ -15,9 +15,15 @@ Każda lekcja to kroki po kolei: krótkie **wyjaśnienie** → **ćwiczenie** �
 6. **Napięcie i natężenie** – U = E/q, I = q/t, piramidy, zadania.
 7. **Praca i moc prądu** – W = U·I·t, P = U·I, kWh, zadania.
 8. **Jednostki i przedrostki** – µ, m, k, M, G, kWh, Ah, h → s.
-9. **Wzory w praktyce** – piramidy z pamięci, wzory z klocków, wzór → obliczenie, zadania mieszane.
+9. **Wzory na pamięć** – piramidy z pamięci, uzupełnij lukę we wzorze, wzory z klocków, symbole, „jaka jednostka wyjdzie”.
+10. **Rachunki krok po kroku** – metoda „dane / szukane / wzór / wynik”, zadania z zeszytu rozwiązane, zadania jak w zeszycie,
+    wzór → obliczenie, zadania na dwa kroki, zadania mieszane.
 
-Powtórka: **Sprawdzian** (quiz z oceną) i **Ściąga** (notatki z zeszytu, uporządkowane i poprawione).
+Powtórka: **Sprawdzian z obliczeń** (same zadania rachunkowe z wpisywaniem wyniku – tryb „jak na sprawdzianie” albo „z poprawą”,
+ocena wg progów z zeszytu), **Sprawdzian z teorii** (quiz) i **Ściąga** (notatki z zeszytu, uporządkowane i poprawione).
+
+Generatory zadań są w `src/lib/problems.js` i `src/lib/unitTasks.js`; testy sprawdzają, że wynik w rozwiązaniu zgadza się
+z odpowiedzią, którą uczeń wpisuje.
 
 ## Wygląd i kod
 - **Tailwind CSS v4** + **shadcn/ui** (komponenty w `src/components/ui/`, dodawane przez `npx shadcn@latest add …`).

@@ -9,8 +9,8 @@ const MIGRATION = {
   symbole: 'obwod',
   zagadki: 'obwod',
   wzory: 'napiecie',
-  'wzor-obliczenie': 'trening',
-  zadania: 'trening',
+  'wzor-obliczenie': 'rachunki',
+  zadania: 'rachunki',
 }
 
 /** Przenosi wyniki z dawnych działów do lekcji (sumując). Czysta funkcja – testowana osobno. */

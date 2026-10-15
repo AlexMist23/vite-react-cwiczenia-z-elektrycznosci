@@ -22,7 +22,7 @@ export default function BottomNav({ secId }) {
         <LayoutList />
         Lekcje
       </button>
-      <a href="#quiz" className={item} data-active={active(secId === 'quiz')}>
+      <a href="#egzamin" className={item} data-active={active(secId === 'egzamin' || secId === 'quiz')}>
         <Trophy />
         Sprawdzian
       </a>
