@@ -20,7 +20,7 @@ Każda lekcja to kroki po kolei: krótkie **wyjaśnienie** → **ćwiczenie** �
     wzór → obliczenie, zadania na dwa kroki, zadania mieszane.
 
 Powtórka: **Sprawdzian z obliczeń** (same zadania rachunkowe z wpisywaniem wyniku – tryb „jak na sprawdzianie” albo „z poprawą”,
-ocena wg progów z zeszytu), **Sprawdzian z teorii** (quiz) i **Ściąga** (notatki z zeszytu, uporządkowane i poprawione).
+ocena wg progów z zeszytu), **Sprawdzian z teorii** (quiz) i **Ściąga** (notatki z zeszytu, uporządkowane).
 
 Generatory zadań są w `src/lib/problems.js` i `src/lib/unitTasks.js`; testy sprawdzają, że wynik w rozwiązaniu zgadza się
 z odpowiedzią, którą uczeń wpisuje.

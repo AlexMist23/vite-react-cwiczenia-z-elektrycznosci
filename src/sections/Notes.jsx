@@ -1,21 +1,8 @@
-// Ściąga: notatki z zeszytu, uporządkowane i poprawione.
+// Ściąga: notatki z zeszytu, uporządkowane.
 import { BookOpen } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Expr, Formula, Lead, Section } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
-
-function FixTag() {
-  return <Badge className="bg-warn text-foreground uppercase">Poprawka</Badge>
-}
-
-function Fix({ children }) {
-  return (
-    <div className="rounded-lg bg-warn-soft px-2.5 py-2 text-sm">
-      <FixTag /> {children}
-    </div>
-  )
-}
 
 function Note({ title, wide, children }) {
   return (
@@ -62,10 +49,10 @@ export const NOTES = {
       <p>
         <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych (w metalu – elektronów swobodnych).
       </p>
-      <Fix>
-        W zeszycie: „ruch ujemnych ładunków”. W metalach rzeczywiście płyną elektrony (ujemne), ale w
-        cieczach i gazach płyną także jony dodatnie – dlatego mówimy ogólnie o <b>ładunkach</b>.
-      </Fix>
+      <p>
+        W metalach płyną elektrony (ujemne), a w cieczach i gazach także jony dodatnie – dlatego mówimy ogólnie o{' '}
+        <b>ładunkach</b>.
+      </p>
       <p>
         Najprostszy obwód: <b>źródło napięcia</b>, <b>przewody</b>, <b>wyłącznik</b> i{' '}
         <b>odbiornik</b> (np. żarówka). Prąd płynie tylko w obwodzie <b>zamkniętym</b>.
@@ -112,7 +99,7 @@ export const NOTES = {
         <li><b>Ciecze (elektrolity)</b> – uporządkowany ruch <b>jonów</b> (dodatnich i ujemnych).</li>
         <li><b>Gazy</b> – ruch <b>jonów oraz elektronów</b>.</li>
       </ul>
-      <Fix>W zeszycie przy cieczach i gazach jest „jamów/jomów” – chodzi o <b>jony</b>.</Fix>
+
     </Note>
   ),
   voltage: () => (
@@ -153,9 +140,9 @@ export const NOTES = {
       <p className="text-sm">P – moc [W, wat]</p>
       <Formula>1 W = 1 V · 1 A</Formula>
       <Formula>1 kWh = 1000 W · 3600 s = 3 600 000 J = 3,6 MJ</Formula>
-      <Fix>
-        W zeszycie zapisano „I = W / U·T” – czas oznaczamy małą literą <b>t</b>: I = W / (U · t).
-      </Fix>
+      <p className="text-sm">
+        Z wzoru na pracę: <b>I = W / (U · t)</b>.
+      </p>
     </Note>
   ),
   prefixes: () => (
@@ -170,7 +157,7 @@ export const NOTES = {
     </Note>
   ),
   worked: () => (
-    <Note title="Zadania z zeszytu – rozwiązane poprawnie" wide>
+    <Note title="Zadania z zeszytu – rozwiązane" wide>
       <div className="grid w-full gap-3.5 sm:grid-cols-2">
         <div>
           <b>1.</b> Dane: U = 12 V, q = 20 C. Szukane: E.
@@ -182,10 +169,7 @@ export const NOTES = {
           </div>
           <Expr className="block">I = 50 mA = 0,05 A</Expr>
           <Expr className="block">q = I · t = 0,05 A · 3 s = 0,15 C</Expr>
-          <Fix>
-            W zeszycie: 50 mA = 0,005 A – to błąd. 50 mA = <b>0,05 A</b>. Wynik 0,15 C jest poprawny
-            właśnie dla 0,05 A (0,005 A dałoby 0,015 C).
-          </Fix>
+
         </div>
         <div>
           <b>3.</b> Żarówka 21 W, napięcie 12 V. Szukane: I.
@@ -204,7 +188,7 @@ export default function Notes() {
   return (
     <Section>
       <Lead>
-        Najważniejsze informacje z notatek. Miejsca oznaczone jako <FixTag /> uzupełniają lub prostują zapis z zeszytu.
+        Najważniejsze informacje z notatek z lekcji.
       </Lead>
 
       <div className="grid gap-3.5 md:grid-cols-2">

@@ -234,7 +234,7 @@ export const LESSONS = [
     group: 'powtorka',
     icon: NotebookText,
     title: 'Ściąga',
-    desc: 'Notatki z lekcji – uporządkowane i poprawione.',
+    desc: 'Notatki z lekcji – uporządkowane.',
     steps: [{ id: 'main', kind: 'page', title: 'Ściąga', view: Notes, props: {} }],
   },
 ]

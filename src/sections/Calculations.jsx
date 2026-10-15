@@ -54,7 +54,7 @@ function Method() {
 }
 
 /** Zadanie z zeszytu rozpisane jak w zeszycie. */
-function Worked({ no, title, given, sought, lines, answer, note }) {
+function Worked({ no, title, given, sought, lines, answer }) {
   return (
     <Panel
       title={
@@ -83,11 +83,6 @@ function Worked({ no, title, given, sought, lines, answer, note }) {
       <p>
         <b>Odp.:</b> {answer}
       </p>
-      {note && (
-        <Callout tone="warn">
-          <p>{note}</p>
-        </Callout>
-      )}
     </Panel>
   )
 }
@@ -110,7 +105,6 @@ function Notebook() {
         sought="q = ?"
         lines={['I = q / t  ⇒  q = I · t', 'q = 0,05 A · 3 s = 0,15 C']}
         answer="Przepłynął ładunek 0,15 C."
-        note="W zeszycie zapisano 50 mA = 0,005 A – to błąd. 50 mA = 50 · 0,001 A = 0,05 A. Wynik 0,15 C jest dobry właśnie dla 0,05 A."
       />
       <Worked
         no="2a"

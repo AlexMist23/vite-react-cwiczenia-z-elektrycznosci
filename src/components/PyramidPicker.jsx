@@ -5,8 +5,8 @@ import { TRIANGLES } from '../lib/formulas.js'
 /** Wybór piramidy do ćwiczeń: każda osobno albo wszystkie razem. */
 export const PYRAMID_CHOICES = [
   { id: 'all', label: 'Wszystkie piramidy', icon: Shuffle },
-  // podpisujemy wzorem na wielkość z nazwy piramidy, jak na lekcji (U = E / q, I = q / t…)
-  ...TRIANGLES.map((t) => ({ id: t.id, label: `${t.title}: ${t.formulas[{ E: 'U', q: 'I' }[t.id] ?? t.id]}` })),
+  // tylko nazwa wielkości – wzór na przycisku byłby podpowiedzią do ćwiczenia
+  ...TRIANGLES.map((t) => ({ id: t.id, label: t.title })),
 ]
 
 export const poolFor = (id) => (id === 'all' ? TRIANGLES : TRIANGLES.filter((t) => t.id === id))

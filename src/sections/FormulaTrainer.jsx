@@ -183,7 +183,7 @@ function PyramidDrill({ pool, onResult }) {
       )}
       {state === 'bad' && (
         <Feedback tone="bad">
-          Coś nie pasuje. Na górze stoi wielkość, która jest iloczynem pozostałych (np. P = U · I → P na górze).
+          Coś nie pasuje. Na górze stoi wielkość, którą dostajesz, mnożąc pozostałe litery z piramidy.
         </Feedback>
       )}
       {finished && (
