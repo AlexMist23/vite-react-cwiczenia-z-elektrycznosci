@@ -223,18 +223,18 @@ const PROBLEMS = [
   },
 ]
 
-const TOPICS = ['Wszystkie', ...new Set(PROBLEMS.map((p) => p.topic))]
+const ALL = 'Wszystkie'
 
-export default function Problems({ record }) {
-  const [topic, setTopic] = useState('Wszystkie')
-  const gen = () => pick(PROBLEMS.filter((p) => topic === 'Wszystkie' || p.topic === topic)).make()
+/** topics – tematy zadań do wyboru (w lekcji tylko jej tematy); bez niego wszystkie. */
+export default function Problems({ record, topics }) {
+  const own = topics ?? [...new Set(PROBLEMS.map((p) => p.topic))]
+  const TOPICS = [ALL, ...own]
+  const [topic, setTopic] = useState(ALL)
+  const gen = () => pick(PROBLEMS.filter((p) => (topic === ALL ? own.includes(p.topic) : p.topic === topic))).make()
 
   return (
     <Section>
-      <Lead>
-        Rozwiązuj jak w zeszycie: wypisz <b>dane</b> i <b>szukane</b>, zamień jednostki, dobierz wzór i policz. Liczby
-        dziesiętne możesz wpisywać z przecinkiem (np. 0,15).
-      </Lead>
+      <Lead>Wypisz dane i szukane, zamień jednostki, dobierz wzór i policz. Ułamki wpisuj z przecinkiem (np. 0,15).</Lead>
       <ToggleGroup
         type="single"
         variant="outline"

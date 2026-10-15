@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ArrowRight, Droplets, MoveHorizontal, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Answers, BookRef, Feedback, Lead, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Callout, Feedback, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
@@ -167,8 +167,7 @@ function BulbGame({ record }) {
   }
 
   return (
-    <Panel title="Czy żarówka świeci?" score={<Score ok={score.ok} all={score.all} />}>
-      <Question>Który opis pasuje do tego obwodu?</Question>
+    <Panel title="Który opis pasuje do tego obwodu?" score={<Score ok={score.ok} all={score.all} />}>
       <PuzzleCircuit topo={topo} closed={closed} onToggle={() => answer && setClosed((c) => !c)} showGlow={!!answer} />
       {answer && (
         <p className="text-center text-sm text-muted-foreground">
@@ -218,8 +217,7 @@ function WaterAnalogy({ record }) {
   const complete = Object.keys(sel).length === ANALOGY.length
 
   return (
-    <Panel title="Prąd elektryczny jest jak prąd wody">
-      <p className="text-sm text-muted-foreground">Dopasuj elementy obwodu wodnego do elementów obwodu elektrycznego.</p>
+    <Panel title="Dopasuj elementy obwodu wodnego do elementów obwodu elektrycznego">
       <div className="grid gap-2">
         {ANALOGY.map(([w, e]) => (
           <div
@@ -283,15 +281,106 @@ function WaterAnalogy({ record }) {
   )
 }
 
+/** Obwód do klikania w wyjaśnieniach: wyłącznik przełącza się od razu, żarówka świeci według topologii. */
+function DemoCircuit({ topoId, caption }) {
+  const [closed, setClosed] = useState(false)
+  const topo = TOPOLOGIES.find((x) => x.id === topoId)
+  return (
+    <Panel title="Pokaz" contentClassName="gap-2">
+      <PuzzleCircuit topo={topo} closed={closed} onToggle={() => setClosed((c) => !c)} showGlow />
+      <p className="text-center text-sm text-muted-foreground">
+        Kliknij wyłącznik. Teraz jest <b className="text-foreground">{closed ? 'zamknięty' : 'otwarty'}</b> –{' '}
+        {caption(closed, topo.shines(closed))}
+      </p>
+    </Panel>
+  )
+}
+
+function CircuitTheory() {
+  return (
+    <>
+      <Panel contentClassName="gap-3">
+        <p>
+          <b>Prąd elektryczny</b> to uporządkowany ruch ładunków elektrycznych. W metalowych przewodach płyną elektrony,
+          a w cieczach i gazach także jony.
+        </p>
+        <p>Najprostszy obwód elektryczny składa się z:</p>
+        <ul className="flex list-disc flex-col gap-1 pl-5">
+          <li><b>źródła napięcia</b> (bateria, akumulator, zasilacz) – to ono „napędza” ładunki,</li>
+          <li><b>przewodów</b> – drogi, którą płyną ładunki,</li>
+          <li><b>odbiornika</b> (żarówka, silnik, grzałka) – zamienia energię prądu na światło, ruch, ciepło…,</li>
+          <li><b>wyłącznika</b> – zamyka albo przerywa drogę prądu.</li>
+        </ul>
+      </Panel>
+      <DemoCircuit
+        topoId="series"
+        caption={(closed) => (closed ? 'obwód jest zamknięty, płynie prąd i żarówka świeci.' : 'obwód jest przerwany, prąd nie płynie.')}
+      />
+      <Callout tone="info" title="Zapamiętaj">
+        <p>Prąd płynie tylko w obwodzie <b>zamkniętym</b> – takim, w którym ładunki mają drogę od jednego bieguna źródła do drugiego.</p>
+      </Callout>
+    </>
+  )
+}
+
+function ShortTheory() {
+  return (
+    <>
+      <Panel contentClassName="gap-3">
+        <p>
+          Zwykły przewód prawie nie stawia oporu. Jeśli połączymy nim oba końce żarówki, prawie cały prąd popłynie
+          „na skróty” przewodem, a przez żarówkę – praktycznie nic. Żarówka gaśnie.
+        </p>
+        <p>
+          Gdy bieguny źródła połączy sam przewód, bez żadnego odbiornika, mamy <b>zwarcie</b>. Natężenie prądu bardzo
+          rośnie, przewody i bateria mocno się nagrzewają.
+        </p>
+      </Panel>
+      <DemoCircuit
+        topoId="switch-shorts-bulb"
+        caption={(closed, lit) =>
+          lit
+            ? 'prąd płynie przez żarówkę i ona świeci.'
+            : 'wyłącznik łączy końce żarówki przewodem: prąd omija żarówkę, a w obwodzie nie ma odbiornika – to zwarcie.'
+        }
+      />
+      <Callout tone="danger" title="Zwarcie jest niebezpieczne">
+        <p>W prawdziwym obwodzie zwarcie grozi pożarem. Dlatego w domowej instalacji są bezpieczniki, które wtedy przerywają obwód.</p>
+      </Callout>
+    </>
+  )
+}
+
+function WaterTheory() {
+  return (
+    <>
+      <Panel contentClassName="gap-3">
+        <p>
+          Prąd elektryczny łatwiej zrozumieć, porównując go z obiegiem wody. Wyobraź sobie zamknięty obieg: <b>pompa</b>{' '}
+          tłoczy wodę w górę, woda spływa <b>rurami</b> w dół i po drodze obraca <b>koło wodne</b>. <b>Zawór</b> może
+          zamknąć rurę i zatrzymać przepływ.
+        </p>
+        <p>
+          Im większa <b>różnica poziomów</b> między górą a dołem, tym mocniej woda napiera i tym więcej pracy może
+          wykonać koło wodne.
+        </p>
+      </Panel>
+      <Callout tone="info" title="Pomyśl, zanim przejdziesz dalej">
+        <p>
+          Który element obwodu elektrycznego działa jak pompa? Co odpowiada rurom, a co kołu wodnemu? Czym w obwodzie
+          jest „różnica poziomów”? W następnym kroku dopasujesz pary.
+        </p>
+      </Callout>
+    </>
+  )
+}
+
 export default function CircuitPuzzles({ record, sub = 'zarowka' }) {
   return (
     <Section>
-      <BookRef pages="29–34" topics="Obwód prądu elektrycznego" />
-      <Lead>
-        Prąd płynie tylko w obwodzie <b>zamkniętym</b>. Jeśli końce żarówki połączy zwykły przewód,
-        prawie cały prąd popłynie tym przewodem (prawie nie stawia oporu), a żarówka zgaśnie. Gdy w obwodzie
-        nie zostaje żaden odbiornik, mamy <b>zwarcie</b>.
-      </Lead>
+      {sub === 'obwod-t' && <CircuitTheory />}
+      {sub === 'zwarcie-t' && <ShortTheory />}
+      {sub === 'woda-t' && <WaterTheory />}
       {sub === 'zarowka' && <BulbGame record={record} />}
       {sub === 'woda' && <WaterAnalogy record={record} />}
     </Section>

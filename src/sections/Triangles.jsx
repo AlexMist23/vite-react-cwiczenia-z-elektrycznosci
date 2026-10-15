@@ -10,8 +10,8 @@ import { NAMES, TRIANGLES, letters } from '../lib/formulas.js'
 import { SCENARIOS, UNITS, substitute } from '../lib/scenarios.js'
 import { clean, fmt } from '../lib/physics.js'
 
-function newDrill() {
-  const tri = pick(TRIANGLES)
+function newDrill(pool = TRIANGLES) {
+  const tri = pick(pool)
   const target = pick(Object.keys(tri.formulas))
   const right = tri.formulas[target]
   // błędne odpowiedzi: typowe pomyłki przy przekształcaniu wzoru
@@ -33,12 +33,14 @@ function newDrill() {
   return { tri, target, right, options }
 }
 
-export default function Triangles({ record, sub = 'piramidy' }) {
+/** only – identyfikatory piramid do pokazania (np. ['E', 'q'] w lekcji o napięciu i natężeniu). */
+export default function Triangles({ record, sub = 'piramidy', only }) {
+  const pool = only ? TRIANGLES.filter((t) => only.includes(t.id)) : TRIANGLES
   const [covered, setCovered] = useState({})
   // liczby do przykładów – osobno dla każdej piramidy; te same liczby pasują do każdej zakrytej litery
   const [examples, setExamples] = useState(() => Object.fromEntries(TRIANGLES.map((t) => [t.id, SCENARIOS[t.id].values()])))
   const reroll = (id) => setExamples((e) => ({ ...e, [id]: SCENARIOS[id].values() }))
-  const [drill, setDrill] = useState(newDrill)
+  const [drill, setDrill] = useState(() => newDrill(pool))
   const [answer, setAnswer] = useState(null)
   const [score, setScore] = useState({ ok: 0, all: 0 })
 
@@ -61,7 +63,7 @@ export default function Triangles({ record, sub = 'piramidy' }) {
             mnożymy, jedno nad drugim = dzielimy.
           </Lead>
           <div className="grid gap-3.5 sm:grid-cols-2">
-            {TRIANGLES.map((tri) => {
+            {pool.map((tri) => {
               const c = covered[tri.id]
               return (
                 <Card key={tri.id}>
@@ -106,7 +108,7 @@ export default function Triangles({ record, sub = 'piramidy' }) {
               </div>
               <Button
                 onClick={() => {
-                  setDrill(newDrill())
+                  setDrill(newDrill(pool))
                   setAnswer(null)
                 }}
               >

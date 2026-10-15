@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, RefreshCw, RotateCcw, RotateCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Answers, BookRef, Feedback, FlowLegend, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Feedback, FlowLegend, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { pick, rand } from '../lib/physics.js'
 import AnswerBtn from '../components/AnswerBtn.jsx'
@@ -200,7 +200,7 @@ export default function DirectionGame({ record, sub = 'zasada' }) {
 
   return (
     <Section>
-      <BookRef pages="31–32" topics="Kierunek przepływu prądu a kierunek ruchu elektronów" />
+
       {sub === 'zasada' && (
         <>
           <Panel contentClassName="gap-2">

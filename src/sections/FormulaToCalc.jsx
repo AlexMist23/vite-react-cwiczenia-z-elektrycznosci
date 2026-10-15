@@ -81,11 +81,7 @@ export default function FormulaToCalc({ record }) {
 
   return (
     <Section>
-      <Lead>
-        <b>Krok 1:</b> dobierz piramidę, która pasuje do zadania. <b>Krok 2:</b> ułóż z klocków wzór na szukaną
-        wielkość. <b>Krok 3:</b> podstaw liczby i wpisz wynik – sprawdzimy go. Punkt dostajesz, gdy wszystko
-        zrobisz dobrze za pierwszym razem. (Po wybraniu jednej piramidy krok 1 jest pomijany.)
-      </Lead>
+      <Lead>Dobierz piramidę, ułóż wzór, policz. Punkt za wszystko dobrze za pierwszym razem.</Lead>
       <PyramidPicker
         value={pyr}
         onChange={(id) => {

@@ -3,7 +3,7 @@ import { Check, Power, RefreshCw, RotateCcw, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { BookRef, Callout, Chip, FlowLegend, Lead, Panel, Readout, Section } from '@/components/app/kit.jsx'
+import { Callout, Chip, FlowLegend, Lead, Panel, Readout, Section } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
 import { CutWires, Symbol } from '../components/Symbols.jsx'
 import { fmt } from '../lib/physics.js'
@@ -155,7 +155,7 @@ export default function CircuitSim({ record }) {
 
   return (
     <Section>
-      <BookRef pages="29–31" topics="Obwód prądu elektrycznego, zwarcie" />
+
       <Lead>
         Zbuduj prosty obwód: źródło napięcia, przewody, wyłącznik i żarówki. Kliknij wyłącznik, żeby zamknąć obwód.
         Obserwuj, w którą stronę płynie <b className="text-current-flow">prąd</b>, a w którą poruszają się{' '}

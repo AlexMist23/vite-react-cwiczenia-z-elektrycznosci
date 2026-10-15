@@ -86,7 +86,7 @@ export default function Effects({ record, sub = 'rodzaje' }) {
 
   return (
     <Section>
-      <Lead>Prąd płynąc przez urządzenia wywołuje różne skutki. Poznaj je:</Lead>
+      {sub === 'rodzaje' && <Lead>Prąd płynąc przez urządzenia wywołuje różne skutki. Poznaj je:</Lead>}
       {sub === 'rodzaje' && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {Object.entries(EFFECTS).map(([k, e]) => (

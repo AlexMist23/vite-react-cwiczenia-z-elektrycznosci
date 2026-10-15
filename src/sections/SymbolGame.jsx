@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
-import { Answers, BookRef, Feedback, Lead, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Feedback, Lead, Panel, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import { SYMBOLS, SymbolIcon } from '../components/Symbols.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { pick, shuffle } from '../lib/physics.js'
@@ -32,8 +32,6 @@ export default function SymbolGame({ record, sub = 'sciaga' }) {
 
   return (
     <Section>
-      <BookRef pages="32" topics="Symbole elementów w obwodach elektrycznych" />
-      <Lead>Schemat obwodu rysujemy za pomocą umownych symboli. Rozpoznaj je wszystkie!</Lead>
 
       {sub === 'rozpoznaj' && (
         <Panel
@@ -90,6 +88,9 @@ export default function SymbolGame({ record, sub = 'sciaga' }) {
             </Feedback>
           )}
         </Panel>
+      )}
+      {sub === 'sciaga' && (
+        <Lead>Schemat obwodu rysujemy za pomocą umownych symboli. Przyjrzyj się im – w następnym kroku będziesz je rozpoznawać.</Lead>
       )}
       {sub === 'sciaga' && (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3">

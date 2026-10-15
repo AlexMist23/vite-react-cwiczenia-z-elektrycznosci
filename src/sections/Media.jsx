@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Answers, BookRef, Callout, Feedback, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Callout, Feedback, Panel, Question, Score, Section, Verdict } from '@/components/app/kit.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import { shuffle } from '../lib/physics.js'
 
@@ -115,7 +115,7 @@ export default function Media({ record, sub = 'nosniki' }) {
 
   return (
     <Section>
-      <BookRef pages="23, 29, 35" topics="Elektrony swobodne, jony" />
+
       {sub === 'nosniki' && (
         <>
           <Callout tone="info">
@@ -141,7 +141,7 @@ export default function Media({ record, sub = 'nosniki' }) {
         </>
       )}
       {sub === 'cwiczenie' && (
-        <Panel score={<Score ok={score.ok} all={score.all} />} title="Co przenosi ładunek?">
+        <Panel score={<Score ok={score.ok} all={score.all} />}>
           <Question className="text-2xl font-bold text-sec">{name}</Question>
           <Answers cols="three">
             {Object.entries(LABEL).map(([k, t]) => (

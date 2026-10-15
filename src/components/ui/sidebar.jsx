@@ -172,8 +172,8 @@ function Sidebar({
           side={side}
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Działy</SheetTitle>
-            <SheetDescription>Lista wszystkich działów.</SheetDescription>
+            <SheetTitle>Lekcje</SheetTitle>
+            <SheetDescription>Lista wszystkich lekcji.</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -248,7 +248,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Pokaż lub ukryj menu działów</span>
+      <span className="sr-only">Pokaż lub ukryj menu lekcji</span>
     </Button>
   )
 }

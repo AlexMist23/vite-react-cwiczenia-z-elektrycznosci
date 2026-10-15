@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Answers, Feedback, Formula, Lead, Panel, Question, Score, Section, StepTitle, TileBtn, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Callout, Feedback, Formula, Panel, Question, Score, Section, StepTitle, TileBtn, Verdict } from '@/components/app/kit.jsx'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import FormulaBuilder from '../components/FormulaBuilder.jsx'
 import Pyramid from '../components/Pyramid.jsx'
 import PyramidChoice from '../components/PyramidChoice.jsx'
 import PyramidPicker, { HintButton, poolFor } from '../components/PyramidPicker.jsx'
 import { pick, shuffle } from '../lib/physics.js'
-import { NAMES, letters, samePyramid } from '../lib/formulas.js'
+import { NAMES, TRIANGLES, letters, samePyramid } from '../lib/formulas.js'
 
 const ALL_LETTERS = Object.keys(NAMES)
 
@@ -23,7 +23,6 @@ const WHY_SYMBOL = {
   P: 'P od angielskiego „power” – moc.',
 }
 
-const TITLES = { piramida: 'Ułóż piramidę', wzor: 'Ułóż wzór', symbole: 'Symbol i jednostka' }
 
 export default function FormulaTrainer({ record, sub = 'piramida' }) {
   const mode = sub
@@ -35,18 +34,57 @@ export default function FormulaTrainer({ record, sub = 'piramida' }) {
     record('trening', ok)
   }
 
+  if (mode === 'budowa') return <PyramidTheory />
+
   return (
     <Section>
-      <Lead>
-        Najpierw naucz się piramid na pamięć, potem przekształcaj wzory bez podglądania. Na górze piramidy jest to, co
-        powstaje z mnożenia (E, q, P, W), na dole – to, co mnożymy.
-      </Lead>
       <PyramidPicker value={pyr} onChange={setPyr} />
-      <Panel score={<Score ok={score.ok} all={score.all} />} title={TITLES[mode]}>
+      <Panel score={<Score ok={score.ok} all={score.all} />}>
         {mode === 'piramida' && <PyramidDrill key={pyr} pool={pool} onResult={result} />}
         {mode === 'wzor' && <BuildDrill key={pyr} pool={pool} onResult={result} />}
         {mode === 'symbole' && <SymbolDrill key={pyr} pool={pool} onResult={result} />}
       </Panel>
+    </Section>
+  )
+}
+
+/* ---------- 0. Wyjaśnienie: jak zbudowana jest piramida ---------- */
+
+function PyramidTheory() {
+  return (
+    <Section>
+      <Panel contentClassName="gap-3">
+        <p>
+          Każdy wzór z tego działu ma postać „coś = jedno · drugie” (np. <b>P = U · I</b>). Taki wzór zapisujemy w
+          piramidzie:
+        </p>
+        <ul className="flex list-disc flex-col gap-1 pl-5">
+          <li>
+            na <b>górze</b> stoi wielkość, która powstaje z mnożenia: <b>E, q, P, W</b>,
+          </li>
+          <li>
+            na <b>dole</b> – wielkości, które mnożymy, obok siebie.
+          </li>
+        </ul>
+        <p>
+          Żeby obliczyć jedną z liter, <b>zakryj ją</b>. Litery obok siebie – <b>mnożysz</b>, jedna nad drugą –{' '}
+          <b>dzielisz</b> górną przez dolną.
+        </p>
+      </Panel>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {TRIANGLES.map((tri) => (
+          <Panel key={tri.id} contentClassName="items-center gap-1 text-center [&_.triangle]:max-w-32.5 [&_.tri-cell]:cursor-default">
+            <Pyramid cells={letters(tri).map((l) => ({ label: l }))} />
+            <b className="text-sm">{tri.title}</b>
+          </Panel>
+        ))}
+      </div>
+      <Callout tone="info" title="Jak ćwiczyć">
+        <p>
+          Najpierw ułóż piramidy z pamięci, potem buduj z nich wzory, a na końcu licz zadania. Na górze każdego
+          ćwiczenia możesz wybrać jedną piramidę albo wszystkie naraz.
+        </p>
+      </Callout>
     </Section>
   )
 }

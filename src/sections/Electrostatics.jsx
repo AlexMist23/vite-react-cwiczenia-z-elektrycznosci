@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, Ban, Check, Circle, Magnet, Minus, MoveHorizontal, Plus, RotateCcw, Waves, X, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Answers, BookRef, Feedback, Panel, Question, Readout, ScoreDots, Section, Verdict } from '@/components/app/kit.jsx'
+import { Answers, Callout, Feedback, Panel, Question, Readout, ScoreDots, Section, Verdict } from '@/components/app/kit.jsx'
 import { cn } from '@/lib/utils'
 import AnswerBtn from '../components/AnswerBtn.jsx'
 import PeriodicTable from '../components/PeriodicTable.jsx'
@@ -311,13 +311,7 @@ function Conductors({ record }) {
   const highlight = summary ? (focus ? focus.els : [...new Set(items.flatMap((x) => x.els))]) : p ? m.els : []
 
   return (
-    <Panel title="Przewodnik, półprzewodnik czy izolator?">
-      <p className="text-sm text-muted-foreground">
-        Przewodnik – ładunki mogą się w nim przemieszczać (w metalach są elektrony swobodne). Izolator – ładunki
-        praktycznie nie mogą się przemieszczać. Półprzewodnik – przewodzi słabo. Po odpowiedzi zobaczysz w układzie
-        okresowym, z jakich pierwiastków jest zbudowany materiał.
-      </p>
-
+    <Panel>
       <ScoreDots items={items.map((x) => picked[x.name] && (picked[x.name] === x.kind ? 'ok' : 'bad'))} cur={summary ? -1 : idx} />
 
       {!summary ? (
@@ -394,7 +388,8 @@ function Conductors({ record }) {
         </div>
       )}
 
-      <PeriodicTable highlight={highlight} />
+      {/* układ okresowy dopiero po odpowiedzi – wcześniej podpowiadałby kolorami */}
+      {(p || summary) && <PeriodicTable highlight={highlight} />}
     </Panel>
   )
 }
@@ -425,26 +420,12 @@ function Induction({ record }) {
     setAnswer(x)
     record('elektrostatyka', x === correct)
   }
-  const endA = answer ? (neg ? '+' : '−') : ''
-  const endB = answer ? (neg ? '−' : '+') : ''
   return (
-    <Panel title="Indukcja elektrostatyczna">
+    <Panel>
       <Question>
         Do końca A obojętnej metalowej sztabki zbliżamy {t.body.name} (nie dotykamy). {question}
       </Question>
-      <svg viewBox="0 0 520 130" className="drawing mx-auto max-w-140">
-        <circle cx="70" cy="65" r="50" className={neg ? 'body-neg' : 'body-pos'} />
-        <text x="70" y="74" textAnchor="middle" className="big-sign">{neg ? '−' : '+'}</text>
-        <rect x="160" y="40" width="320" height="50" rx="6" className="bar" />
-        <text x="175" y="32" className="label small">A</text>
-        <text x="465" y="32" className="label small">B</text>
-        {answer && [0, 1, 2].map((i) => (
-          <g key={i}>
-            <text x="180" y={56 + i * 14} className={endA === '+' ? 'ind pos' : 'ind neg'}>{endA}</text>
-            <text x="455" y={56 + i * 14} className={endB === '+' ? 'ind pos' : 'ind neg'}>{endB}</text>
-          </g>
-        ))}
-      </svg>
+      <InductionDrawing neg={neg} state={answer ? 'split' : 'hidden'} />
       <Answers cols="two">
         {options.map(([id, label]) => (
           <AnswerBtn key={id} id={id} answer={answer} correct={correct} choose={choose}>{label}</AnswerBtn>
@@ -469,22 +450,135 @@ function Induction({ record }) {
   )
 }
 
-export default function Electrostatics({ record, sub = 'teoria' }) {
+/**
+ * Sztabka metalu obok naładowanego ciała.
+ * state: 'hidden' – bez ładunków (pytanie), 'neutral' – ładunki w parach, 'split' – rozdzielone przez indukcję.
+ */
+function InductionDrawing({ neg, state, bodyFar = false }) {
+  const endA = neg ? '+' : '−'
+  const endB = neg ? '−' : '+'
+  return (
+    <svg viewBox="0 0 520 130" className="drawing mx-auto max-w-140">
+      <g style={{ opacity: bodyFar ? 0.15 : 1, transition: 'opacity 0.4s' }}>
+        <circle cx="70" cy="65" r="50" className={neg ? 'body-neg' : 'body-pos'} />
+        <text x="70" y="74" textAnchor="middle" className="big-sign">{neg ? '−' : '+'}</text>
+      </g>
+      <rect x="160" y="40" width="320" height="50" rx="6" className="bar" />
+      <text x="175" y="32" className="label small">A</text>
+      <text x="465" y="32" className="label small">B</text>
+      {state === 'split' &&
+        [0, 1, 2].map((i) => (
+          <g key={i}>
+            <text x="180" y={56 + i * 14} className={endA === '+' ? 'ind pos' : 'ind neg'}>{endA}</text>
+            <text x="455" y={56 + i * 14} className={endB === '+' ? 'ind pos' : 'ind neg'}>{endB}</text>
+          </g>
+        ))}
+      {state === 'neutral' &&
+        [215, 290, 365, 440].map((x) => (
+          <g key={x}>
+            <text x={x - 12} y="70" className="ind pos">+</text>
+            <text x={x + 2} y="70" className="ind neg">−</text>
+          </g>
+        ))}
+    </svg>
+  )
+}
+
+/** Wyjaśnienie indukcji z pokazem: zbliż / odsuń naładowane ciało. */
+function InductionTheory() {
+  const [neg, setNeg] = useState(true)
+  const [near, setNear] = useState(false)
+  return (
+    <>
+      <Panel contentClassName="gap-3">
+        <p>
+          Naładowane ciało działa na ładunki w innym ciele <b>bez dotykania</b>. W metalowej sztabce są{' '}
+          <b>elektrony swobodne</b> – gdy zbliżymy do niej naelektryzowane ciało, elektrony przesuwają się:
+        </p>
+        <ul className="flex list-disc flex-col gap-1 pl-5">
+          <li>ciało <b>ujemne</b> odpycha elektrony na drugi koniec sztabki,</li>
+          <li>ciało <b>dodatnie</b> przyciąga elektrony do bliższego końca.</li>
+        </ul>
+        <p>
+          Bliższy koniec ma wtedy ładunek <b>przeciwnego znaku</b> niż ciało, a dalszy – <b>tego samego znaku</b>. To
+          jest <b>indukcja elektrostatyczna</b>.
+        </p>
+      </Panel>
+      <Panel title="Pokaz">
+        <InductionDrawing neg={neg} state={near ? 'split' : 'neutral'} bodyFar={!near} />
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setNear((x) => !x)}>{near ? 'Odsuń ciało' : 'Zbliż ciało do końca A'}</Button>
+          <Button variant="outline" onClick={() => setNeg((x) => !x)}>
+            Zmień na ciało {neg ? 'dodatnie (+)' : 'ujemne (−)'}
+          </Button>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {near
+            ? `Koniec A ma teraz ładunek ${neg ? 'dodatni' : 'ujemny'}, koniec B – ${neg ? 'ujemny' : 'dodatni'}. Sztabka jako całość nadal jest obojętna.`
+            : 'Ciało jest daleko – ładunki w sztabce są wymieszane w parach, sztabka jest obojętna.'}
+        </p>
+      </Panel>
+      <Callout tone="info" title="Dlatego naelektryzowany balonik przyciąga skrawki papieru">
+        <p>
+          W obojętnym ciele (także w izolatorze) ładunki się przesuwają: bliżej balonika są ładunki przeciwnego znaku,
+          więc przyciąganie wygrywa z odpychaniem. Po odsunięciu ciała ładunki wracają na swoje miejsca.
+        </p>
+      </Callout>
+    </>
+  )
+}
+
+/** Wyjaśnienie: przewodniki, półprzewodniki i izolatory – z układem okresowym do swobodnego oglądania. */
+function ConductorsTheory() {
+  return (
+    <>
+      <Panel contentClassName="gap-2">
+        <p>
+          <b>Przewodnik</b> – ładunki mogą się w nim swobodnie przemieszczać. W metalach są to <b>elektrony swobodne</b>.
+          Przykłady: miedź, aluminium, żelazo, grafit, woda z solą.
+        </p>
+        <p>
+          <b>Izolator</b> – ładunki praktycznie nie mogą się w nim przemieszczać. Przykłady: guma, plastik, szkło,
+          porcelana, suche drewno, powietrze.
+        </p>
+        <p>
+          <b>Półprzewodnik</b> – przewodzi słabo, ale można sterować tym, jak przewodzi. Przykłady: krzem, german.
+        </p>
+      </Panel>
+      <Panel>
+        <PeriodicTable />
+      </Panel>
+    </>
+  )
+}
+
+function Charges() {
+  return (
+    <>
+      <Panel contentClassName="gap-2">
+        <p>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</p>
+        <p>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</p>
+        <p><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</p>
+      </Panel>
+      <Callout tone="info" title="Ciało obojętne i naelektryzowane">
+        <p>
+          Ciało jest <b>obojętne</b>, gdy ma tyle samo protonów co elektronów. Ma <b>nadmiar elektronów</b> – jest
+          naelektryzowane <b>ujemnie</b>; ma ich <b>niedobór</b> – jest naelektryzowane <b>dodatnio</b>.
+        </p>
+      </Callout>
+    </>
+  )
+}
+
+export default function Electrostatics({ record, sub = 'ladunki' }) {
   return (
     <Section>
-      <BookRef pages="16–28" topics="Elektryzowanie ciał · Ładunki elektryczne · Indukcja elektrostatyczna" />
-      {sub === 'teoria' && (
-        <>
-          <Panel contentClassName="gap-2">
-            <p>Są dwa rodzaje ładunków: <b>dodatnie (+)</b> i <b>ujemne (−)</b>. Jednoimienne się <b>odpychają</b>, różnoimienne <b>przyciągają</b>.</p>
-            <p>Atom: jądro (protony <b>+</b>, neutrony obojętne) i elektrony <b>−</b>. Przy elektryzowaniu przemieszczają się tylko <b>elektrony</b>.</p>
-            <p><b>1 C</b> to ładunek około <b>6 · 10¹⁸</b> elektronów; jeden elektron ma ładunek <b>−1,6 · 10⁻¹⁹ C</b> (ładunek elementarny).</p>
-          </Panel>
-          <RubDemo />
-        </>
-      )}
+      {sub === 'ladunki' && <Charges />}
+      {sub === 'pocieranie' && <RubDemo />}
       {sub === 'przyciaganie' && <ForceGame record={record} />}
+      {sub === 'przewodniki-t' && <ConductorsTheory />}
       {sub === 'przewodniki' && <Conductors record={record} />}
+      {sub === 'indukcja-t' && <InductionTheory />}
       {sub === 'indukcja' && <Induction record={record} />}
     </Section>
   )

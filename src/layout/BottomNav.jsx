@@ -20,7 +20,7 @@ export default function BottomNav({ secId }) {
       </a>
       <button type="button" className={cn(item, 'cursor-pointer')} data-active={active(openMobile)} onClick={() => setOpenMobile(true)}>
         <LayoutList />
-        Działy
+        Lekcje
       </button>
       <a href="#quiz" className={item} data-active={active(secId === 'quiz')}>
         <Trophy />
