@@ -1,12 +1,15 @@
+import { cn } from '@/lib/utils'
+
 /**
  * Trójkąt (piramida) wzoru. cells = [góra, ...dół], każda komórka { label, cls }.
  * Pusta etykieta wyświetla się jako „?”.
+ * className – np. „size-full” w przyciskach, które inaczej zmniejszają każdy svg do rozmiaru ikony.
  */
-export default function Pyramid({ cells, onCell }) {
+export default function Pyramid({ cells, onCell, className }) {
   const n = cells.length - 1
   const pos = [[100, 62], ...(n === 2 ? [[68, 140], [132, 140]] : [[48, 140], [100, 140], [152, 140]])]
   return (
-    <svg viewBox="0 0 200 180" className="triangle">
+    <svg viewBox="0 0 200 180" className={cn('triangle', className)}>
       <polygon points="100,8 194,174 6,174" className="tri-shape" />
       <line x1="53" y1="95" x2="147" y2="95" className="tri-line" />
       {n === 2 && <line x1="100" y1="95" x2="100" y2="174" className="tri-line" />}
