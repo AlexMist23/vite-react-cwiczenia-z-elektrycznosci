@@ -4,6 +4,17 @@ import { clean, fmt, pick } from './physics.js'
 const f = (x) => fmt(clean(x))
 export const UNITS = { E: 'J', W: 'J', U: 'V', q: 'C', I: 'A', t: 's', P: 'W' }
 
+/** Jednostki czasu: ile sekund ma jedna. */
+export const TIME_UNITS = { s: 1, min: 60, h: 3600 }
+const TIME_IN = { s: 'sekundach', min: 'minutach', h: 'godzinach' }
+
+/** Czas w jednostce zadania (v.tUnit, domyślnie sekundy): 7200 s → „2 h”. */
+const time = (v) => `${f(v.t / TIME_UNITS[v.tUnit ?? 's'])} ${v.tUnit ?? 's'}`
+/** Gdy szukany czas ma wyjść w minutach lub godzinach – dopisek do treści. */
+const askTime = (v) => (v.tUnit && v.tUnit !== 's' ? ` Wynik podaj w ${TIME_IN[v.tUnit]}.` : '')
+/** Losuje „ładny” czas w danej jednostce i zwraca go w sekundach. */
+const pickTime = (lists, unit) => pick(lists[unit]) * TIME_UNITS[unit]
+
 // Dla każdego trójkąta: losowanie „ładnych” liczb i treść zadania dla każdej szukanej wielkości.
 export const SCENARIOS = {
   E: {
@@ -19,15 +30,16 @@ export const SCENARIOS = {
     },
   },
   q: {
-    values: () => {
+    // tUnit – w jakiej jednostce podajemy (albo każemy podać) czas: 's' | 'min' | 'h'
+    values: (tUnit = 's') => {
       const I = pick([0.2, 0.5, 1.5, 2, 3, 5])
-      const t = pick([2, 4, 5, 10, 20, 60])
-      return { I, t, q: I * t }
+      const t = pickTime({ s: [2, 4, 5, 10, 20, 60], min: [1, 2, 5, 10, 30], h: [0.5, 1, 2, 3] }, tUnit)
+      return { I, t, q: I * t, tUnit }
     },
     text: {
-      q: (v) => `Przez żarówkę płynie prąd o natężeniu ${f(v.I)} A. Jaki ładunek przepłynie przez nią w czasie ${f(v.t)} s?`,
-      I: (v) => `W czasie ${f(v.t)} s przez przewodnik przepłynął ładunek ${f(v.q)} C. Jakie jest natężenie prądu?`,
-      t: (v) => `Przez przewodnik płynie prąd o natężeniu ${f(v.I)} A. W jakim czasie przepłynie ładunek ${f(v.q)} C?`,
+      q: (v) => `Przez żarówkę płynie prąd o natężeniu ${f(v.I)} A. Jaki ładunek przepłynie przez nią w czasie ${time(v)}?`,
+      I: (v) => `W czasie ${time(v)} przez przewodnik przepłynął ładunek ${f(v.q)} C. Jakie jest natężenie prądu?`,
+      t: (v) => `Przez przewodnik płynie prąd o natężeniu ${f(v.I)} A. W jakim czasie przepłynie ładunek ${f(v.q)} C?${askTime(v)}`,
     },
   },
   P: {
@@ -43,17 +55,18 @@ export const SCENARIOS = {
     },
   },
   W: {
-    values: () => {
+    values: (tUnit = 's') => {
       const U = pick([4.5, 6, 12, 230])
       const I = pick([0.5, 1, 2, 4])
-      const t = pick([10, 30, 60, 120])
-      return { U, I, t, W: U * I * t }
+      const t = pickTime({ s: [10, 30, 60, 120], min: [1, 2, 5, 10, 30], h: [0.5, 1, 2, 3] }, tUnit)
+      return { U, I, t, W: U * I * t, tUnit }
     },
     text: {
-      W: (v) => `Silnik zasilany napięciem ${f(v.U)} V pobiera prąd ${f(v.I)} A i pracuje przez ${f(v.t)} s. Jaką pracę wykonał prąd?`,
-      U: (v) => `Prąd o natężeniu ${f(v.I)} A płynął przez ${f(v.t)} s i wykonał pracę ${f(v.W)} J. Jakie było napięcie?`,
-      I: (v) => `Przy napięciu ${f(v.U)} V w czasie ${f(v.t)} s prąd wykonał pracę ${f(v.W)} J. Jakie było natężenie prądu?`,
-      t: (v) => `Urządzenie pracuje przy napięciu ${f(v.U)} V i pobiera prąd ${f(v.I)} A. Jak długo musi działać, żeby prąd wykonał pracę ${f(v.W)} J?`,
+      W: (v) => `Silnik zasilany napięciem ${f(v.U)} V pobiera prąd ${f(v.I)} A i pracuje przez ${time(v)}. Jaką pracę wykonał prąd?`,
+      U: (v) => `Prąd o natężeniu ${f(v.I)} A płynął przez ${time(v)} i wykonał pracę ${f(v.W)} J. Jakie było napięcie?`,
+      I: (v) => `Przy napięciu ${f(v.U)} V w czasie ${time(v)} prąd wykonał pracę ${f(v.W)} J. Jakie było natężenie prądu?`,
+      t: (v) =>
+        `Urządzenie pracuje przy napięciu ${f(v.U)} V i pobiera prąd ${f(v.I)} A. Jak długo musi działać, żeby prąd wykonał pracę ${f(v.W)} J?${askTime(v)}`,
     },
   },
 }
