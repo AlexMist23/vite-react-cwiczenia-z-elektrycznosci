@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   FlaskConical,
   Gauge,
+  GraduationCap,
   Lightbulb,
   ListChecks,
   NotebookText,
@@ -25,6 +26,7 @@ import CircuitSim from '../sections/CircuitSim.jsx'
 import DirectionGame from '../sections/DirectionGame.jsx'
 import Effects from '../sections/Effects.jsx'
 import Electrostatics from '../sections/Electrostatics.jsx'
+import FinalExam from '../sections/FinalExam.jsx'
 import FormulaDrills from '../sections/FormulaDrills.jsx'
 import FormulaToCalc from '../sections/FormulaToCalc.jsx'
 import FormulaTrainer from '../sections/FormulaTrainer.jsx'
@@ -46,6 +48,7 @@ export const GROUPS = [
   { id: 'prad', title: 'Przepływ prądu', color: '#e8590c' },
   { id: 'wzory', title: 'Wielkości i obliczenia', color: '#1c7ed6' },
   { id: 'powtorka', title: 'Powtórka', color: '#2b8a3e' },
+  { id: 'koniec', title: 'Sprawdzian końcowy', color: '#c2255c' },
 ]
 
 /**
@@ -250,6 +253,14 @@ export const LESSONS = [
     title: 'Ściąga',
     desc: 'Notatki z lekcji – uporządkowane.',
     steps: [{ id: 'main', kind: 'page', title: 'Ściąga', view: Notes, props: {} }],
+  },
+  {
+    id: 'wszystko',
+    group: 'koniec',
+    icon: GraduationCap,
+    title: 'Sprawdzian ze wszystkiego',
+    desc: 'Teoria, brakująca wielkość i zadania z treścią z całego działu – z oceną na końcu.',
+    steps: [{ id: 'main', kind: 'page', title: 'Sprawdzian ze wszystkiego', view: FinalExam, props: {} }],
   },
 ]
 
